@@ -1,0 +1,1929 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<title>CMP — El ERP profesional para constructoras de vivienda</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="CMP — Presupuestos, control de costos, cubicaciones y gestión de obra. Construido por constructores, para constructores."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --orange:#F26B1F; --orange-2:#FFA265; --orange-soft:#FFE3CC; --orange-deep:#C5501A;
+    --ink:#0A0D12; --ink-2:#15181E; --ink-3:#262B35; --ink-4:#3A3F48;
+    --muted:#6B7280; --muted-2:#9AA1AB; --muted-3:#C8CFD7;
+    --line:#E8EAEE; --line-2:#EEF0F3; --line-3:#D9DCE2;
+    --cream:#F7F8FA; --cream-2:#FCFCFD; --cream-3:#F2F3F6;
+    --paper:#FFFFFF;
+    --success:#1F8A5B; --success-soft:#E5F2EB;
+    --warn:#C58A1A; --warn-soft:#FBF1D9;
+    --danger:#C24545; --danger-soft:#FBE6E6;
+    --info:#2A4FA0; --info-soft:#E5EBF6;
+    --bg-page:#FFFFFF; --tx-base:var(--ink);
+  }
+  html[data-theme="dark"]{
+    --bg-page:#07090D; --tx-base:#E8EAEE;
+    --paper:#0F1318; --cream:#0B0F14; --cream-2:#10141A; --cream-3:#171B22;
+    --line:#1B2029; --line-2:#1F242D; --line-3:#262B35;
+    --muted:#9AA1AB; --muted-2:#7C8290;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0; padding:0; overflow-x:hidden; scroll-behavior:smooth}
+  body{
+    font-family:'Manrope', system-ui, sans-serif;
+    color: var(--tx-base); background: var(--bg-page);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    font-size:15px; letter-spacing:-.005em; line-height:1.55;
+    transition: background .3s, color .3s;
+  }
+  a{color:inherit; text-decoration:none}
+  button{font:inherit; cursor:pointer; border:none; background:none; color:inherit}
+  .mono{font-family:'JetBrains Mono', ui-monospace, monospace}
+  .serif{font-family:'Fraunces', serif; font-style:italic; font-weight:300}
+  .container{max-width:1280px; margin:0 auto; padding: 0 28px}
+
+  /* ── animations ── */
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(.5deg)}}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}50%{transform:translateY(-10px) rotate(var(--rot,0deg))}}
+  @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(242,107,31,.45)}70%{box-shadow:0 0 0 14px rgba(242,107,31,0)}100%{box-shadow:0 0 0 0 rgba(242,107,31,0)}}
+  @keyframes shimmer{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}
+  @keyframes rise{from{opacity:0; transform:translateY(28px)}to{opacity:1; transform:translateY(0)}}
+  @keyframes slideUp{from{opacity:0; transform:translateY(24px)} to{opacity:1; transform:translateY(0)}}
+  @keyframes blobA{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.1)}66%{transform:translate(-30px,40px) scale(.95)}}
+  @keyframes blobB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,30px) scale(1.15)}}
+  @keyframes scrollX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes glow{0%,100%{opacity:.4}50%{opacity:1}}
+  @keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+  @keyframes rotate-soft{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes liveDot{0%,100%{transform:scale(1); opacity:1}50%{transform:scale(1.4); opacity:.6}}
+
+  .reveal{opacity:0; transform:translateY(28px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1; transform:translateY(0)}
+  .reveal-stagger > *{opacity:0; transform:translateY(20px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal-stagger.in > *:nth-child(1){transition-delay:.05s}
+  .reveal-stagger.in > *:nth-child(2){transition-delay:.12s}
+  .reveal-stagger.in > *:nth-child(3){transition-delay:.20s}
+  .reveal-stagger.in > *:nth-child(4){transition-delay:.28s}
+  .reveal-stagger.in > *:nth-child(5){transition-delay:.36s}
+  .reveal-stagger.in > *:nth-child(6){transition-delay:.44s}
+  .reveal-stagger.in > *:nth-child(7){transition-delay:.52s}
+  .reveal-stagger.in > *:nth-child(8){transition-delay:.60s}
+  .reveal-stagger.in > *{opacity:1; transform:translateY(0)}
+
+  /* ── NAV ── */
+  .nav{
+    position: sticky; top:0; z-index: 50;
+    background: color-mix(in srgb, var(--bg-page) 78%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--line-2);
+  }
+  .nav-in{display:flex; align-items:center; gap:32px; padding:14px 0}
+  .brand{display:flex; align-items:center; gap:10px}
+  .brand .lg{width:36px; height:36px; position:relative}
+  .brand .lg img{width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 8px 22px rgba(242,107,31,.30))}
+  .brand .nm{font-size:14px; font-weight:900; letter-spacing:.04em; line-height:1; color: var(--tx-base)}
+  .brand .nm small{display:block; font-size:8.5px; letter-spacing:.4em; color:var(--orange); margin-top:3px; font-weight:800}
+  .nav-links{display:flex; gap:24px; margin: 0 auto; align-items:center; font-size:14px; font-weight:600; color: var(--muted)}
+  .nav-links a{padding:6px 0; position:relative; transition:color .18s}
+  .nav-links a:hover{color: var(--tx-base)}
+  .nav-links a.has-dot::after{content:''; width:5px; height:5px; border-radius:99px; background: var(--orange); position:absolute; right:-10px; top:12px; animation: glow 2.4s infinite}
+  .nav-cta{display:flex; gap:10px; align-items:center}
+  .theme-toggle{
+    width:34px; height:34px; border-radius:10px; border:1px solid var(--line);
+    background: var(--cream-2); color: var(--tx-base);
+    display:grid; place-items:center;
+    transition: border-color .2s, background .2s, transform .18s;
+  }
+  .theme-toggle:hover{border-color: var(--line-3); transform: rotate(15deg)}
+  .theme-toggle .moon, .theme-toggle .sun{transition: opacity .2s, transform .3s}
+  html[data-theme="light"] .theme-toggle .moon{display:none}
+  html[data-theme="dark"]  .theme-toggle .sun{display:none}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:7px;
+    height:38px; padding:0 18px; border-radius:99px;
+    font-size:13.5px; font-weight:700;
+    border:1px solid var(--line); background: var(--paper); color: var(--tx-base);
+    transition: all .2s; position:relative; overflow:hidden;
+  }
+  .btn:hover{border-color: var(--line-3); transform: translateY(-1px)}
+  .btn.ghost{background:transparent; border-color:transparent; color: var(--tx-base)}
+  .btn.ghost:hover{background: var(--cream-3)}
+  .btn.primary{
+    background: var(--ink); color:#fff; border-color: var(--ink);
+    box-shadow: 0 10px 24px -10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  html[data-theme="dark"] .btn.primary{background:#fff; color: var(--ink); border-color:#fff}
+  .btn.primary:hover{background: var(--ink-2)}
+  .btn.orange{
+    background: linear-gradient(135deg, #F26B1F 0%, #FFA265 100%);
+    color:#fff; border-color: transparent;
+    box-shadow: 0 12px 28px -8px rgba(242,107,31,.55), inset 0 -2px 0 rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .btn.orange:hover{transform: translateY(-2px); box-shadow: 0 18px 36px -8px rgba(242,107,31,.6)}
+  .btn.big{height:50px; padding:0 26px; font-size:14.5px; border-radius:99px}
+  .btn.shimmer::after{
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+    transform: translateX(-150%);
+    animation: shimmer 3.2s infinite;
+  }
+
+  /* ── HERO ── */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse 900px 600px at 78% -10%, rgba(242,107,31,.4), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 20% 50%, rgba(122,77,191,.18), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 0% 110%, rgba(58,71,90,.35), transparent 65%),
+      linear-gradient(180deg, #07090D 0%, #14181F 60%, #0A0D12 100%);
+    color:#fff;
+    overflow:hidden;
+    padding: 70px 0 0;
+  }
+  /* animated blob mesh (canvas-style with CSS) */
+  .hero-blobs{position:absolute; inset:0; pointer-events:none; overflow:hidden}
+  .blob{position:absolute; border-radius:99px; filter: blur(60px); opacity:.55; mix-blend-mode: screen}
+  .blob.a{width:460px; height:460px; background: radial-gradient(circle, #F26B1F, transparent 65%); top:-120px; right:-80px; animation: blobA 18s ease-in-out infinite}
+  .blob.b{width:340px; height:340px; background: radial-gradient(circle, #7A4DBF, transparent 65%); bottom:-100px; left:8%; animation: blobB 22s ease-in-out infinite}
+  .blob.c{width:280px; height:280px; background: radial-gradient(circle, #2A4FA0, transparent 60%); top:30%; left:-100px; animation: blobA 16s ease-in-out infinite reverse}
+  /* topographic dot pattern */
+  .hero::before{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at center, #000 50%, transparent 90%);
+  }
+  /* film grain */
+  .hero::after{
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  .hero-in{position:relative; z-index:1}
+
+  .pill-news{
+    display:inline-flex; align-items:center; gap:9px;
+    padding: 5px 5px 5px 16px;
+    background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    border-radius:99px; font-size:12px; font-weight:600; color: #D8DDE5;
+    margin-bottom: 28px;
+    backdrop-filter: blur(10px);
+  }
+  .pill-news .tag{background: var(--orange); color:#fff; padding:3px 10px; border-radius:99px; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform: uppercase}
+  .pill-news .arr{color: var(--orange); font-weight:800}
+
+  .hero h1{
+    margin: 0 0 24px; font-weight: 300;
+    font-size: clamp(42px, 6.4vw, 88px);
+    letter-spacing: -0.035em; line-height:.98; max-width: 1000px;
+    text-shadow: 0 4px 60px rgba(0,0,0,.4);
+  }
+  .hero h1 b{font-weight:800; background: linear-gradient(180deg, #fff 0%, #C8CFD7 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+  .hero h1 .serif{font-weight:300; background: linear-gradient(135deg, #FFA265, #F26B1F); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; text-shadow: 0 0 60px rgba(242,107,31,.5)}
+
+  /* rotating word */
+  .rot{display:inline-block; position:relative; min-width: 4ch; vertical-align: top}
+  .rot span{display:inline-block; position:absolute; left:0; top:0; opacity:0; transform: translateY(20px); transition: opacity .5s, transform .5s; white-space:nowrap}
+  .rot span.on{opacity:1; transform: translateY(0); position:relative}
+
+  .hero p.lead{font-size: clamp(15.5px, 1.6vw, 19px); color:#B6BCC8; max-width:640px; margin:0 0 36px; line-height:1.55}
+
+  .hero-cta{display:flex; gap:12px; align-items:center; margin-bottom:38px; flex-wrap:wrap}
+  .hero-cta .demo{display:inline-flex; align-items:center; gap:8px; padding:14px 18px; color:#D8DDE5; font-size:13.5px; font-weight:600; transition: color .2s}
+  .hero-cta .demo:hover{color:#fff}
+  .hero-cta .demo .play{width:28px; height:28px; border-radius:99px; background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); display:grid; place-items:center; color:#fff; transition: background .2s}
+  .hero-cta .demo:hover .play{background: rgba(242,107,31,.3); border-color: rgba(242,107,31,.5)}
+
+  /* trust strip with infinite scroll */
+  .trust{padding: 16px 0 50px; position: relative}
+  .trust .label{font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:#8B93A1; font-weight:700; margin-bottom: 16px}
+  .trust .logos-wrap{overflow:hidden; position:relative; width:100%; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)}
+  .trust .logos{display:flex; gap:40px; align-items:center; animation: scrollX 30s linear infinite; width: max-content}
+  .trust .logos span{font-family:'Fraunces', serif; font-weight:500; font-style:italic; color:#B6BCC8; font-size:22px; letter-spacing:-.01em; opacity:.65; white-space:nowrap}
+
+  /* PREVIEW with annotations */
+  .preview-wrap{position:relative; max-width: 1180px; margin: 0 auto; padding: 0 0 60px}
+  .preview-frame{
+    background: linear-gradient(180deg, #1A2540, #08101E);
+    border-radius: 22px 22px 0 0;
+    padding: 16px 18px 0;
+    box-shadow:
+      0 80px 120px -30px rgba(242,107,31,.18),
+      0 60px 100px -25px rgba(0,0,0,.7),
+      0 0 0 1px rgba(255,255,255,.10),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    position:relative;
+    transform: perspective(2000px) rotateX(2deg);
+    transition: transform .6s ease;
+  }
+  .preview-frame:hover{transform: perspective(2000px) rotateX(0deg)}
+  .preview-frame::before{
+    content:''; position:absolute; inset:-1px; border-radius:22px 22px 0 0;
+    background: linear-gradient(180deg, rgba(242,107,31,.5), transparent 30%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    padding:1px; pointer-events:none;
+  }
+  .browser-bar{display:flex; align-items:center; gap:10px; padding-bottom:10px}
+  .browser-bar .dots{display:flex; gap:6px}
+  .browser-bar .dots span{width:10px; height:10px; border-radius:99px}
+  .browser-bar .dots span:nth-child(1){background:#FF5F57} .browser-bar .dots span:nth-child(2){background:#FEBC2E} .browser-bar .dots span:nth-child(3){background:#28C840}
+  .browser-bar .url{flex:1; height:26px; background: rgba(255,255,255,.07); border-radius:7px; display:flex; align-items:center; padding: 0 12px; gap:8px; color:#9AA3B2; font-family:'JetBrains Mono', monospace; font-size:11.5px}
+  .browser-bar .url .dot{width:5px; height:5px; border-radius:99px; background: var(--success); box-shadow: 0 0 0 2px rgba(31,138,91,.2); animation: glow 2s infinite}
+  .browser-bar .url b{color:#fff; font-weight:600}
+
+  .preview-canvas{background:#F7F8FA; padding: 22px; border-radius:10px 10px 0 0; min-height: 480px; position:relative; overflow: hidden}
+  .preview-canvas::before{content:''; position:absolute; inset:0; pointer-events:none; background: linear-gradient(180deg, transparent 70%, rgba(10,13,18,.4))}
+
+  .dash-grid{display:grid; grid-template-columns: 1fr 1fr; gap: 12px; height:100%}
+  .pc{background:#fff; border:1px solid #E8EAEE; border-radius:12px; padding:14px}
+  .pc .h{display:flex; align-items:center; gap:8px; margin-bottom:10px}
+  .pc .h .ic{width:24px; height:24px; border-radius:7px; display:grid; place-items:center; color:#fff}
+  .pc .h h4{margin:0; font-size:11.5px; font-weight:800; letter-spacing:-.005em; color:#0E1116}
+  .pc .h .sub{font-size:9.5px; color:#6B7280; margin-top:1px}
+  .pc .h .badge{margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:9px; padding:1px 6px; background:#F2F3F6; border-radius:99px; color:#1F232B; font-weight:700}
+  .pc .row{display:grid; grid-template-columns: 60px 1fr auto; gap:6px; align-items:center; padding:4px 0; border-bottom:1px solid #EEF0F3; font-size:11px}
+  .pc .row:last-child{border-bottom:none}
+  .pc .row .code{font-family:'JetBrains Mono', monospace; font-size:9px; padding:1px 5px; background:#F2F3F6; border-radius:4px; font-weight:700; color:#1F232B}
+  .pc .row .num{font-family:'JetBrains Mono',monospace; font-weight:800; text-align:right; color:#0E1116}
+  .pc .bars{display:flex; align-items:end; gap:5px; height:70px; padding-top:6px}
+  .pc .bars .b{flex:1; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, #F26B1F, #FFA265)}
+  .pc .stat{display:flex; gap:14px; padding:4px 0}
+  .pc .stat .k{flex:1}
+  .pc .stat .k .l{font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:#6B7280; font-weight:700}
+  .pc .stat .k .v{font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:800; line-height:1; letter-spacing:-.01em; color:#0E1116}
+
+  /* annotations pointing to UI */
+  .annot{
+    position: absolute; z-index:5;
+    display:flex; align-items:center; gap:8px;
+    color:#fff; font-size:11px; font-weight:600; pointer-events: none;
+  }
+  .annot .num{
+    width:22px; height:22px; border-radius:99px;
+    background: var(--orange); color:#fff; font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:800;
+    display:grid; place-items:center;
+    box-shadow: 0 0 0 4px rgba(242,107,31,.18), 0 8px 18px -6px rgba(242,107,31,.5);
+  }
+  .annot .txt{
+    padding: 6px 10px; background: rgba(255,255,255,.06); backdrop-filter: blur(10px);
+    border:1px solid rgba(255,255,255,.12); border-radius:8px;
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.04em;
+  }
+  .annot.a1{top:60px; left:-60px}
+  .annot.a2{top:280px; right:-40px}
+  .annot.a3{bottom:90px; left:-50px}
+
+  .floating-card{
+    position:absolute; z-index:3;
+    background:#fff; border:1px solid #E8EAEE; border-radius:16px;
+    padding:14px 16px;
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,.45),
+      0 12px 24px -12px rgba(0,0,0,.25),
+      0 0 0 1px rgba(0,0,0,.04),
+      inset 0 1px 0 rgba(255,255,255,.8);
+    transform-style: preserve-3d;
+  }
+  .floating-card.fc-1{top:-28px; right:30px; width:256px; --rot:-1.5deg; animation: float 6s ease-in-out infinite}
+  .floating-card.fc-2{bottom:60px; left:-32px; width:234px; --rot:2deg; animation: float 7s ease-in-out infinite 1s}
+  .floating-card.fc-3{top:38%; right:-34px; width:200px; --rot:-1deg; animation: float 8s ease-in-out infinite .5s; z-index:4}
+
+  /* ── SECTION HEADERS ── */
+  section{padding:110px 0; position:relative}
+  .sec-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:5px 12px; background: var(--orange-soft); border:1px solid rgba(242,107,31,.25);
+    border-radius:99px; font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--orange-deep); margin-bottom:18px;
+  }
+  html[data-theme="dark"] .sec-tag{background: rgba(242,107,31,.14)}
+  .sec-tag .d{width:5px; height:5px; border-radius:99px; background: var(--orange)}
+  .sec-h{max-width:720px; margin-bottom: 56px}
+  .sec-h.center{margin-left:auto; margin-right:auto; text-align:center}
+  .sec-h.center .sec-tag{margin-left:auto; margin-right:auto}
+  .sec-h h2{margin:0 0 14px; font-size: clamp(32px, 4vw, 52px); font-weight:300; letter-spacing:-.02em; line-height:1.05}
+  .sec-h h2 b{font-weight:800}
+  .sec-h h2 .serif{color: var(--orange); font-weight:300}
+  .sec-h p{margin:0; color: var(--muted); font-size: 16.5px; line-height:1.55; max-width:600px}
+  .sec-h.center p{margin: 0 auto}
+
+  /* ── METRICS / counters ── */
+  .metrics{
+    background:
+      radial-gradient(ellipse 700px 400px at 50% 0%, rgba(242,107,31,.20), transparent 60%),
+      linear-gradient(180deg, #0A0D12 0%, #15181E 100%);
+    color:#fff; padding:100px 0; position:relative; overflow:hidden;
+  }
+  .metrics::before{content:''; position:absolute; inset:0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 0); background-size:28px 28px; mask-image: radial-gradient(ellipse at center, #000 50%, transparent 90%)}
+  .metrics-in{position:relative; z-index:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:22px; text-align:center}
+  .metric .v{font-family:'JetBrains Mono', monospace; font-size: clamp(36px, 5vw, 60px); font-weight:800; letter-spacing:-.02em; color:#fff; line-height:1}
+  .metric .v .pl{color: var(--orange)}
+  .metric .l{margin-top:12px; color:#9AA3B2; font-size:13.5px; line-height:1.4}
+
+  /* ── BENTO MODULES ── */
+  .modules{background: var(--bg-page)}
+  .bento{display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 200px; gap:14px}
+  .bento .card{
+    position:relative; overflow:hidden;
+    padding:22px;
+    border-radius:20px;
+    background: var(--cream-2); border:1px solid var(--line);
+    transition: border-color .3s, transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 12px 24px -18px rgba(15,17,22,.10);
+    cursor:pointer;
+    display:flex; flex-direction:column;
+  }
+  .bento .card:hover{border-color: var(--accent, var(--line-3)); transform: translateY(-6px); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 36px 60px -28px rgba(15,17,22,.22), 0 0 0 1px var(--accent-line, var(--line-3))}
+  .bento .card::after{content:''; position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse 280px 200px at 100% 0%, var(--accent-glow, rgba(242,107,31,.10)), transparent 60%); opacity:0; transition: opacity .35s}
+  .bento .card:hover::after{opacity:1}
+  .b-1{grid-column: span 3; grid-row: span 2}
+  .b-2{grid-column: span 3}
+  .b-3{grid-column: span 2}
+  .b-4{grid-column: span 2; grid-row: span 2}
+  .b-5{grid-column: span 2}
+  .b-6{grid-column: span 2}
+  .b-7{grid-column: span 2}
+  .b-8{grid-column: span 2}
+  .bento .card .ic{
+    width:48px; height:48px; border-radius:13px;
+    background: linear-gradient(135deg, var(--accent-soft, var(--orange-soft)) 0%, var(--paper) 100%);
+    color: var(--accent, var(--orange-deep));
+    display:grid; place-items:center;
+    box-shadow: inset 0 0 0 1px var(--accent-line, rgba(242,107,31,.25)), inset 0 -3px 8px rgba(0,0,0,.04), inset 0 2px 0 rgba(255,255,255,.8), 0 8px 18px -10px var(--accent-glow, rgba(242,107,31,.35));
+    margin-bottom: 12px; position:relative; z-index:1;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .bento .card:hover .ic{transform: scale(1.08) rotate(-3deg)}
+  .bento .card h3{margin:0; font-size: 18px; font-weight: 800; letter-spacing:-.01em}
+  .bento .card.b-1 h3{font-size: 32px; max-width: 16ch; line-height:1.05}
+  .bento .card.b-4 h3{font-size: 22px}
+  .bento .card p{margin:6px 0 0; color: var(--muted); font-size: 13px; line-height:1.5}
+  .bento .card.b-1 p{font-size: 15px; max-width: 420px}
+  .bento .card .tag{margin-top: auto; padding-top: 14px; font-family:'JetBrains Mono', monospace; font-size: 10px; font-weight:800; letter-spacing:.12em; color: var(--muted); text-transform:uppercase; display:flex; align-items:center}
+  .bento .card .tag .arr{margin-left:auto; color: var(--accent, var(--orange)); transition: transform .25s}
+  .bento .card:hover .tag .arr{transform: translateX(5px)}
+
+  .b-1{
+    background:
+      radial-gradient(ellipse 500px 320px at 80% 20%, rgba(242,107,31,.22), transparent 60%),
+      linear-gradient(160deg, #1B2029, #0B0E13) !important;
+    color:#fff; border-color: rgba(255,255,255,.08) !important;
+  }
+  .b-1 h3, .b-1 p{color:#fff}
+  .b-1 p{color: #A8B0BD !important}
+  .b-1 .tag{color: rgba(255,255,255,.5)}
+  .b-1 .ic{background: linear-gradient(135deg, var(--orange), #FFA265); color:#fff !important; box-shadow: 0 12px 28px -8px rgba(242,107,31,.55) !important}
+  .b-1 .feat-list{margin-top:18px; display:grid; gap: 8px}
+  .b-1 .feat-list .l{display:grid; grid-template-columns: 18px 1fr; gap:8px; font-size:13px; color:#D8DDE5}
+  .b-1 .feat-list .l .c{width:14px; height:14px; border-radius:99px; background: var(--orange); display:grid; place-items:center; color:#fff; margin-top:3px}
+  .b-1 .feat-list .l .c svg{width:9px; height:9px}
+
+  /* mini visualization inside b-4 */
+  .b-4 .vis{margin-top: auto; padding-top: 14px}
+  .b-4 .vis svg{width: 100%; height: 50px}
+
+  .bento .card.acc-orange{--accent: var(--orange); --accent-soft: var(--orange-soft); --accent-line: rgba(242,107,31,.2); --accent-glow: rgba(242,107,31,.18)}
+  .bento .card.acc-ok    {--accent: var(--success); --accent-soft: var(--success-soft); --accent-line: rgba(31,138,91,.18); --accent-glow: rgba(31,138,91,.12)}
+  .bento .card.acc-warn  {--accent: var(--warn); --accent-soft: var(--warn-soft); --accent-line: rgba(197,138,26,.18); --accent-glow: rgba(197,138,26,.14)}
+  .bento .card.acc-info  {--accent: var(--info); --accent-soft: var(--info-soft); --accent-line: rgba(42,79,160,.18); --accent-glow: rgba(42,79,160,.12)}
+  .bento .card.acc-danger{--accent: var(--danger); --accent-soft: var(--danger-soft); --accent-line: rgba(194,69,69,.18); --accent-glow: rgba(194,69,69,.12)}
+  .bento .card.acc-purp  {--accent:#7A4DBF; --accent-soft:#F1EBFA; --accent-line: rgba(122,77,191,.18); --accent-glow: rgba(122,77,191,.14)}
+  .bento .card.acc-teal  {--accent:#1E8A8A; --accent-soft:#E0F2F2; --accent-line: rgba(30,138,138,.18); --accent-glow: rgba(30,138,138,.14)}
+
+  /* constellation svg */
+  .bento{position:relative}
+  .bento .lines{position:absolute; inset:-10px; pointer-events:none; opacity:.3}
+
+  /* ── TILT CARDS (problem) ── */
+  .problem{
+    background:
+      radial-gradient(ellipse 800px 400px at 50% 0%, rgba(242,107,31,.06), transparent 60%),
+      var(--cream); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .problem-grid{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px}
+  .prob{
+    padding:28px; background: var(--paper); border:1px solid var(--line); border-radius:20px;
+    display:flex; flex-direction:column; gap:12px; position:relative;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 24px 40px -28px rgba(15,17,22,.12);
+    transition: transform .35s ease, box-shadow .35s ease, border-color .25s;
+    transform-style: preserve-3d;
+  }
+  .prob:hover{box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 36px 60px -28px rgba(15,17,22,.2); border-color: var(--line-3)}
+  .prob::before{content:''; position:absolute; left:24px; right:24px; top:0; height:3px; background: linear-gradient(90deg, var(--orange), transparent); border-radius:0 0 99px 99px; opacity:.5}
+  .prob .num{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.18em; color: var(--muted); font-weight:800}
+  .prob h3{margin:0; font-size:20px; font-weight:800; letter-spacing:-.01em; line-height:1.2}
+  .prob p{margin:0; font-size: 13.5px; color: var(--muted); line-height:1.55}
+  .prob .ill{height:80px; display:flex; align-items:flex-end; gap:4px; color: var(--orange)}
+  .prob .ill .b{width:14px; background: var(--orange); opacity:.25; border-radius:3px 3px 0 0}
+  .prob .ill .b.active{opacity:1}
+  .prob .ill.split .b{background: var(--ink-4); opacity:.2}
+  .prob .ill.split .b.r{background: var(--danger); opacity:1}
+  .prob .ill.docs{display:flex; gap:6px; align-items:flex-end}
+  .prob .ill.docs .doc{width:38px; height:50px; background: var(--cream-3); border:1px solid var(--line-3); border-radius:4px; position:relative}
+  .prob .ill.docs .doc::before{content:''; position:absolute; right:0; top:0; width:12px; height:12px; background: var(--paper); border-left:1px solid var(--line-3); border-bottom:1px solid var(--line-3)}
+  .prob .ill.docs .doc.red{background: var(--danger-soft); border-color: rgba(194,69,69,.3)}
+
+  /* ── BEFORE/AFTER SLIDER ── */
+  .ba-wrap{
+    position:relative; height: 320px; border-radius: 22px; overflow:hidden;
+    border:1px solid var(--line);
+    background: var(--paper);
+    user-select:none; cursor: ew-resize;
+    box-shadow: 0 24px 48px -22px rgba(15,17,22,.18);
+  }
+  .ba-before, .ba-after{position:absolute; inset:0; padding:24px}
+  .ba-before{background: var(--cream-3); color: var(--muted)}
+  .ba-after{
+    background:
+      radial-gradient(ellipse 500px 300px at 50% 100%, rgba(242,107,31,.10), transparent 60%),
+      linear-gradient(160deg, #1B2029, #0A0D12);
+    color:#fff;
+    clip-path: inset(0 0 0 50%);
+  }
+  .ba-label{position:absolute; top: 14px; padding: 4px 10px; background: rgba(0,0,0,.7); color:#fff; border-radius:99px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase}
+  .ba-before .ba-label{background: rgba(255,255,255,.9); color: var(--ink); left:14px}
+  .ba-after .ba-label{background: var(--orange); right: 14px; color:#fff}
+  .ba-handle{
+    position:absolute; left:50%; top:0; bottom:0; width:2px; background: var(--orange); z-index:3;
+    transform: translateX(-50%);
+  }
+  .ba-handle::after{content:''; position:absolute; left:50%; top:50%; width: 40px; height:40px; border-radius:99px; background: var(--orange); transform: translate(-50%, -50%); box-shadow: 0 0 0 6px rgba(242,107,31,.18), 0 12px 28px -8px rgba(242,107,31,.5); display:grid; place-items:center}
+  .ba-handle::before{content:'◄ ►'; position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); color:#fff; font-size:11px; font-weight:800; z-index:1}
+
+  .ba-content{display:flex; flex-direction:column; gap: 10px; height:100%}
+  .ba-content h4{margin:0; font-size: 18px; font-weight:800; letter-spacing:-.01em}
+  .ba-content .row{display:flex; align-items:center; gap:8px; font-size: 13px}
+  .ba-content .row .ic{width:24px; height:24px; border-radius:7px; display:grid; place-items:center; flex:none}
+  .ba-before .ic{background: var(--cream-3); color: var(--danger)}
+  .ba-after .ic{background: rgba(31,138,91,.18); color: var(--success)}
+
+  /* ── HOW IT WORKS ── */
+  .how{background: var(--cream); border-top:1px solid var(--line); border-bottom:1px solid var(--line); overflow:hidden}
+  .steps{display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; position:relative}
+  .step{
+    background: var(--paper); border:1px solid var(--line); border-radius:22px;
+    padding:32px 28px 28px; position:relative;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 28px 50px -32px rgba(15,17,22,.18);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s;
+  }
+  .step:hover{transform: translateY(-5px); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 40px 70px -32px rgba(242,107,31,.22)}
+  .step .n-badge{position:absolute; top:-12px; left:24px; background: linear-gradient(135deg, var(--orange), #FFA265); color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:800; padding:5px 12px; border-radius:99px; letter-spacing:.08em; box-shadow: 0 8px 20px -8px rgba(242,107,31,.5), inset 0 1px 0 rgba(255,255,255,.3)}
+  .step::after{content:''; position:absolute; top:60px; right:-22px; width:40px; height:2px; background: linear-gradient(90deg, var(--orange), transparent); z-index:0}
+  .step:last-child::after{display:none}
+  .step h3{margin:6px 0 8px; font-size:22px; font-weight:800; letter-spacing:-.01em; line-height:1.2}
+  .step p{margin:0 0 18px; font-size:13.5px; color: var(--muted); line-height:1.55}
+  .step .ill{background: var(--cream-3); border-radius:10px; padding:14px; border:1px solid var(--line-2)}
+  .step .ill .ph{display:flex; gap:6px; align-items:center; padding:6px 0; font-size:11px; color: var(--ink-2); border-bottom:1px solid var(--line-2)}
+  .step .ill .ph:last-child{border-bottom:none}
+  html[data-theme="dark"] .step .ill .ph{color: var(--muted-3)}
+  .step .ill .ph .dot{width:8px; height:8px; border-radius:99px; background: var(--success)}
+  .step .ill .ph .dot.wn{background: var(--warn)} .step .ill .ph .dot.al{background: var(--danger)}
+  .step .ill .ph .num{font-family:'JetBrains Mono', monospace; margin-left:auto; font-weight:800; font-size:11px}
+
+  /* ── DAY IN THE LIFE timeline ── */
+  .day{background: var(--bg-page); padding: 100px 0}
+  .day-tl{position:relative; margin-top: 40px}
+  .day-tl::before{content:''; position:absolute; left:50%; top:0; bottom:0; width:2px; background: linear-gradient(180deg, var(--orange), transparent); transform: translateX(-50%)}
+  .day-item{display:grid; grid-template-columns: 1fr 80px 1fr; gap:20px; align-items:center; margin-bottom: 24px; position:relative}
+  .day-item .time{
+    grid-column: 2; text-align:center; position: relative; z-index:2;
+    font-family:'JetBrains Mono', monospace; font-weight:800; font-size:12px; color: var(--ink);
+    background: var(--paper); border:1px solid var(--line); border-radius:99px; padding: 6px 10px;
+    box-shadow: 0 8px 20px -8px rgba(15,17,22,.15);
+  }
+  .day-item .card{
+    background: var(--paper); border:1px solid var(--line); border-radius: 16px; padding: 16px 20px;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 14px 28px -22px rgba(15,17,22,.12);
+    transition: transform .3s, border-color .3s;
+  }
+  .day-item .card:hover{transform: translateY(-3px); border-color: var(--line-3)}
+  .day-item .card h4{margin:0 0 4px; font-size: 14.5px; font-weight:800; letter-spacing:-.005em}
+  .day-item .card p{margin:0; font-size:12px; color: var(--muted); line-height:1.5}
+  .day-item .card .tag{display:inline-block; margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:9.5px; padding: 2px 8px; border-radius:99px; background: var(--orange-soft); color: var(--orange-deep); font-weight:800; letter-spacing:.06em; text-transform:uppercase}
+  .day-item.left .card{grid-column: 1; text-align:right}
+  .day-item.left .card .tag{margin-left:auto; display:block; width:fit-content; margin-right:0}
+  .day-item.right .card{grid-column: 3}
+
+  /* ── ROI CALCULATOR ── */
+  .roi{
+    background:
+      radial-gradient(ellipse 800px 500px at 0% 50%, rgba(242,107,31,.10), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 100% 50%, rgba(122,77,191,.07), transparent 60%),
+      var(--cream);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .roi-grid{display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center}
+  .roi-calc{
+    background: var(--paper); border:1px solid var(--line); border-radius:22px;
+    padding: 32px;
+    box-shadow: 0 30px 60px -28px rgba(15,17,22,.2);
+  }
+  .roi-calc .field{margin-bottom: 22px}
+  .roi-calc .field label{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:13px; font-weight:700}
+  .roi-calc .field label .v{font-family:'JetBrains Mono', monospace; font-weight:800; font-size:14px; color: var(--orange-deep); padding: 3px 9px; background: var(--orange-soft); border-radius:99px}
+  .roi-calc .field input[type=range]{
+    width:100%; appearance: none; -webkit-appearance:none;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--p,30%), var(--cream-3) var(--p,30%));
+    border-radius:99px; height:6px; outline:none;
+  }
+  .roi-calc .field input[type=range]::-webkit-slider-thumb{
+    appearance:none; -webkit-appearance:none; width:22px; height:22px; border-radius:99px;
+    background:#fff; border: 3px solid var(--orange); cursor:pointer;
+    box-shadow: 0 4px 12px -3px rgba(242,107,31,.5);
+  }
+  .roi-out{
+    background: linear-gradient(160deg, #1B2029, #0A0D12);
+    border-radius:22px; padding: 32px; color:#fff;
+    position:relative; overflow:hidden;
+    box-shadow: 0 60px 100px -28px rgba(242,107,31,.18), 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .roi-out::before{content:''; position:absolute; right:-80px; top:-80px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(242,107,31,.4), transparent 60%); pointer-events: none}
+  .roi-out-in{position:relative; z-index:1}
+  .roi-out .tag{display:inline-block; font-family:'JetBrains Mono', monospace; font-size:10px; padding:3px 10px; background: rgba(242,107,31,.2); color: var(--orange-2); border-radius:99px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom: 14px}
+  .roi-out h4{margin:0; font-size: 14px; color:#9AA3B2; font-weight:700; letter-spacing:.02em}
+  .roi-out .big{font-family:'JetBrains Mono', monospace; font-size: 64px; font-weight:800; letter-spacing:-.025em; color:#fff; line-height:1; margin: 12px 0; background: linear-gradient(135deg, #FFA265, #F26B1F); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+  .roi-out .big small{font-size:18px; color:#9AA3B2; font-weight:600; margin-left:6px; -webkit-text-fill-color: initial; background: none}
+  .roi-out .breakdown{padding-top: 22px; margin-top: 22px; border-top: 1px solid rgba(255,255,255,.1)}
+  .roi-out .row{display:flex; justify-content:space-between; padding: 7px 0; font-size:13px; color: #C8CFD7}
+  .roi-out .row b{font-family:'JetBrains Mono', monospace; color:#fff; font-weight:800}
+
+  /* ── COMPARISON TABLE ── */
+  .compare{background: var(--bg-page)}
+  .ct-tbl{
+    background: var(--paper); border:1px solid var(--line); border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -28px rgba(15,17,22,.18);
+  }
+  .ct-row{display:grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; align-items:center; gap:8px; padding: 14px 24px; border-bottom: 1px solid var(--line-2)}
+  .ct-row:last-child{border-bottom:none}
+  .ct-row.head{background: var(--cream-3); padding: 18px 24px}
+  .ct-row.head .feat{font-weight:800; font-size:14px}
+  .ct-row.head .col{text-align:center; font-size: 11.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:800; color: var(--muted)}
+  .ct-row.head .col.cmp{color: var(--orange); background: var(--orange-soft); padding: 10px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(242,107,31,.25)}
+  .ct-row .feat{font-size:13.5px; font-weight:600; color: var(--ink)}
+  html[data-theme="dark"] .ct-row .feat{color: var(--tx-base)}
+  .ct-row .col{text-align:center; font-size: 13px}
+  .ct-row .yes{color: var(--success)}
+  .ct-row .no{color: var(--danger); opacity:.6}
+  .ct-row .partial{color: var(--warn)}
+  .ct-row .col.cmp{background: rgba(242,107,31,.04); border-left:1px solid var(--orange-soft); border-right:1px solid var(--orange-soft); padding: 6px 0}
+  .ct-row:last-child .col.cmp{border-bottom-left-radius: 12px; border-bottom-right-radius: 12px}
+
+  /* ── REPORTS ── */
+  .reports{background: var(--bg-page)}
+  .reports-grid{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px}
+  .rep-card{
+    background: var(--cream); border:1px solid var(--line); border-radius:18px;
+    padding: 24px 22px;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .25s;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 14px 28px -22px rgba(15,17,22,.12);
+  }
+  .rep-card:hover{transform: translateY(-6px); border-color: var(--line-3); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 38px 64px -28px rgba(15,17,22,.22)}
+  .rep-card .preview{
+    background: var(--paper); border:1px solid var(--line); border-radius:12px;
+    height: 180px; margin-bottom:16px; padding:14px; overflow:hidden; position:relative;
+    box-shadow: inset 0 -12px 24px -16px rgba(15,17,22,.06);
+  }
+  .rep-card .preview::before{content:''; position:absolute; left:0; right:0; top:0; height:4px; background: var(--accent, var(--orange))}
+  .rep-card .preview .line{height:6px; background: var(--cream-3); border-radius:99px; margin-bottom:6px}
+  .rep-card .preview .line.s{width:60%}
+  .rep-card .preview .line.l{width:90%}
+  .rep-card .preview .grid-mini{display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:5px; margin-top:8px}
+  .rep-card .preview .grid-mini>div{height:30px; background: var(--cream-3); border-radius:4px}
+  .rep-card .preview .bars-mini{display:flex; align-items:end; gap:4px; height:50px; margin-top:10px}
+  .rep-card .preview .bars-mini .b{flex:1; background: var(--accent, var(--orange)); border-radius:2px 2px 0 0; opacity:.25}
+  .rep-card .preview .bars-mini .b.on{opacity:1}
+  .rep-card .preview .donut{width:60px; height:60px; border-radius:99px; border:8px solid var(--cream-3); border-top-color: var(--accent, var(--orange)); border-right-color: var(--accent, var(--orange)); margin: 8px auto}
+  .rep-card h4{margin:0 0 4px; font-size:16px; font-weight:800; letter-spacing:-.005em}
+  .rep-card p{margin:0; color: var(--muted); font-size: 12.5px; line-height:1.5}
+  .rep-card .tag{display:inline-block; margin-top:12px; font-family:'JetBrains Mono', monospace; font-size:9.5px; padding:2px 8px; border-radius:99px; background: var(--accent-soft, var(--orange-soft)); color: var(--accent, var(--orange-deep)); font-weight:800; letter-spacing:.06em; text-transform:uppercase}
+  .rep-card.acc-ok{--accent: var(--success); --accent-soft: var(--success-soft)}
+  .rep-card.acc-warn{--accent: var(--warn); --accent-soft: var(--warn-soft)}
+  .rep-card.acc-info{--accent: var(--info); --accent-soft: var(--info-soft)}
+  .rep-card.acc-purp{--accent: #7A4DBF; --accent-soft: #F1EBFA}
+
+  /* ── AI ── */
+  .ai{
+    background:
+      radial-gradient(ellipse 700px 400px at 80% 50%, rgba(242,107,31,.07), transparent 60%),
+      radial-gradient(ellipse 500px 300px at 20% 100%, rgba(122,77,191,.06), transparent 60%),
+      var(--cream);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .ai-grid{display:grid; grid-template-columns: 1fr 1fr; gap: 38px; align-items:center}
+  .ai-vis{
+    background: linear-gradient(160deg, #1B2029, #0A0D12);
+    border-radius:26px; padding: 28px; color:#fff;
+    position:relative; overflow:hidden;
+    box-shadow: 0 60px 100px -28px rgba(242,107,31,.18), 0 40px 80px -28px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.08);
+    transform: perspective(2000px) rotateY(-2deg);
+    transition: transform .6s ease;
+  }
+  .ai-vis:hover{transform: perspective(2000px) rotateY(0deg)}
+  .ai-vis::before{content:''; position:absolute; inset:0; background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px); background-size: 38px 38px}
+  .ai-vis::after{content:''; position:absolute; right:-80px; top:-80px; width:280px; height:280px; background: radial-gradient(circle, rgba(242,107,31,.4), transparent 60%); animation: blobA 18s ease-in-out infinite}
+  .ai-vis-in{position:relative; z-index:1}
+  .ai-msg{background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:14px 16px; margin-bottom:10px}
+  .ai-msg .who{display:flex; align-items:center; gap:8px; font-size:11px; color:#9AA3B2; font-weight:700; margin-bottom:6px}
+  .ai-msg .who .av{width:22px; height:22px; border-radius:99px; background: linear-gradient(135deg, var(--orange), #FFA265); color:#fff; display:grid; place-items:center; font-size:9.5px; font-weight:800}
+  .ai-msg .who .av.user{background: var(--info)}
+  .ai-msg p{margin:0; font-size:13.5px; color:#fff; line-height:1.55}
+  .ai-msg .pill{display:inline-block; background: rgba(242,107,31,.18); color:#FFA265; padding:2px 7px; border-radius:4px; font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:700; margin:0 2px}
+  .ai-input{margin-top:14px; padding:10px 14px; border:1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); border-radius:99px; display:flex; align-items:center; gap:10px}
+  .ai-input input{flex:1; background:transparent; border:none; outline:none; color:#fff; font:inherit; font-size:13px}
+  .ai-input input::placeholder{color:#6B7280}
+  .ai-input .send{width:30px; height:30px; border-radius:99px; background: var(--orange); display:grid; place-items:center; color:#fff}
+  .ai-text h3{margin:0 0 16px; font-size:38px; font-weight:300; letter-spacing:-.02em; line-height:1.05}
+  .ai-text h3 b{font-weight:800}
+  .ai-text h3 .serif{color: var(--orange); font-weight:300}
+  .ai-text>p{margin:0 0 22px; font-size:16px; color: var(--muted); line-height:1.6}
+  .ai-list{display:flex; flex-direction:column; gap:14px}
+  .ai-l{display:grid; grid-template-columns: 32px 1fr; gap:12px; align-items:flex-start}
+  .ai-l .c{width:32px; height:32px; border-radius:9px; background: var(--orange-soft); color: var(--orange-deep); display:grid; place-items:center; box-shadow: inset 0 0 0 1px rgba(242,107,31,.2)}
+  .ai-l h4{margin:0 0 3px; font-size:14.5px; font-weight:800; letter-spacing:-.005em}
+  .ai-l p{margin:0; font-size:13px; color: var(--muted); line-height:1.5}
+
+  /* ── CASE STUDIES ── */
+  .cases{background: var(--bg-page); padding: 100px 0}
+  .cases-grid{display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px}
+  .case{
+    background: linear-gradient(180deg, var(--cream-2), var(--paper));
+    border:1px solid var(--line); border-radius:22px;
+    padding: 32px 28px;
+    transition: transform .4s, box-shadow .4s, border-color .25s;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 18px 36px -22px rgba(15,17,22,.14);
+  }
+  .case:hover{transform: translateY(-6px); border-color: var(--line-3); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 40px 70px -28px rgba(15,17,22,.2)}
+  .case .v{font-family:'JetBrains Mono', monospace; font-size: 54px; font-weight:800; letter-spacing:-.025em; line-height:1; background: linear-gradient(135deg, var(--orange), #FFA265); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+  .case h4{margin: 16px 0 6px; font-size:17px; font-weight:800; letter-spacing:-.005em}
+  .case p{margin:0; font-size:13px; color: var(--muted); line-height:1.55}
+  .case .cliente{margin-top:18px; padding-top:14px; border-top:1px solid var(--line-2); display:flex; align-items:center; gap:10px}
+  .case .cliente .av{width:32px; height:32px; border-radius:99px; background: linear-gradient(135deg, var(--info), #5A7AC0); color:#fff; display:grid; place-items:center; font-weight:800; font-size:12px}
+  .case .cliente b{font-size:12.5px; font-weight:800; display:block}
+  .case .cliente span{font-size:10.5px; color: var(--muted); display:block; margin-top:1px}
+
+  /* ── QUOTE ── */
+  .quote{background: var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .quote blockquote{margin:0; max-width:920px; font-size: clamp(22px, 2.4vw, 32px); font-weight:400; letter-spacing:-.01em; line-height:1.35}
+  .quote blockquote b{font-weight:800}
+  .quote blockquote .serif{color: var(--orange); font-weight:400}
+  .quote-foot{margin-top:28px; display:flex; align-items:center; gap:14px}
+  .quote-foot .av{width:48px; height:48px; border-radius:99px; background: linear-gradient(135deg, #2A4FA0, #5A7AC0); color:#fff; font-weight:800; font-size:18px; display:grid; place-items:center}
+  .quote-foot b{display:block; font-size:14.5px; font-weight:800}
+  .quote-foot span{display:block; font-size:12px; color: var(--muted); margin-top:2px}
+
+  /* ── PRICING ── */
+  .pricing{background: var(--cream)}
+  .pricing-toggle{display:flex; justify-content:center; gap:10px; margin: 8px 0 36px; align-items:center}
+  .pt-switch{display:flex; padding:4px; background: var(--paper); border:1px solid var(--line); border-radius: 99px; box-shadow: 0 1px 0 rgba(15,17,22,.03)}
+  .pt-switch button{padding: 8px 18px; border-radius: 99px; font-size: 12.5px; font-weight: 800; color: var(--muted); transition: all .25s}
+  .pt-switch button.on{background: var(--ink); color:#fff; box-shadow: 0 6px 16px -6px rgba(0,0,0,.3)}
+  html[data-theme="dark"] .pt-switch button.on{background: #fff; color: var(--ink)}
+  .pt-badge{font-family:'JetBrains Mono', monospace; font-size:10px; padding:3px 8px; border-radius:99px; background: var(--success-soft); color: var(--success); font-weight:800; letter-spacing:.08em}
+  .price-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; align-items: stretch}
+  .price{
+    background: var(--paper); border:1px solid var(--line); border-radius:26px; padding:36px 32px;
+    transition: border-color .35s, transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+    display:flex; flex-direction:column; position:relative;
+    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 18px 40px -28px rgba(15,17,22,.16);
+  }
+  .price:hover{transform: translateY(-8px); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 50px 80px -32px rgba(15,17,22,.24); border-color: var(--line-3)}
+  .price.featured{
+    background:
+      radial-gradient(ellipse 400px 300px at 50% 0%, rgba(242,107,31,.22), transparent 65%),
+      linear-gradient(180deg, #15181E, #0A0D12);
+    color:#fff; border-color: rgba(242,107,31,.3);
+    box-shadow: 0 60px 100px -28px rgba(242,107,31,.28), 0 40px 80px -28px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.08);
+    transform: translateY(-10px) scale(1.02);
+  }
+  .price.featured:hover{transform: translateY(-16px) scale(1.02)}
+  .price h3{margin:0 0 4px; font-size:14px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color: var(--muted)}
+  .price.featured h3{color: var(--orange-2)}
+  .price .sub{margin:0 0 22px; font-size:13px; color: var(--muted)}
+  .price.featured .sub{color:#A8B0BD}
+  .price .amt{font-family:'JetBrains Mono', monospace; font-size:38px; font-weight:800; letter-spacing:-.02em; line-height:1}
+  .price .amt small{font-size:13.5px; color: var(--muted); margin-left:6px; font-weight:600}
+  .price.featured .amt small{color:#A8B0BD}
+  .price ul{list-style:none; padding:22px 0 0; margin:22px 0 0; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:11px; flex:1}
+  .price.featured ul{border-top-color: rgba(255,255,255,.08)}
+  .price li{display:grid; grid-template-columns: 18px 1fr; gap:8px; font-size:13.5px; color: var(--ink-2)}
+  html[data-theme="dark"] .price li{color: var(--tx-base)}
+  .price.featured li{color:#D8DDE5}
+  .price li .c{width:16px; height:16px; border-radius:99px; background: var(--success-soft); color: var(--success); display:grid; place-items:center; margin-top:2px}
+  .price.featured li .c{background: rgba(242,107,31,.18); color: var(--orange-2)}
+  .price li .c svg{width:9px; height:9px}
+  .price .cta{margin-top:24px}
+  .price-tag{display:inline-block; margin-bottom:10px; padding:3px 9px; background: var(--orange); color:#fff; border-radius:99px; font-size:9.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase}
+
+  /* ── FAQ ── */
+  .faq{background: var(--bg-page)}
+  .faq-list{max-width:820px; margin: 0 auto}
+  .faq-item{border-bottom:1px solid var(--line); padding:18px 0; cursor:pointer; transition: border-color .25s}
+  .faq-item:hover{border-color: var(--line-3)}
+  .faq-q{display:flex; align-items:center; gap:14px; font-size:16.5px; font-weight:700; letter-spacing:-.005em}
+  .faq-q .n{font-family:'JetBrains Mono', monospace; font-size:11px; color: var(--muted); font-weight:700; min-width:28px; transition: color .25s}
+  .faq-item:hover .faq-q .n, .faq-item.open .faq-q .n{color: var(--orange)}
+  .faq-q .arr{margin-left:auto; color: var(--muted); font-size:18px; transition: transform .3s, color .25s}
+  .faq-item.open .faq-q .arr{transform: rotate(180deg); color: var(--orange)}
+  .faq-a{padding:0 0 0 42px; color: var(--muted); font-size:14px; line-height:1.65; max-height:0; overflow:hidden; transition: max-height .35s cubic-bezier(.2,.8,.2,1), padding-top .25s}
+  .faq-item.open .faq-a{max-height: 240px; padding-top:14px}
+
+  /* ── LIVE COUNTER footer ticker ── */
+  .live-ticker{background: var(--ink); color:#fff; padding: 14px 0; overflow:hidden; border-top: 1px solid #15181E}
+  .ticker-wrap{display:flex; gap: 80px; white-space:nowrap; animation: ticker 50s linear infinite; align-items:center}
+  .ticker-wrap > span{display:inline-flex; align-items:center; gap:10px; font-size: 13px; font-weight:600; color:#C8CFD7}
+  .ticker-wrap b{color: var(--orange); font-family:'JetBrains Mono', monospace; font-weight:800}
+  .ticker-wrap .live{width:8px; height:8px; border-radius:99px; background: var(--success); animation: liveDot 1.5s infinite}
+
+  /* ── CTA FINAL ── */
+  .cta-final{
+    background:
+      radial-gradient(ellipse 800px 400px at 50% -10%, rgba(242,107,31,.32), transparent 60%),
+      linear-gradient(180deg, #0A0D12 0%, #14181F 100%);
+    color:#fff; text-align:center; position:relative; overflow:hidden; padding: 120px 0;
+  }
+  .cta-final::before{content:''; position:absolute; inset:0; pointer-events:none; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 0); background-size:24px 24px; mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%)}
+  .cta-final-in{position:relative; z-index:1; max-width:760px; margin:0 auto}
+  .cta-final h2{margin:0 0 16px; font-size: clamp(36px, 5vw, 56px); font-weight:300; letter-spacing:-.02em; line-height:1.05}
+  .cta-final h2 b{font-weight:800}
+  .cta-final h2 .serif{color: var(--orange-2); font-weight:300}
+  .cta-final p{margin: 0 0 32px; color:#B6BCC8; font-size:17px; line-height:1.55}
+  .cta-final .cta-row{display:flex; justify-content:center; gap:12px; align-items:center; flex-wrap:wrap}
+  .cta-final .micro{margin-top:22px; font-size:11px; color:#6B7280; font-family:'JetBrains Mono', monospace; letter-spacing:.12em}
+
+  /* ── FOOTER ── */
+  footer{background: var(--ink); color:#9AA3B2; padding: 70px 0 36px; position:relative; overflow:hidden}
+  footer::before{content:''; position:absolute; inset:0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.03) 1px, transparent 0); background-size: 24px 24px; opacity:.7; pointer-events:none}
+  .ft-in{display:grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1.4fr; gap:32px; margin-bottom:40px; position:relative}
+  .ft-brand p{margin: 12px 0 0; font-size:13px; line-height:1.55; max-width:320px}
+  .ft-col h4{margin:0 0 14px; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#fff; font-weight:800}
+  .ft-col ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px}
+  .ft-col a{font-size:13px; transition: color .15s}
+  .ft-col a:hover{color:#fff}
+  .ft-news{background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:14px; padding:18px}
+  .ft-news h4{margin:0 0 6px; color:#fff; font-size:13.5px; font-weight:800}
+  .ft-news p{margin:0 0 12px; font-size:11.5px}
+  .ft-news .form{display:flex; gap:6px}
+  .ft-news input{flex:1; height:34px; padding:0 12px; background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:8px; color:#fff; outline:none; font: inherit; font-size:12.5px}
+  .ft-news input::placeholder{color:#6B7280}
+  .ft-news input:focus{border-color: var(--orange)}
+  .ft-news button{height:34px; padding:0 12px; border-radius:8px; background: var(--orange); color:#fff; font-size:11.5px; font-weight:800}
+  .ft-bottom{padding-top: 24px; border-top: 1px solid #15181E; display:flex; align-items:center; justify-content:space-between; gap:16px; font-size:11.5px; color:#6B7280; font-family:'JetBrains Mono', monospace; position:relative}
+  .ft-bottom .links{display:flex; gap:22px}
+
+  /* responsive */
+  @media (max-width: 1100px){
+    .nav-links{display:none}
+    .bento{grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto}
+    .b-1,.b-2,.b-3,.b-4,.b-5,.b-6,.b-7,.b-8{grid-column: auto; grid-row: auto}
+    .problem-grid, .steps, .price-grid, .ai-grid, .metrics-in, .ft-in, .reports-grid, .cases-grid, .roi-grid{grid-template-columns: 1fr 1fr}
+    .floating-card{display:none}
+    .day-item{grid-template-columns: 1fr}
+    .day-item .time{grid-column:auto; margin-bottom: 8px}
+    .day-item .card, .day-item.left .card, .day-item.right .card{grid-column: auto; text-align:left}
+    .day-tl::before{display:none}
+    .annot{display:none}
+    section{padding: 70px 0}
+  }
+  @media (max-width: 640px){
+    .bento, .problem-grid, .steps, .price-grid, .ai-grid, .metrics-in, .ft-in, .reports-grid, .cases-grid, .roi-grid{grid-template-columns: 1fr}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+const I = {
+  budget: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 3v5h5M8 13h7M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  control: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  proj: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 11 12 4l9 7" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5 10v10h14V10" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="9" y="13" width="6" height="7" stroke="currentColor" stroke-width="1.5"/></svg>',
+  buy: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 4h2.5l1 3M6.5 7l2 9h10l2-8H6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="9.5" cy="20" r="1.5" stroke="currentColor" stroke-width="1.5"/><circle cx="17" cy="20" r="1.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+  conta: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="6" width="10" height="3" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="12" width="3" height="6" fill="currentColor" opacity=".5"/><rect x="11" y="14" width="3" height="4" fill="currentColor" opacity=".5"/><rect x="15" y="11" width="2" height="7" fill="currentColor"/></svg>',
+  rh: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 20c.5-3 3-5 6-5s5.5 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.5" opacity=".7"/></svg>',
+  spark: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v4M3 12h4M12 17v4M17 12h4M6.5 6.5l2.5 2.5M15 15l2.5 2.5M6.5 17.5l2.5-2.5M15 9l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3.5" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.4"/></svg>',
+  bita: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 4h11l3 3v13H5V4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M16 4v3h3M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  arr: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  x: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  play: '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7L7 5Z"/></svg>',
+  send: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 12 21 4l-4 17-5-8-9-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  sun: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  moon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+};
+
+const html = `
+<!-- ─── NAV ─── -->
+<nav class="nav">
+  <div class="container nav-in">
+    <a class="brand" href="#">
+      <div class="lg"><img src="/assets/logo-icon-hd.png" alt="CMP"/></div>
+      <div class="nm">CONTROL MANAGEMENT<small>P · R · O</small></div>
+    </a>
+    <div class="nav-links">
+      <a href="#modulos">Módulos</a>
+      <a href="#flujo">Cómo funciona</a>
+      <a href="#ia" class="has-dot">IA</a>
+      <a href="#roi">ROI</a>
+      <a href="#precios">Precios</a>
+    </div>
+    <div class="nav-cta">
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+        <span class="sun">${I.sun}</span>
+        <span class="moon">${I.moon}</span>
+      </button>
+      <button class="btn ghost">Iniciar sesión</button>
+      <button class="btn primary shimmer">Demo gratis</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-blobs">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
+  </div>
+  <div class="container hero-in">
+    <div class="pill-news">
+      <span class="tag">IA · Nuevo</span>
+      Tus presupuestos con IA — ahora 10× más rápidos
+      <span class="arr">→</span>
+    </div>
+    <h1>El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras de <b><span class="rot" id="rot">
+      <span class="on">vivienda residencial.</span>
+      <span>vivienda vertical.</span>
+      <span>obra horizontal.</span>
+      <span>desarrollos turísticos.</span>
+    </span></b></h1>
+    <p class="lead">De la cotización al cierre de obra: presupuesto, control de costos, cubicaciones y gestión — ahora con <b style="color:#fff; font-weight:700">inteligencia artificial</b> que te ayuda a presupuestar, detectar desviaciones y redactar informes en minutos.</p>
+    <div class="hero-cta">
+      <button class="btn orange big shimmer">Solicitar demo guiada ${I.arr}</button>
+      <button class="demo"><span class="play">${I.play}</span>Ver el producto en 3 min</button>
+    </div>
+
+    <div class="trust">
+      <div class="label">Confían en CMP</div>
+      <div class="logos-wrap">
+        <div class="logos">
+          <span>Mesón Grande</span>
+          <span>Reforma Capital</span>
+          <span>Encinos R.E.</span>
+          <span>Pinares</span>
+          <span>Misión SP</span>
+          <span>Altavista</span>
+          <span>Cañadas</span>
+          <span>Las Encinas</span>
+          <!-- duplicado para loop -->
+          <span>Mesón Grande</span>
+          <span>Reforma Capital</span>
+          <span>Encinos R.E.</span>
+          <span>Pinares</span>
+          <span>Misión SP</span>
+          <span>Altavista</span>
+          <span>Cañadas</span>
+          <span>Las Encinas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="preview-wrap" id="previewWrap">
+      <!-- annotations -->
+      <div class="annot a1"><div class="num">1</div><div class="txt">PRESUPUESTO LIVE</div></div>
+      <div class="annot a2"><div class="num">2</div><div class="txt">CURVA S · 10 CORTES</div></div>
+      <div class="annot a3"><div class="num">3</div><div class="txt">BITÁCORA DIARIA</div></div>
+
+      <div class="floating-card fc-1" data-magnet>
+        <div style="font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6B7280; font-weight:800; margin-bottom:4px">Avance MG73</div>
+        <div style="display:flex; gap:8px; align-items:baseline">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; letter-spacing:-.01em; color:#0E1116">33.24%</div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:2px 6px; background:#FBE6E6; color:#C24545; border-radius:99px; font-weight:800">−49 pts</span>
+        </div>
+        <div style="height:6px; background:#F2F3F6; border-radius:99px; margin-top:8px; overflow:hidden"><div style="width:33%; height:100%; background:#F26B1F; border-radius:99px"></div></div>
+        <div style="font-size:10.5px; color:#6B7280; margin-top:6px">vs. plan 70% · Corte #10</div>
+      </div>
+
+      <div class="floating-card fc-2" data-magnet>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+          <div style="width:24px; height:24px; border-radius:7px; background:#E5F2EB; color:#1F8A5B; display:grid; place-items:center; animation: pulseRing 2s infinite">${I.check}</div>
+          <div style="font-size:11.5px; font-weight:800; color:#0E1116">Cubicación C-08 aprobada</div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:800; color:#1F8A5B">+ $5.04 M</div>
+        <div style="font-size:10.5px; color:#6B7280; margin-top:3px">Firmada por R. Mesón · hace 4 min</div>
+      </div>
+
+      <div class="floating-card fc-3" data-magnet>
+        <div style="font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6B7280; font-weight:800; margin-bottom:6px">Margen recuperado</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; background: linear-gradient(135deg, #F26B1F, #FFA265); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent">+ 5.4%</div>
+        <div style="display:flex; gap:3px; margin-top:8px">
+          <div style="flex:1; height:4px; background:#F26B1F; border-radius:99px"></div>
+          <div style="flex:1; height:4px; background:#F26B1F; border-radius:99px"></div>
+          <div style="flex:1; height:4px; background:#F26B1F; border-radius:99px"></div>
+          <div style="flex:1; height:4px; background:#F2F3F6; border-radius:99px"></div>
+        </div>
+        <div style="font-size:10.5px; color:#6B7280; margin-top:6px">acumulado · trimestre</div>
+      </div>
+
+      <div class="preview-frame">
+        <div class="browser-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="url"><span class="dot"></span>cmp.mx/<b>app/dashboard/MG73</b></div>
+        </div>
+        <div class="preview-canvas">
+          <div class="dash-grid">
+            <div>
+              <div class="pc" style="margin-bottom:12px">
+                <div class="h">
+                  <div class="ic" style="background:#F26B1F">${I.budget}</div>
+                  <div><h4>Presupuesto activo · MG73</h4><div class="sub">P-019 · v3.2 · Definitivo</div></div>
+                  <span class="badge">19 cap.</span>
+                </div>
+                <div class="stat">
+                  <div class="k"><div class="l">Total venta</div><div class="v">$102.65 M</div></div>
+                  <div class="k"><div class="l">Cubicado</div><div class="v" style="color:#2A4FA0">$34.12 M</div></div>
+                  <div class="k"><div class="l">Pagado</div><div class="v" style="color:#1F8A5B">$30.79 M</div></div>
+                </div>
+              </div>
+              <div class="pc">
+                <div class="h">
+                  <div class="ic" style="background:#2A4FA0">${I.control}</div>
+                  <div><h4>Curva S · plan vs real</h4><div class="sub">10 cortes · ciclo 2026</div></div>
+                </div>
+                <div class="bars">
+                  <div class="b" style="height:8%"></div><div class="b" style="height:14%"></div><div class="b" style="height:22%"></div><div class="b" style="height:30%"></div><div class="b" style="height:42%"></div><div class="b" style="height:52%"></div><div class="b" style="height:62%"></div><div class="b" style="height:70%"></div><div class="b" style="height:48%"></div><div class="b" style="height:55%"></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="pc" style="margin-bottom:12px">
+                <div class="h">
+                  <div class="ic" style="background:#7A4DBF">${I.spark}</div>
+                  <div><h4>Cubicaciones · histórico</h4><div class="sub">C1 → C8</div></div>
+                </div>
+                <div class="row"><span class="code">C-06</span><span>30 sep · cierre</span><span class="num" style="color:#1F8A5B">+$4.28 M</span></div>
+                <div class="row"><span class="code">C-07</span><span>31 oct · aprobada</span><span class="num" style="color:#1F8A5B">+$4.67 M</span></div>
+                <div class="row"><span class="code">C-08</span><span>30 nov · revisión</span><span class="num" style="color:#C58A1A">+$5.04 M</span></div>
+              </div>
+              <div class="pc">
+                <div class="h">
+                  <div class="ic" style="background:#1F8A5B">${I.bita}</div>
+                  <div><h4>Bitácora del día</h4><div class="sub">15/05/26 · Día 187</div></div>
+                </div>
+                <div class="row"><span class="code">MG.04</span><span>Armado zapatas B</span><span class="num">38%</span></div>
+                <div class="row"><span class="code">MG.05</span><span>Muros piso 1</span><span class="num">32%</span></div>
+                <div class="row"><span class="code">SST</span><span>0 incidentes · 47 pers.</span><span class="num" style="color:#1F8A5B">OK</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── METRICS ─── -->
+<section class="metrics">
+  <div class="container metrics-in reveal-stagger">
+    <div class="metric reveal">
+      <div class="v"><span class="pl">−</span><span class="count" data-to="72">0</span>%</div>
+      <div class="l">tiempo para elaborar un presupuesto completo</div>
+    </div>
+    <div class="metric reveal">
+      <div class="v"><span class="pl">+</span><span class="count" data-to="5.4" data-dec="1">0</span>%</div>
+      <div class="l">margen recuperado al detectar desviaciones a tiempo</div>
+    </div>
+    <div class="metric reveal">
+      <div class="v"><span class="count" data-to="3">0</span> días</div>
+      <div class="l">para cerrar una cubicación con el cliente</div>
+    </div>
+    <div class="metric reveal">
+      <div class="v"><span class="count" data-to="100">0</span>%</div>
+      <div class="l">trazabilidad entre presupuesto, obra y cobro</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ─── -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="sec-h reveal">
+      <div class="sec-tag"><span class="d"></span>El problema</div>
+      <h2>Cada obra se gestiona con <b>5 herramientas distintas.</b> <span class="serif">Sin IA. Sin conexión.</span></h2>
+      <p>Excel para el presupuesto, WhatsApp para la bitácora, PDF para la cubicación. Mientras tú peleas con archivos, tu competencia ya delega trabajo a la IA. Es momento de ponerse al día.</p>
+    </div>
+
+    <!-- Before / After slider -->
+    <div class="reveal" style="margin-bottom: 40px">
+      <div class="ba-wrap" id="baSlider">
+        <div class="ba-before">
+          <span class="ba-label">ANTES</span>
+          <div class="ba-content" style="padding-top: 36px">
+            <h4 style="color:#1F232B">Sin CMP · día a día caótico</h4>
+            <div class="row"><div class="ic">${I.x}</div><span>Presupuesto en Excel — nadie sabe cuál es la versión vigente</span></div>
+            <div class="row"><div class="ic">${I.x}</div><span>Cubicación a mano en libreta — 3 días para enviar al cliente</span></div>
+            <div class="row"><div class="ic">${I.x}</div><span>Control de costos desfasado 30 días — descubres el sobrecosto tarde</span></div>
+            <div class="row"><div class="ic">${I.x}</div><span>Bitácora en grupo de WhatsApp — fotos pérdidas, sin trazabilidad</span></div>
+            <div class="row"><div class="ic">${I.x}</div><span>Reportes mensuales hechos a mano — 2 días de trabajo de un analista</span></div>
+          </div>
+        </div>
+        <div class="ba-after">
+          <span class="ba-label">CON CMP</span>
+          <div class="ba-content" style="padding-top: 36px">
+            <h4>Con CMP · todo en un flujo</h4>
+            <div class="row"><div class="ic">${I.check}</div><span>Presupuesto generado por IA desde brief con APU vivo</span></div>
+            <div class="row"><div class="ic">${I.check}</div><span>Cubicación cerrada en horas — acta redactada por IA</span></div>
+            <div class="row"><div class="ic">${I.check}</div><span>Control en tiempo real — la IA te alerta antes del problema</span></div>
+            <div class="row"><div class="ic">${I.check}</div><span>App móvil del residente con IA que analiza tus fotos GPS</span></div>
+            <div class="row"><div class="ic">${I.check}</div><span>Informes profesionales redactados por IA — 8 plantillas</span></div>
+          </div>
+        </div>
+        <div class="ba-handle"></div>
+      </div>
+    </div>
+
+    <div class="problem-grid reveal-stagger reveal">
+      <div class="prob tilt">
+        <div class="num">01 · ANTES</div>
+        <h3>Presupuestos en Excel sin trazabilidad</h3>
+        <p>Cada versión es un archivo nuevo. Nadie sabe cuál es la base aprobada y la cotización vence sin avisar.</p>
+        <div class="ill">
+          <div class="b" style="height:30%"></div><div class="b" style="height:55%"></div><div class="b" style="height:40%"></div><div class="b active" style="height:80%"></div><div class="b" style="height:65%"></div><div class="b" style="height:50%"></div><div class="b" style="height:75%"></div><div class="b" style="height:35%"></div>
+        </div>
+      </div>
+      <div class="prob tilt">
+        <div class="num">02 · ANTES</div>
+        <h3>Control de costos a destiempo</h3>
+        <p>Te enteras del sobrecosto cuando ya facturaste. Sin forma de proyectar a cierre o comparar versiones.</p>
+        <div class="ill split">
+          <div class="b" style="height:60%"></div><div class="b" style="height:65%"></div><div class="b" style="height:70%"></div><div class="b r" style="height:95%"></div><div class="b" style="height:55%"></div><div class="b" style="height:50%"></div>
+        </div>
+      </div>
+      <div class="prob tilt">
+        <div class="num">03 · ANTES</div>
+        <h3>Cubicar al cliente toma 3 días</h3>
+        <p>Mediciones en libreta, fotos en el teléfono, sumas a mano. El cliente pide ajustes y se vuelve a empezar.</p>
+        <div class="ill docs">
+          <div class="doc"></div><div class="doc red"></div><div class="doc"></div><div class="doc"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MODULES (Bento) ─── -->
+<section class="modules" id="modulos">
+  <div class="container">
+    <div class="sec-h reveal">
+      <div class="sec-tag"><span class="d"></span>La plataforma con IA</div>
+      <h2>Una sola herramienta <span class="serif">con inteligencia artificial</span> que conecta <b>presupuesto, obra y caja.</b></h2>
+      <p>8 módulos potenciados por IA, diseñados específicamente para constructoras de vivienda. La IA vino para quedarse — que trabaje por ti.</p>
+    </div>
+
+    <div class="bento reveal-stagger reveal">
+      <!-- featured -->
+      <div class="card b-1 tilt">
+        <div class="ic">${I.budget}</div>
+        <h3>Presupuestos con IA · APU y versionado real</h3>
+        <p>La IA arma tu presupuesto desde un brief, sugiere partidas, vincula recursos con precio vigente y revisa que nada se quede fuera. Tú apruebas, ella ejecuta.</p>
+        <div class="feat-list">
+          <div class="l"><div class="c">${I.check}</div><span><b>IA que arma presupuestos</b> desde un brief en minutos</span></div>
+          <div class="l"><div class="c">${I.check}</div><span><b>Capítulos · Partidas · Recursos</b> con APU completo</span></div>
+          <div class="l"><div class="c">${I.check}</div><span><b>8 modelos de informe</b> generados por IA con un click</span></div>
+          <div class="l"><div class="c">${I.check}</div><span><b>Vinculación Venta ↔ Costo</b> con sugerencias inteligentes</span></div>
+        </div>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-2 acc-ok tilt">
+        <div class="ic">${I.control}</div>
+        <h3>Control de costos con IA predictiva</h3>
+        <p>La IA cruza tu histórico y te avisa qué capítulo se va a desviar antes de que pase. Base, Proyectado y Real lado a lado.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-3 acc-info tilt">
+        <div class="ic">${I.spark}</div>
+        <h3>Cubicaciones</h3>
+        <p>Cierra corte, genera acta y manda al cliente — en minutos.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-4 acc-purp tilt">
+        <div class="ic">${I.bita}</div>
+        <h3>Gestión de obra</h3>
+        <p>Bitácora diaria, fotos GPS, incidencias y reporte semanal al cliente desde el móvil del residente.</p>
+        <div class="vis">
+          <svg viewBox="0 0 200 50">
+            <path d="M0,40 Q40,35 80,30 T160,15 L200,8" stroke="#7A4DBF" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="40" cy="35" r="3" fill="#7A4DBF"/>
+            <circle cx="80" cy="30" r="3" fill="#7A4DBF"/>
+            <circle cx="120" cy="22" r="3" fill="#7A4DBF"/>
+            <circle cx="160" cy="15" r="3" fill="#7A4DBF"/>
+          </svg>
+        </div>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-5 acc-warn tilt">
+        <div class="ic">${I.buy}</div>
+        <h3>Compras</h3>
+        <p>OC con flujo de aprobación y comparativos.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-6 acc-teal tilt">
+        <div class="ic">${I.proj}</div>
+        <h3>Proyectos</h3>
+        <p>Cartera de viviendas, etapas y entregas.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-7 acc-info tilt">
+        <div class="ic">${I.conta}</div>
+        <h3>Contabilidad</h3>
+        <p>Pólizas, CFDI, conciliación bancaria.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-8 acc-danger tilt">
+        <div class="ic">${I.rh}</div>
+        <h3>Recursos humanos</h3>
+        <p>Cuadrillas, nómina por destajo, SST.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how" id="flujo">
+  <div class="container">
+    <div class="sec-h reveal">
+      <div class="sec-tag"><span class="d"></span>El flujo</div>
+      <h2>De <b>cotización</b> a <b>cobro</b>, sin perder un peso en el camino.</h2>
+      <p>Un dato se captura una sola vez y viaja por toda la plataforma — del presupuesto a la cubicación, del corte al acta, del acta a la factura.</p>
+    </div>
+
+    <div class="steps reveal-stagger reveal">
+      <div class="step">
+        <div class="n-badge">PASO 01 · IA</div>
+        <h3 style="margin-top: 14px">La IA cotiza por ti</h3>
+        <p>Sube el brief del cliente. La IA arma el presupuesto base, sugiere partidas faltantes y aplica precios vigentes — tú solo revisas y apruebas.</p>
+        <div class="ill">
+          <div class="ph"><span class="dot"></span>Capítulos sugeridos por IA<span class="num">19/19</span></div>
+          <div class="ph"><span class="dot"></span>Partidas con APU automático<span class="num">312</span></div>
+          <div class="ph"><span class="dot wn"></span>Vencimiento de oferta<span class="num">31 may</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n-badge">PASO 02 · IA</div>
+        <h3 style="margin-top: 14px">La IA vigila tu obra</h3>
+        <p>Tu residente sube avance y fotos desde el móvil. La IA detecta desviaciones, anomalías y te alerta antes de que sean problemas.</p>
+        <div class="ill">
+          <div class="ph"><span class="dot"></span>Avance MG.04<span class="num">70%</span></div>
+          <div class="ph"><span class="dot wn"></span>Alerta IA · acero<span class="num">+4.6%</span></div>
+          <div class="ph"><span class="dot"></span>Fotos analizadas<span class="num">12</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n-badge">PASO 03 · IA</div>
+        <h3 style="margin-top: 14px">La IA redacta tu acta</h3>
+        <p>Pides cerrar la cubicación y la IA genera el acta lista para firma con retención y anticipo aplicados. Mandas link al cliente.</p>
+        <div class="ill">
+          <div class="ph"><span class="dot"></span>Cubicación C-08<span class="num">$5.04 M</span></div>
+          <div class="ph"><span class="dot"></span>Retención 5%<span class="num">−$252 K</span></div>
+          <div class="ph"><span class="dot"></span>Por cobrar<span class="num">$4.79 M</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DAY IN THE LIFE ─── -->
+<section class="day">
+  <div class="container">
+    <div class="sec-h center reveal">
+      <div class="sec-tag"><span class="d"></span>Un día con CMP</div>
+      <h2>El día del <b>residente de obra</b>, <span class="serif">paso a paso</span>.</h2>
+      <p>Cómo CMP acompaña a tu equipo desde el primer café hasta el cierre del día.</p>
+    </div>
+
+    <div class="day-tl">
+      <div class="day-item left reveal">
+        <div class="card">
+          <h4>Arranque de jornada</h4>
+          <p>El residente abre CMP en su móvil. La app le muestra cuadrillas asignadas, tareas del día y materiales esperados.</p>
+          <span class="tag">06:30 · CHECK-IN</span>
+        </div>
+        <div class="time">06:30</div>
+      </div>
+      <div class="day-item right reveal">
+        <div class="time">09:15</div>
+        <div class="card">
+          <h4>Materiales recibidos</h4>
+          <p>Llega el concreto premezclado. Foto + firma del proveedor, OC validada automáticamente contra el presupuesto.</p>
+          <span class="tag">RECEPCIÓN</span>
+        </div>
+      </div>
+      <div class="day-item left reveal">
+        <div class="card">
+          <h4>Avance registrado</h4>
+          <p>Termina el armado de zapatas Z-1. Una foto con GPS, captura el % de avance y el control se actualiza en tiempo real.</p>
+          <span class="tag">11:45 · AVANCE</span>
+        </div>
+        <div class="time">11:45</div>
+      </div>
+      <div class="day-item right reveal">
+        <div class="time">14:30</div>
+        <div class="card">
+          <h4>Visita del cliente</h4>
+          <p>Roberto llega a obra. El residente abre el dashboard del proyecto y le muestra avance, fotos y próximos hitos en 2 minutos.</p>
+          <span class="tag">VISITA</span>
+        </div>
+      </div>
+      <div class="day-item left reveal">
+        <div class="card">
+          <h4>Incidencia reportada</h4>
+          <p>Falta cemento. El residente reporta la incidencia con severidad, se notifica al área de compras y se reprograma vaciado.</p>
+          <span class="tag">16:00 · ALERTA</span>
+        </div>
+        <div class="time">16:00</div>
+      </div>
+      <div class="day-item right reveal">
+        <div class="time">17:30</div>
+        <div class="card">
+          <h4>Cierre de bitácora</h4>
+          <p>Firma digital, foto de panorama, resumen del día. La bitácora se envía automáticamente al director técnico.</p>
+          <span class="tag">CIERRE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ROI CALCULATOR ─── -->
+<section class="roi" id="roi">
+  <div class="container">
+    <div class="roi-grid">
+      <div class="reveal">
+        <div class="sec-tag"><span class="d"></span>Calculadora de ROI</div>
+        <h2 style="margin: 0 0 18px; font-size: clamp(32px, 4vw, 50px); font-weight:300; letter-spacing:-.02em; line-height:1.05">¿Cuánto te <span class="serif" style="color:var(--orange)">ahorrarías</span> con <b>CMP</b>?</h2>
+        <p style="margin:0; color:var(--muted); font-size:16px; line-height:1.55">Mueve los sliders con los datos de tu operación. CMP calcula el ahorro estimado con base en el promedio de nuestros clientes.</p>
+
+        <div class="roi-calc" style="margin-top: 28px">
+          <div class="field">
+            <label>Obras simultáneas <span class="v"><span id="vObras">5</span></span></label>
+            <input type="range" id="rObras" min="1" max="40" value="5" style="--p: 12%"/>
+          </div>
+          <div class="field">
+            <label>Facturación anual estimada <span class="v">$<span id="vFact">200</span> M</span></label>
+            <input type="range" id="rFact" min="20" max="2000" value="200" step="10" style="--p: 9%"/>
+          </div>
+          <div class="field">
+            <label>Margen actual <span class="v"><span id="vMar">7</span>%</span></label>
+            <input type="range" id="rMar" min="3" max="15" value="7" style="--p: 33%"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="roi-out reveal">
+        <div class="roi-out-in">
+          <span class="tag">Estimación anual</span>
+          <h4>Ahorro y recuperación de margen</h4>
+          <div class="big">$<span id="oTotal">9.6</span><small>millones MXN</small></div>
+          <div class="breakdown">
+            <div class="row">Margen recuperado (+5.4%)<b>$<span id="oMar">10.8</span> M</b></div>
+            <div class="row">Tiempo de equipo ahorrado<b>$<span id="oTime">1.4</span> M</b></div>
+            <div class="row">Reducción de errores en compras<b>$<span id="oErr">0.8</span> M</b></div>
+            <div class="row" style="padding-top:12px; margin-top:8px; border-top:1px solid rgba(255,255,255,.1)">Costo anual de CMP<b style="color:#FFA265">−$<span id="oCost">0.29</span> M</b></div>
+          </div>
+          <div style="margin-top:18px; padding: 12px 14px; background: rgba(31,138,91,.18); border:1px solid rgba(31,138,91,.3); border-radius:10px; font-size:12.5px; color:#7CD0A6">
+            <b style="color:#fff">ROI estimado · <span id="oROI">3,250</span>%</b> en el primer año
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMPARISON TABLE ─── -->
+<section class="compare">
+  <div class="container">
+    <div class="sec-h center reveal">
+      <div class="sec-tag"><span class="d"></span>Comparativa</div>
+      <h2>¿Por qué <b>CMP</b> y no <span class="serif">otra opción</span>?</h2>
+      <p>Comparado con cómo gestionas hoy (Excel + WhatsApp) o con ERPs genéricos no diseñados para construcción.</p>
+    </div>
+
+    <div class="ct-tbl reveal">
+      <div class="ct-row head">
+        <div class="feat">Funcionalidad</div>
+        <div class="col">Excel + WhatsApp</div>
+        <div class="col">ERP genérico</div>
+        <div class="col cmp">CMP</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">APU vivo · base de datos de precios</div>
+        <div class="col no">${I.x}</div>
+        <div class="col partial">Parcial</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">Control de costos Base/Proyectado/Real</div>
+        <div class="col no">${I.x}</div>
+        <div class="col partial">Manual</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">Cubicación al cliente con acta y firma</div>
+        <div class="col no">${I.x}</div>
+        <div class="col no">${I.x}</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">App móvil del residente con fotos GPS</div>
+        <div class="col no">${I.x}</div>
+        <div class="col no">${I.x}</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">8 informes profesionales pre-formateados</div>
+        <div class="col partial">Hechos a mano</div>
+        <div class="col partial">Genéricos</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">IA específica de construcción</div>
+        <div class="col no">${I.x}</div>
+        <div class="col no">${I.x}</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">Implementación en menos de 2 semanas</div>
+        <div class="col yes">${I.check}</div>
+        <div class="col no">${I.x}</div>
+        <div class="col cmp yes">${I.check}</div>
+      </div>
+      <div class="ct-row">
+        <div class="feat">Costo mensual</div>
+        <div class="col"><span style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:800">$0</span></div>
+        <div class="col"><span style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:800">$80 K+</span></div>
+        <div class="col cmp"><span style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:800; color: var(--orange-deep)">desde $8.9 K</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── REPORTS ─── -->
+<section class="reports" id="informes">
+  <div class="container">
+    <div class="sec-h reveal">
+      <div class="sec-tag"><span class="d"></span>Reportes</div>
+      <h2>Informes <b>profesionales</b> que tu cliente <span class="serif">va a leer</span>.</h2>
+      <p>Cada módulo trae plantillas listas. Tipografía editorial, tablas con jerarquía visual y gráficas que cuentan una historia.</p>
+    </div>
+    <div class="reports-grid reveal-stagger reveal">
+      <div class="rep-card">
+        <div class="preview">
+          <div class="line l"></div><div class="line s"></div>
+          <div class="grid-mini"><div></div><div></div><div></div><div></div></div>
+          <div class="bars-mini"><div class="b on" style="height:30%"></div><div class="b on" style="height:55%"></div><div class="b on" style="height:75%"></div><div class="b" style="height:45%"></div><div class="b" style="height:60%"></div><div class="b" style="height:35%"></div></div>
+        </div>
+        <h4>Resumen ejecutivo</h4>
+        <p>KPIs financieros, Top 5 capítulos, riesgos. La página que le mandas al director.</p>
+        <span class="tag">PRESUPUESTOS · CONTROL</span>
+      </div>
+      <div class="rep-card acc-info">
+        <div class="preview">
+          <div class="line l"></div><div class="line s"></div>
+          <svg viewBox="0 0 200 80" style="width:100%; height:80px; margin-top:8px">
+            <path d="M0,70 L30,60 L60,55 L90,45 L120,30 L150,20 L180,15 L200,12" fill="none" stroke="#2A4FA0" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M0,72 L30,65 L60,60 L90,55 L120,48 L150,40 L180,35 L200,30" fill="none" stroke="#9AA1AB" stroke-width="1.5" stroke-dasharray="4 4"/>
+          </svg>
+        </div>
+        <h4>Curva S y tendencia</h4>
+        <p>Plan vs real en los 10 cortes del ciclo. Marca brecha y proyección de cierre.</p>
+        <span class="tag">CONTROL DE COSTOS</span>
+      </div>
+      <div class="rep-card acc-purp">
+        <div class="preview">
+          <div class="line l"></div><div class="line s"></div>
+          <div class="donut"></div>
+        </div>
+        <h4>Acta de cubicación</h4>
+        <p>Documento listo para firma con liquidación, retención, amortización e IVA.</p>
+        <span class="tag">PROYECTOS · CLIENTE</span>
+      </div>
+      <div class="rep-card acc-warn">
+        <div class="preview">
+          <div class="line l"></div><div class="line s"></div>
+          <div class="bars-mini" style="height:60px"><div class="b on" style="height:40%"></div><div class="b on" style="height:65%"></div><div class="b" style="height:30%"></div><div class="b on" style="height:80%"></div><div class="b" style="height:55%"></div><div class="b on" style="height:90%"></div><div class="b on" style="height:70%"></div></div>
+        </div>
+        <h4>Análisis ABC de insumos</h4>
+        <p>Pareto de recursos clasificados A/B/C. Para negociar con proveedores.</p>
+        <span class="tag">PRESUPUESTOS · COMPRAS</span>
+      </div>
+      <div class="rep-card acc-ok">
+        <div class="preview">
+          <div class="line l"></div><div class="line s"></div>
+          <div class="grid-mini" style="margin-top:14px"><div style="background:#1F8A5B; opacity:.3"></div><div style="background:#1F8A5B; opacity:.6"></div><div style="background:#1F8A5B"></div><div></div></div>
+          <div class="grid-mini" style="margin-top:6px"><div></div><div style="background:#C58A1A; opacity:.5"></div><div></div><div></div></div>
+        </div>
+        <h4>Soporte fotográfico</h4>
+        <p>Evidencias georeferenciadas con firma del supervisor. Anexo de cubicación.</p>
+        <span class="tag">GESTIÓN DE OBRA</span>
+      </div>
+      <div class="rep-card">
+        <div class="preview">
+          <div class="line l"></div><div class="line s"></div>
+          <svg viewBox="0 0 200 70" style="width:100%; height:70px; margin-top:10px">
+            <rect x="0" y="20" width="20" height="50" fill="#1F8A5B" opacity=".25"/>
+            <rect x="30" y="15" width="20" height="55" fill="#1F8A5B" opacity=".4"/>
+            <rect x="60" y="25" width="20" height="45" fill="#1F8A5B" opacity=".55"/>
+            <rect x="90" y="10" width="20" height="60" fill="#1F8A5B" opacity=".7"/>
+            <rect x="120" y="5" width="20" height="65" fill="#C24545"/>
+            <rect x="150" y="22" width="20" height="48" fill="#1F8A5B" opacity=".5"/>
+            <rect x="180" y="8" width="20" height="62" fill="#C24545"/>
+          </svg>
+        </div>
+        <h4>Comparativo de versiones</h4>
+        <p>Δ entre v3.0 y v3.2 por capítulo. Para entender de dónde viene la desviación.</p>
+        <span class="tag">PRESUPUESTOS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── AI ─── -->
+<section class="ai" id="ia">
+  <div class="container">
+    <div class="ai-grid">
+      <div class="ai-text reveal">
+        <div class="sec-tag"><span class="d"></span>Inteligencia artificial</div>
+        <h3>Tu <span class="serif">analista</span> de costos, <b>siempre presente</b>.</h3>
+        <p>Pregunta en lenguaje natural. La IA de CMP entiende tu cartera, sabe qué capítulo pesa más, en qué obra el margen se está esfumando y qué recurso ajustaste sin avisar.</p>
+        <div class="ai-list">
+          <div class="ai-l">
+            <div class="c">${I.check}</div>
+            <div><h4>Detecta desviaciones antes que sean visibles</h4><p>Cruza histórico de cortes con la cartera y te avisa qué obra requiere atención.</p></div>
+          </div>
+          <div class="ai-l">
+            <div class="c">${I.check}</div>
+            <div><h4>Explica cualquier número del control</h4><p>"¿Por qué subió MG.04 este corte?" — respuesta con fuente del dato.</p></div>
+          </div>
+          <div class="ai-l">
+            <div class="c">${I.check}</div>
+            <div><h4>Genera informes a la medida</h4><p>"Comparativo de margen entre MG73 y TR45 para el comité del jueves." En 8 segundos.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="ai-vis reveal">
+        <div class="ai-vis-in">
+          <div class="ai-msg">
+            <div class="who"><div class="av user">EL</div>Eduardo · Director técnico</div>
+            <p>¿Qué obras necesitan mi atención esta semana?</p>
+          </div>
+          <div class="ai-msg">
+            <div class="who"><div class="av">CMP</div>Asistente · CMP</div>
+            <p>Tres obras tienen alertas activas:</p>
+            <p style="margin-top:8px">→ <span class="pill">MG73</span> Estructura supera proyectado en <span class="pill">+$255 K</span>. Causa: alza de acero 4.6%.</p>
+            <p style="margin-top:6px">→ <span class="pill">TR45</span> 18 órdenes de compra acumuladas en aprobación.</p>
+            <p style="margin-top:6px">→ <span class="pill">MG12</span> Cubicación C-02 vence en 3 días sin firma del cliente.</p>
+          </div>
+          <div class="ai-input">
+            <input type="text" placeholder="Pregúntale algo a CMP…"/>
+            <button class="send">${I.send}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CASE STUDIES ─── -->
+<section class="cases">
+  <div class="container">
+    <div class="sec-h center reveal">
+      <div class="sec-tag"><span class="d"></span>Casos de éxito</div>
+      <h2>Lo que nuestros clientes <span class="serif">recuperaron</span> con <b>CMP</b>.</h2>
+    </div>
+    <div class="cases-grid reveal-stagger reveal">
+      <div class="case">
+        <div class="v">$2.4M</div>
+        <h4>Mesón Grande recuperó margen con IA</h4>
+        <p>La IA de CMP detectó 12 desviaciones que antes pasaban desapercibidas. El director técnico cerró el año 6 pts arriba del objetivo.</p>
+        <div class="cliente">
+          <div class="av">MG</div>
+          <div>
+            <b>Inmobiliaria Mesón Grande</b>
+            <span>4 obras activas · Querétaro</span>
+          </div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="v">8 días</div>
+        <h4>Encinos R.E. cierra más rápido con IA</h4>
+        <p>De 10 a 2 días el cierre del control de obra. La IA redacta los informes y el comité financiero tiene datos vivos al día 3.</p>
+        <div class="cliente">
+          <div class="av" style="background: linear-gradient(135deg, #1F8A5B, #4DBE85)">EN</div>
+          <div>
+            <b>Encinos Real Estate</b>
+            <span>6 desarrollos · Monterrey</span>
+          </div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="v">94%</div>
+        <h4>Reforma Capital · cubicaciones aprobadas a la primera</h4>
+        <p>Con acta digital firmada en línea, el cliente aprueba en 24h. Pasaron del 30% antes de CMP al 94% en el segundo trimestre.</p>
+        <div class="cliente">
+          <div class="av" style="background: linear-gradient(135deg, #7A4DBF, #A07AE0)">RC</div>
+          <div>
+            <b>Reforma Capital S.A.P.I.</b>
+            <span>3 torres en CDMX</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── QUOTE ─── -->
+<section class="quote">
+  <div class="container">
+    <blockquote class="reveal">
+      "Antes de CMP, cerrar el control mensual nos tomaba <b>10 días</b>. <span class="serif">Hoy, con la IA, lo cerramos en 2.</span> Y el cliente firma la cubicación sin levantar el teléfono."
+    </blockquote>
+    <div class="quote-foot reveal">
+      <div class="av">RM</div>
+      <div>
+        <b>Roberto Mesón</b>
+        <span>Dirección de Proyecto · Inmobiliaria Mesón Grande</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ─── -->
+<section class="pricing" id="precios">
+  <div class="container">
+    <div class="sec-h center reveal">
+      <div class="sec-tag"><span class="d"></span>Precios</div>
+      <h2>Empieza por el <b>módulo</b> que <span class="serif">más necesitas.</span></h2>
+      <p>Plan transparente, sin cargos por usuario sorpresa.</p>
+    </div>
+
+    <div class="pricing-toggle reveal">
+      <div class="pt-switch">
+        <button class="on" id="ptMes">Mensual</button>
+        <button id="ptAno">Anual</button>
+      </div>
+      <span class="pt-badge">Ahorra 15% al año</span>
+    </div>
+
+    <div class="price-grid reveal-stagger reveal">
+      <div class="price">
+        <h3>Esencial</h3>
+        <p class="sub">Para constructoras de 1–3 obras simultáneas</p>
+        <div class="amt">$<span class="pamt" data-mes="8,900" data-ano="7,565">8,900</span><small>/ mes</small></div>
+        <ul>
+          <li><div class="c">${I.check}</div><span><b>Presupuestos · 5 activos</b></span></li>
+          <li><div class="c">${I.check}</div><span>Control de costos · cortes mensuales</span></li>
+          <li><div class="c">${I.check}</div><span>Cubicaciones con acta al cliente</span></li>
+          <li><div class="c">${I.check}</div><span>5 usuarios incluidos</span></li>
+          <li><div class="c">${I.check}</div><span>Informes en PDF/Excel</span></li>
+          <li><div class="c">${I.check}</div><span>Soporte por email</span></li>
+        </ul>
+        <div class="cta"><button class="btn primary" style="width:100%; border-radius:12px; height:44px">Empezar prueba</button></div>
+      </div>
+
+      <div class="price featured">
+        <span class="price-tag">Más elegido</span>
+        <h3>Profesional</h3>
+        <p class="sub">Para constructoras consolidadas con 4–15 obras</p>
+        <div class="amt">$<span class="pamt" data-mes="24,500" data-ano="20,825">24,500</span><small>/ mes</small></div>
+        <ul>
+          <li><div class="c">${I.check}</div><span><b>Presupuestos ilimitados</b></span></li>
+          <li><div class="c">${I.check}</div><span>Control · cortes quincenales</span></li>
+          <li><div class="c">${I.check}</div><span>Gestión de obra completa · bitácora · fotos</span></li>
+          <li><div class="c">${I.check}</div><span>Compras con flujo de aprobación</span></li>
+          <li><div class="c">${I.check}</div><span><b>IA · Asistente ilimitado</b></span></li>
+          <li><div class="c">${I.check}</div><span>20 usuarios · portal del cliente</span></li>
+          <li><div class="c">${I.check}</div><span>Soporte prioritario</span></li>
+        </ul>
+        <div class="cta"><button class="btn orange shimmer" style="width:100%; border-radius:12px; height:44px">Solicitar demo</button></div>
+      </div>
+
+      <div class="price">
+        <h3>Enterprise</h3>
+        <p class="sub">Para grupos inmobiliarios y desarrolladores grandes</p>
+        <div class="amt" style="font-size:30px; font-family: Manrope; font-weight: 800">A medida</div>
+        <ul>
+          <li><div class="c">${I.check}</div><span><b>Todo lo de Profesional</b></span></li>
+          <li><div class="c">${I.check}</div><span>SSO empresarial · SAML 2.0</span></li>
+          <li><div class="c">${I.check}</div><span>Integraciones con tu ERP corporativo</span></li>
+          <li><div class="c">${I.check}</div><span>SLA personalizado · respaldo dedicado</span></li>
+          <li><div class="c">${I.check}</div><span>Usuarios ilimitados · API completa</span></li>
+          <li><div class="c">${I.check}</div><span>Customer Success Manager</span></li>
+        </ul>
+        <div class="cta"><button class="btn primary" style="width:100%; border-radius:12px; height:44px">Contactar ventas</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="faq">
+  <div class="container">
+    <div class="sec-h center reveal">
+      <div class="sec-tag"><span class="d"></span>Preguntas frecuentes</div>
+      <h2>Lo que <b>siempre nos preguntan.</b></h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item open">
+        <div class="faq-q"><span class="n">01</span>¿Cuánto tarda implementar CMP en una obra activa?<span class="arr">⌃</span></div>
+        <div class="faq-a">En promedio 2 semanas: la primera para configurar tu catálogo de partidas y cargar el presupuesto base; la segunda para entrenar al residente y al equipo de compras. Tu cubicación más reciente queda lista para enviar al cliente en el día 10.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="n">02</span>¿Puedo importar mis presupuestos hechos en Excel?<span class="arr">⌃</span></div>
+        <div class="faq-a">Sí. CMP acepta plantillas Excel/CSV con jerarquía Capítulo → Partida → Recurso. Tu equipo de onboarding hace el primer import contigo en una sesión de 60 minutos.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="n">03</span>¿Funciona sin internet en obra?<span class="arr">⌃</span></div>
+        <div class="faq-a">La app móvil del residente trabaja offline: sube fotos, registra avance y captura la bitácora. Cuando vuelve la señal, sincroniza automáticamente.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="n">04</span>¿Cómo se conecta con mi contador o mi sistema fiscal?<span class="arr">⌃</span></div>
+        <div class="faq-a">CMP exporta pólizas, CFDI y conciliación bancaria en formatos compatibles con Contpaq, Aspel y SAP. En el plan Enterprise montamos integración bidireccional vía API.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="n">05</span>¿La IA tiene acceso a mis datos sensibles?<span class="arr">⌃</span></div>
+        <div class="faq-a">Tu información nunca entrena modelos externos. La IA de CMP corre sobre tu propio repositorio cifrado y solo el personal que tú autorices accede a sus consultas.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ─── -->
+<section class="cta-final">
+  <div class="container cta-final-in reveal">
+    <h2>La <span class="serif">IA</span> ya está aquí. <b>Que trabaje por ti.</b></h2>
+    <p>Agenda una demo de 30 minutos. Te mostramos cómo la IA de CMP arma tu primer presupuesto en vivo, con un proyecto real tuyo cargado.</p>
+    <div class="cta-row">
+      <button class="btn orange big shimmer">Solicitar demo guiada ${I.arr}</button>
+      <button class="btn ghost big" style="color:#fff">Hablar con ventas</button>
+    </div>
+    <div class="micro">SIN TARJETA · SIN COMPROMISO · CANCELAS CUANDO QUIERAS</div>
+  </div>
+</section>
+
+<!-- ─── LIVE TICKER ─── -->
+<div class="live-ticker">
+  <div class="ticker-wrap">
+    <span><span class="live"></span><b id="liveOnline">12</b> obras activas en este momento</span>
+    <span>•</span>
+    <span><b id="liveCubic">3</b> cubicaciones firmadas hoy</span>
+    <span>•</span>
+    <span><b id="liveFotos">847</b> fotos subidas desde campo esta semana</span>
+    <span>•</span>
+    <span><b id="liveMargen">+5.4%</b> margen promedio recuperado este trimestre</span>
+    <span>•</span>
+    <span><b id="liveAhorro">$1.2M</b> ahorrados a clientes este mes</span>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="container">
+    <div class="ft-in">
+      <div class="ft-brand">
+        <div class="brand">
+          <div class="lg"><img src="/assets/logo-icon-hd.png" alt="CMP"/></div>
+          <div class="nm" style="color:#fff">CONTROL MANAGEMENT<small>P · R · O</small></div>
+        </div>
+        <p>El ERP profesional para constructoras de vivienda. Diseñado en México por constructores que vivieron el problema.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="#">Presupuestos</a></li>
+          <li><a href="#">Control de costos</a></li>
+          <li><a href="#">Cubicaciones</a></li>
+          <li><a href="#">Gestión de obra</a></li>
+          <li><a href="#">IA · Asistente</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Quiénes somos</a></li>
+          <li><a href="#">Clientes</a></li>
+          <li><a href="#">Carreras</a></li>
+          <li><a href="#">Prensa</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Recursos</h4>
+        <ul>
+          <li><a href="#">Centro de ayuda</a></li>
+          <li><a href="#">Blog del constructor</a></li>
+          <li><a href="#">Documentación API</a></li>
+          <li><a href="#">Estado del servicio</a></li>
+        </ul>
+      </div>
+      <div class="ft-news">
+        <h4>Newsletter del constructor</h4>
+        <p>Tips de control de costos, casos reales y novedades de CMP — 1 email al mes, sin spam.</p>
+        <div class="form">
+          <input type="email" placeholder="tu@constructora.com"/>
+          <button>Suscribirme</button>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 CMP · Construido con cuidado en MX-Centro</span>
+      <div class="links">
+        <a href="#">Términos</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Aviso legal</a>
+      </div>
+    </div>
+  </div>
+</footer>
+`;
+
+document.getElementById('root').innerHTML = html;
+
+/* ───── 1. THEME TOGGLE ───── */
+const themeToggle = document.getElementById('themeToggle');
+themeToggle?.addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', cur==='dark' ? 'light' : 'dark');
+});
+
+/* ───── 2. FAQ ───── */
+document.querySelectorAll('.faq-item').forEach(it=>{
+  it.addEventListener('click', ()=>{
+    document.querySelectorAll('.faq-item').forEach(x=>{ if(x!==it) x.classList.remove('open') });
+    it.classList.toggle('open');
+  });
+});
+
+/* ───── 3. SCROLL REVEALS ───── */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.12, rootMargin: '0px 0px -50px 0px'});
+document.querySelectorAll('.reveal, .reveal-stagger').forEach(el=>io.observe(el));
+
+/* ───── 4. COUNTERS ───── */
+const counterIO = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el = e.target;
+      const to = parseFloat(el.dataset.to);
+      const dec = parseInt(el.dataset.dec || '0');
+      const dur = 1600;
+      const start = performance.now();
+      const animate = (t)=>{
+        const p = Math.min(1, (t-start)/dur);
+        const eased = 1 - Math.pow(1-p, 3);
+        el.textContent = (to * eased).toFixed(dec);
+        if(p<1) requestAnimationFrame(animate);
+        else el.textContent = to.toFixed(dec);
+      };
+      requestAnimationFrame(animate);
+      counterIO.unobserve(el);
+    }
+  });
+}, {threshold: 0.5});
+document.querySelectorAll('.count').forEach(el=>counterIO.observe(el));
+
+/* ───── 5. ROTATING WORD ───── */
+const rotEl = document.getElementById('rot');
+if(rotEl){
+  const spans = rotEl.querySelectorAll('span');
+  let idx = 0;
+  setInterval(()=>{
+    spans[idx].classList.remove('on');
+    idx = (idx + 1) % spans.length;
+    spans[idx].classList.add('on');
+  }, 2400);
+}
+
+/* ───── 6. TILT CARDS ───── */
+document.querySelectorAll('.tilt').forEach(card=>{
+  card.addEventListener('mousemove', (e)=>{
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = `perspective(1000px) rotateY(${x*5}deg) rotateX(${-y*5}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave', ()=>{
+    card.style.transform = '';
+  });
+});
+
+/* ───── 7. MAGNETIC FLOATING CARDS ───── */
+const previewWrap = document.getElementById('previewWrap');
+if(previewWrap){
+  previewWrap.addEventListener('mousemove', (e)=>{
+    const r = previewWrap.getBoundingClientRect();
+    const x = (e.clientX - r.left - r.width/2) / r.width;
+    const y = (e.clientY - r.top - r.height/2) / r.height;
+    previewWrap.querySelectorAll('[data-magnet]').forEach((el,i)=>{
+      const factor = 12 - i*2;
+      el.style.transition = 'transform .4s ease-out';
+      el.style.transform = `translate(${x*factor}px, ${y*factor}px) rotate(var(--rot))`;
+    });
+  });
+  previewWrap.addEventListener('mouseleave', ()=>{
+    previewWrap.querySelectorAll('[data-magnet]').forEach(el=>{
+      el.style.transform = '';
+    });
+  });
+}
+
+/* ───── 8. BEFORE/AFTER SLIDER ───── */
+const ba = document.getElementById('baSlider');
+if(ba){
+  let dragging = false;
+  const move = (clientX)=>{
+    const r = ba.getBoundingClientRect();
+    let p = (clientX - r.left) / r.width;
+    p = Math.max(0, Math.min(1, p));
+    ba.querySelector('.ba-after').style.clipPath = `inset(0 0 0 ${p*100}%)`;
+    ba.querySelector('.ba-handle').style.left = (p*100)+'%';
+  };
+  ba.addEventListener('mousedown', ()=>{dragging=true});
+  window.addEventListener('mouseup', ()=>{dragging=false});
+  window.addEventListener('mousemove', (e)=>{if(dragging) move(e.clientX)});
+  ba.addEventListener('touchmove', (e)=>{move(e.touches[0].clientX)});
+}
+
+/* ───── 9. ROI CALCULATOR ───── */
+function calcROI(){
+  const obras = +document.getElementById('rObras').value;
+  const fact = +document.getElementById('rFact').value;
+  const mar = +document.getElementById('rMar').value;
+  document.getElementById('vObras').textContent = obras;
+  document.getElementById('vFact').textContent = fact;
+  document.getElementById('vMar').textContent = mar;
+  document.getElementById('rObras').style.setProperty('--p', ((obras-1)/39*100)+'%');
+  document.getElementById('rFact').style.setProperty('--p', ((fact-20)/1980*100)+'%');
+  document.getElementById('rMar').style.setProperty('--p', ((mar-3)/12*100)+'%');
+
+  /* cálculos */
+  const margenRecup = fact * 0.054; // 5.4%
+  const tiempoAh = obras * 0.28; // 280K por obra/año
+  const errores = fact * 0.004; // 0.4% reducción errores
+  const costoAnual = 0.294; // ~$24,500/mes * 12
+  const total = margenRecup + tiempoAh + errores - costoAnual;
+  const roi = ((total / costoAnual) * 100).toFixed(0);
+
+  document.getElementById('oTotal').textContent = total.toFixed(1);
+  document.getElementById('oMar').textContent = margenRecup.toFixed(1);
+  document.getElementById('oTime').textContent = tiempoAh.toFixed(1);
+  document.getElementById('oErr').textContent = errores.toFixed(1);
+  document.getElementById('oCost').textContent = costoAnual.toFixed(2);
+  document.getElementById('oROI').textContent = (+roi).toLocaleString('en-US');
+}
+['rObras','rFact','rMar'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input', calcROI);
+});
+calcROI();
+
+/* ───── 10. PRICING TOGGLE ───── */
+const ptMes = document.getElementById('ptMes');
+const ptAno = document.getElementById('ptAno');
+function switchPrice(period){
+  document.querySelectorAll('.pamt').forEach(el=>{
+    el.textContent = el.dataset[period];
+  });
+}
+ptMes?.addEventListener('click', ()=>{ ptMes.classList.add('on'); ptAno.classList.remove('on'); switchPrice('mes'); });
+ptAno?.addEventListener('click', ()=>{ ptAno.classList.add('on'); ptMes.classList.remove('on'); switchPrice('ano'); });
+
+/* ───── 11. LIVE TICKER COUNTERS ───── */
+let liveOnline = 12;
+setInterval(()=>{
+  liveOnline += Math.random() > .5 ? 1 : -1;
+  liveOnline = Math.max(8, Math.min(18, liveOnline));
+  const el = document.getElementById('liveOnline');
+  if(el) el.textContent = liveOnline;
+}, 6000);
+</script>
+</body>
+</html>

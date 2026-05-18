@@ -1,0 +1,25 @@
+# Astro build
+dist/
+.astro/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# macOS
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+
+# Variables locales
+.env
+.env.local
+
+# Cloudflare/Vercel
+.wrangler/
+.vercel/
