@@ -2,9 +2,33 @@
 <html lang="es" data-theme="light">
 <head>
 <meta charset="utf-8"/>
-<title>CMP — El ERP profesional para constructoras de vivienda</title>
+<title>Control Management Pro — El ERP profesional con IA para constructoras LATAM</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="CMP — Presupuestos, control de costos, cubicaciones y gestión de obra. Construido por constructores, para constructores."/>
+<meta name="description" content="CMP es el ERP profesional con IA para constructoras LATAM: presupuesto, control de costos, cubicaciones, compras, almacén y flujo de caja en una sola plataforma."/>
+<meta name="theme-color" content="#F26B1F"/>
+<link rel="canonical" href="https://controlobra.ai/"/>
+
+<!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="es_LA"/>
+<meta property="og:site_name" content="Control Management Pro"/>
+<meta property="og:title" content="Control Management Pro — El ERP profesional con IA para constructoras LATAM"/>
+<meta property="og:description" content="Presupuesto, control, obra y flujo de caja en una sola herramienta con IA. Diseñado para constructoras de vivienda en LATAM."/>
+<meta property="og:url" content="https://controlobra.ai/"/>
+<meta property="og:image" content="https://controlobra.ai/assets/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Control Management Pro — ERP con IA para constructoras"/>
+<meta name="twitter:description" content="Presupuesto, control, cubicaciones y flujo de caja con IA."/>
+<meta name="twitter:image" content="https://controlobra.ai/assets/og-image.png"/>
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/assets/logo-icon.png"/>
+<link rel="apple-touch-icon" href="/assets/logo-icon-hd.png"/>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
@@ -42,7 +66,7 @@
   button{font:inherit; cursor:pointer; border:none; background:none; color:inherit}
   .mono{font-family:'JetBrains Mono', ui-monospace, monospace}
   .serif{font-family:'Fraunces', serif; font-style:italic; font-weight:300}
-  .container{max-width:1280px; margin:0 auto; padding: 0 28px}
+  .container{max-width:1280px; margin:0 auto; padding: 0 28px; box-sizing:border-box; width:100%}
 
   /* ── animations ── */
   @keyframes drift{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(.5deg)}}
@@ -72,32 +96,74 @@
   .reveal-stagger.in > *:nth-child(8){transition-delay:.60s}
   .reveal-stagger.in > *{opacity:1; transform:translateY(0)}
 
-  /* ── NAV ── */
+  /* ── NAV (light glass · translúcida · juega con la paleta cream/orange) ── */
   .nav{
-    position: sticky; top:0; z-index: 50;
-    background: color-mix(in srgb, var(--bg-page) 78%, transparent);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--line-2);
+    position: sticky; top:0; z-index: 100;
+    /* Top: glass crema muy translúcido — deja ver el hero detrás */
+    background: rgba(247, 248, 250, 0.55);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border-bottom: 1px solid rgba(232, 234, 238, 0.4);
+    transition: background .35s ease, backdrop-filter .35s ease, border-color .35s ease, box-shadow .35s ease;
   }
-  .nav-in{display:flex; align-items:center; gap:32px; padding:14px 0}
-  .brand{display:flex; align-items:center; gap:10px}
-  .brand .lg{width:36px; height:36px; position:relative}
-  .brand .lg img{width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 8px 22px rgba(242,107,31,.30))}
-  .brand .nm{font-size:14px; font-weight:900; letter-spacing:.04em; line-height:1; color: var(--tx-base)}
+  .nav.scrolled{
+    /* Scrolled: más opaco para destacar sobre el contenido pero sigue translúcido */
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom-color: rgba(232, 234, 238, 0.85);
+    box-shadow: 0 10px 28px -16px rgba(15,17,22,.12);
+  }
+  .nav-in{
+    display:flex; align-items:center; gap:32px;
+    padding:18px 0;
+    transition: padding .28s ease;
+  }
+  .nav.scrolled .nav-in{ padding:12px 0 }
+
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none}
+  .brand .lg{width:36px; height:36px; position:relative; transition: transform .28s ease}
+  .nav.scrolled .brand .lg{ transform: scale(.94) }
+  .brand .lg img{width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 8px 22px rgba(242,107,31,.35))}
+  .brand .nm{
+    font-size:14px; font-weight:900; letter-spacing:.04em; line-height:1;
+    color: var(--ink);
+  }
   .brand .nm small{display:block; font-size:8.5px; letter-spacing:.4em; color:var(--orange); margin-top:3px; font-weight:800}
-  .nav-links{display:flex; gap:24px; margin: 0 auto; align-items:center; font-size:14px; font-weight:600; color: var(--muted)}
-  .nav-links a{padding:6px 0; position:relative; transition:color .18s}
-  .nav-links a:hover{color: var(--tx-base)}
-  .nav-links a.has-dot::after{content:''; width:5px; height:5px; border-radius:99px; background: var(--orange); position:absolute; right:-10px; top:12px; animation: glow 2.4s infinite}
+
+  .nav-links{display:flex; gap:24px; margin: 0 auto; align-items:center; font-size:14px; font-weight:600}
+  .nav-links a{
+    padding:6px 0; position:relative;
+    color: var(--muted);
+    transition: color .22s ease;
+  }
+  .nav-links a:hover{ color: var(--ink) }
+  .nav-links a.has-dot::after{content:''; width:5px; height:5px; border-radius:99px; background: var(--orange); position:absolute; right:-10px; top:12px; animation: glow 2.4s infinite; box-shadow: 0 0 10px rgba(242,107,31,.5)}
+
   .nav-cta{display:flex; gap:10px; align-items:center}
   .theme-toggle{
-    width:34px; height:34px; border-radius:10px; border:1px solid var(--line);
-    background: var(--cream-2); color: var(--tx-base);
+    width:34px; height:34px; border-radius:10px;
+    background: rgba(255, 255, 255, 0.55);
+    border:1px solid rgba(232, 234, 238, 0.6);
+    color: var(--ink);
     display:grid; place-items:center;
-    transition: border-color .2s, background .2s, transform .18s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background .2s ease, border-color .2s ease, transform .18s ease;
   }
-  .theme-toggle:hover{border-color: var(--line-3); transform: rotate(15deg)}
+  .theme-toggle:hover{ background: rgba(255,255,255,.85); border-color: var(--line-3); transform: rotate(15deg) }
+
+  /* Botones del nav adaptados al fondo claro */
+  .nav .btn.ghost{
+    background: transparent; border-color: transparent; color: var(--ink);
+    transition: background .22s ease, border-color .22s ease;
+  }
+  .nav .btn.ghost:hover{ background: rgba(255,255,255,.6); border-color: var(--line) }
+  .nav .btn.primary{
+    background: var(--ink); color:#FFFFFF; border-color: var(--ink);
+    box-shadow: 0 10px 24px -10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .nav .btn.primary:hover{ background: var(--ink-2) }
   .theme-toggle .moon, .theme-toggle .sun{transition: opacity .2s, transform .3s}
   html[data-theme="light"] .theme-toggle .moon{display:none}
   html[data-theme="dark"]  .theme-toggle .sun{display:none}
@@ -108,7 +174,9 @@
     font-size:13.5px; font-weight:700;
     border:1px solid var(--line); background: var(--paper); color: var(--tx-base);
     transition: all .2s; position:relative; overflow:hidden;
+    text-decoration:none; cursor:pointer; box-sizing:border-box;
   }
+  a.btn{ text-decoration:none }
   .btn:hover{border-color: var(--line-3); transform: translateY(-1px)}
   .btn.ghost{background:transparent; border-color:transparent; color: var(--tx-base)}
   .btn.ghost:hover{background: var(--cream-3)}
@@ -132,7 +200,7 @@
     animation: shimmer 3.2s infinite;
   }
 
-  /* ── HERO ── */
+  /* ── HERO (1ª pantalla siempre completa: min-height 100dvh + fluido) ── */
   .hero{
     position:relative;
     background:
@@ -142,7 +210,9 @@
       linear-gradient(180deg, #07090D 0%, #14181F 60%, #0A0D12 100%);
     color:#fff;
     overflow:hidden;
-    padding: 70px 0 0;
+    min-height: 100dvh;
+    padding: clamp(40px, 7vh, 96px) 0 0;
+    display:flex; flex-direction:column;
   }
   /* animated blob mesh (canvas-style with CSS) */
   .hero-blobs{position:absolute; inset:0; pointer-events:none; overflow:hidden}
@@ -163,34 +233,60 @@
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     mix-blend-mode: overlay;
   }
-  .hero-in{position:relative; z-index:1}
+  .hero-in{position:relative; z-index:1; flex:1; display:flex; flex-direction:column; min-width:0}
+  .hero > *{min-width:0}
 
   .pill-news{
     display:inline-flex; align-items:center; gap:9px;
     padding: 5px 5px 5px 16px;
     background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
-    border-radius:99px; font-size:12px; font-weight:600; color: #D8DDE5;
-    margin-bottom: 28px;
+    border-radius:99px;
+    font-size: clamp(11px, .35vw + .5vh, 13px);
+    font-weight:600; color: #D8DDE5;
+    margin-bottom: clamp(16px, 2.5vh, 32px);
     backdrop-filter: blur(10px);
+    align-self: flex-start;
   }
   .pill-news .tag{background: var(--orange); color:#fff; padding:3px 10px; border-radius:99px; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform: uppercase}
   .pill-news .arr{color: var(--orange); font-weight:800}
 
   .hero h1{
-    margin: 0 0 24px; font-weight: 300;
-    font-size: clamp(42px, 6.4vw, 88px);
-    letter-spacing: -0.035em; line-height:.98; max-width: 1000px;
+    margin: 0 0 clamp(18px, 2.6vh, 32px); font-weight: 300;
+    /* fluido en ANCHO (vw) y ALTO (vh) — escala con cualquier pantalla */
+    font-size: clamp(24px, 2.6vw + 1.4vh, 78px);
+    letter-spacing: -0.032em; line-height:1.05; max-width: 1180px;
     text-shadow: 0 4px 60px rgba(0,0,0,.4);
+    overflow-wrap: break-word; word-wrap: break-word;
   }
   .hero h1 b{font-weight:800; background: linear-gradient(180deg, #fff 0%, #C8CFD7 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
-  .hero h1 .serif{font-weight:300; background: linear-gradient(135deg, #FFA265, #F26B1F); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; text-shadow: 0 0 60px rgba(242,107,31,.5)}
+  /* serif italic: inline-block + padding-right para que la cola italica de la "l" no se recorte */
+  .hero h1 .serif{
+    font-weight:300;
+    display:inline-block;
+    padding-right:.14em;
+    margin-right:-.06em;
+    background: linear-gradient(135deg, #FFA265, #F26B1F);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-shadow: 0 0 60px rgba(242,107,31,.5);
+  }
 
-  /* rotating word */
-  .rot{display:inline-block; position:relative; min-width: 4ch; vertical-align: top}
-  .rot span{display:inline-block; position:absolute; left:0; top:0; opacity:0; transform: translateY(20px); transition: opacity .5s, transform .5s; white-space:nowrap}
-  .rot span.on{opacity:1; transform: translateY(0); position:relative}
+  /* rotating word — solid bright text instead of gradient text-clip,
+     because the absolute-positioned children break -webkit-background-clip:text */
+  .rot{
+    display:inline-block; position:relative;
+    min-width: 4ch; max-width:100%; vertical-align: top;
+    font-weight:800; color:#FFFFFF;
+  }
+  .rot span{display:inline-block; position:absolute; left:0; top:0; opacity:0; transition: opacity .45s ease; white-space:nowrap; will-change: opacity}
+  .rot span.on{opacity:1; position:relative}
 
-  .hero p.lead{font-size: clamp(15.5px, 1.6vw, 19px); color:#B6BCC8; max-width:640px; margin:0 0 36px; line-height:1.55}
+  .hero p.lead{
+    font-size: clamp(14.5px, .9vw + .5vh, 20px);
+    color:#B6BCC8; max-width:780px;
+    margin:0 0 clamp(28px, 5vh, 64px);
+    line-height:1.55;
+  }
 
   .hero-cta{display:flex; gap:12px; align-items:center; margin-bottom:38px; flex-wrap:wrap}
   .hero-cta .demo{display:inline-flex; align-items:center; gap:8px; padding:14px 18px; color:#D8DDE5; font-size:13.5px; font-weight:600; transition: color .2s}
@@ -198,15 +294,40 @@
   .hero-cta .demo .play{width:28px; height:28px; border-radius:99px; background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); display:grid; place-items:center; color:#fff; transition: background .2s}
   .hero-cta .demo:hover .play{background: rgba(242,107,31,.3); border-color: rgba(242,107,31,.5)}
 
-  /* trust strip with infinite scroll */
-  .trust{padding: 16px 0 50px; position: relative}
+  /* trust strip — capacidades de CMP scrolleando (tipografía original Fraunces italic) */
+  .trust{padding: clamp(8px, 1.4vh, 16px) 0 clamp(20px, 3vh, 50px); position: relative}
   .trust .label{font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:#8B93A1; font-weight:700; margin-bottom: 16px}
-  .trust .logos-wrap{overflow:hidden; position:relative; width:100%; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)}
-  .trust .logos{display:flex; gap:40px; align-items:center; animation: scrollX 30s linear infinite; width: max-content}
-  .trust .logos span{font-family:'Fraunces', serif; font-weight:500; font-style:italic; color:#B6BCC8; font-size:22px; letter-spacing:-.01em; opacity:.65; white-space:nowrap}
+  .trust .logos-wrap{overflow:hidden; position:relative; width:100%; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)}
+  .trust .logos{display:flex; gap:40px; align-items:center; animation: scrollX 48s linear infinite; width: max-content}
+  .trust .logos span{font-family:'Fraunces', serif; font-weight:500; font-style:italic; color:#B6BCC8; font-size: clamp(16px, .6vw + .8vh, 22px); letter-spacing:-.01em; opacity:.65; white-space:nowrap}
 
-  /* PREVIEW with annotations */
-  .preview-wrap{position:relative; max-width: 1180px; margin: 0 auto; padding: 0 0 60px}
+  /* Scroll hint — flecha animada al final del hero */
+  .scroll-hint{
+    align-self:center; margin-top:auto;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    padding:6px 12px; font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+    color: rgba(255,255,255,.55); text-decoration:none;
+    transition: color .25s ease;
+  }
+  .scroll-hint:hover{ color:#fff }
+  .scroll-hint .arrow{
+    width:22px; height:36px;
+    border:1.5px solid rgba(255,255,255,.35); border-radius:99px;
+    position:relative; overflow:hidden;
+  }
+  .scroll-hint .arrow::after{
+    content:''; position:absolute; left:50%; top:8px; width:3px; height:8px;
+    margin-left:-1.5px; background:#fff; border-radius:99px;
+    animation: scrollDot 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollDot{
+    0%{ transform: translateY(0); opacity:1 }
+    60%{ transform: translateY(14px); opacity:0 }
+    100%{ transform: translateY(0); opacity:0 }
+  }
+
+  /* PREVIEW with annotations · container queries para floating cards adaptables */
+  .preview-wrap{position:relative; max-width: 1180px; margin: 0 auto; padding: 0 0 18px; container-type: inline-size}
   .preview-frame{
     background: linear-gradient(180deg, #1A2540, #08101E);
     border-radius: 22px 22px 0 0;
@@ -236,8 +357,9 @@
   .browser-bar .url .dot{width:5px; height:5px; border-radius:99px; background: var(--success); box-shadow: 0 0 0 2px rgba(31,138,91,.2); animation: glow 2s infinite}
   .browser-bar .url b{color:#fff; font-weight:600}
 
-  .preview-canvas{background:#F7F8FA; padding: 22px; border-radius:10px 10px 0 0; min-height: 480px; position:relative; overflow: hidden}
-  .preview-canvas::before{content:''; position:absolute; inset:0; pointer-events:none; background: linear-gradient(180deg, transparent 70%, rgba(10,13,18,.4))}
+  .preview-canvas{background:#F7F8FA; border-radius:10px 10px 0 0; position:relative; overflow:hidden; line-height:0}
+  .preview-canvas::before{content:''; position:absolute; inset:0; pointer-events:none; background: linear-gradient(180deg, transparent 80%, rgba(10,13,18,.35)); z-index:2}
+  .preview-canvas img.hero-shot{display:block; width:100%; height:auto; image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; -webkit-font-smoothing:antialiased}
 
   .dash-grid{display:grid; grid-template-columns: 1fr 1fr; gap: 12px; height:100%}
   .pc{background:#fff; border:1px solid #E8EAEE; border-radius:12px; padding:14px}
@@ -262,17 +384,25 @@
     position: absolute; z-index:5;
     display:flex; align-items:center; gap:8px;
     color:#fff; font-size:11px; font-weight:600; pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,.6);
   }
   .annot .num{
-    width:22px; height:22px; border-radius:99px;
+    width:24px; height:24px; border-radius:99px;
     background: var(--orange); color:#fff; font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:800;
     display:grid; place-items:center;
-    box-shadow: 0 0 0 4px rgba(242,107,31,.18), 0 8px 18px -6px rgba(242,107,31,.5);
+    box-shadow: 0 0 0 4px rgba(242,107,31,.22), 0 10px 22px -6px rgba(242,107,31,.65);
   }
   .annot .txt{
-    padding: 6px 10px; background: rgba(255,255,255,.06); backdrop-filter: blur(10px);
-    border:1px solid rgba(255,255,255,.12); border-radius:8px;
-    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.04em;
+    padding: 7px 12px;
+    background: rgba(14,17,22,.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;
+    color:#FFFFFF;
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.06em; font-weight:700;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,.5);
+    text-shadow:none;
   }
   .annot.a1{top:60px; left:-60px}
   .annot.a2{top:280px; right:-40px}
@@ -294,40 +424,43 @@
   .floating-card.fc-3{top:38%; right:-34px; width:200px; --rot:-1deg; animation: float 8s ease-in-out infinite .5s; z-index:4}
 
   /* ── SECTION HEADERS ── */
-  section{padding:110px 0; position:relative}
+  section{padding: clamp(48px, 7vh, 76px) 0; position:relative}
   .sec-tag{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:5px 12px; background: var(--orange-soft); border:1px solid rgba(242,107,31,.25);
-    border-radius:99px; font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:9px;
+    padding:6px 14px; background: var(--orange-soft); border:1px solid rgba(242,107,31,.25);
+    border-radius:99px; font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
     color: var(--orange-deep); margin-bottom:18px;
   }
   html[data-theme="dark"] .sec-tag{background: rgba(242,107,31,.14)}
-  .sec-tag .d{width:5px; height:5px; border-radius:99px; background: var(--orange)}
-  .sec-h{max-width:720px; margin-bottom: 56px}
+  .sec-tag .d{width:6px; height:6px; border-radius:99px; background: var(--orange)}
+  .sec-h{max-width:720px; margin-bottom: 40px}
   .sec-h.center{margin-left:auto; margin-right:auto; text-align:center}
   .sec-h.center .sec-tag{margin-left:auto; margin-right:auto}
   .sec-h h2{margin:0 0 14px; font-size: clamp(32px, 4vw, 52px); font-weight:300; letter-spacing:-.02em; line-height:1.05}
+  /* Headline modulos: ajustado a 3 líneas balanceadas */
+  .sec-h h2.modules-headline{ font-size: clamp(26px, 3.2vw, 42px); max-width: 940px; text-wrap: balance; line-height:1.08 }
+  .modules .sec-h{ max-width: 940px }
   .sec-h h2 b{font-weight:800}
   .sec-h h2 .serif{color: var(--orange); font-weight:300}
   .sec-h p{margin:0; color: var(--muted); font-size: 16.5px; line-height:1.55; max-width:600px}
   .sec-h.center p{margin: 0 auto}
 
-  /* ── METRICS / counters ── */
+  /* ── METRICS / counters (franja delgada) ── */
   .metrics{
     background:
-      radial-gradient(ellipse 700px 400px at 50% 0%, rgba(242,107,31,.20), transparent 60%),
+      radial-gradient(ellipse 700px 280px at 50% 0%, rgba(242,107,31,.18), transparent 65%),
       linear-gradient(180deg, #0A0D12 0%, #15181E 100%);
-    color:#fff; padding:100px 0; position:relative; overflow:hidden;
+    color:#fff; padding:26px 0 32px; position:relative; overflow:hidden;
   }
   .metrics::before{content:''; position:absolute; inset:0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 0); background-size:28px 28px; mask-image: radial-gradient(ellipse at center, #000 50%, transparent 90%)}
-  .metrics-in{position:relative; z-index:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:22px; text-align:center}
-  .metric .v{font-family:'JetBrains Mono', monospace; font-size: clamp(36px, 5vw, 60px); font-weight:800; letter-spacing:-.02em; color:#fff; line-height:1}
+  .metrics-in{position:relative; z-index:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:22px; text-align:center; align-items:center}
+  .metric .v{font-family:'JetBrains Mono', monospace; font-size: clamp(28px, 3.4vw, 44px); font-weight:800; letter-spacing:-.02em; color:#fff; line-height:1}
   .metric .v .pl{color: var(--orange)}
-  .metric .l{margin-top:12px; color:#9AA3B2; font-size:13.5px; line-height:1.4}
+  .metric .l{margin-top:6px; color:#9AA3B2; font-size:12.5px; line-height:1.35}
 
   /* ── BENTO MODULES ── */
   .modules{background: var(--bg-page)}
-  .bento{display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 200px; gap:14px}
+  .bento{display:grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 178px; gap:12px}
   .bento .card{
     position:relative; overflow:hidden;
     padding:22px;
@@ -341,14 +474,15 @@
   .bento .card:hover{border-color: var(--accent, var(--line-3)); transform: translateY(-6px); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 36px 60px -28px rgba(15,17,22,.22), 0 0 0 1px var(--accent-line, var(--line-3))}
   .bento .card::after{content:''; position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse 280px 200px at 100% 0%, var(--accent-glow, rgba(242,107,31,.10)), transparent 60%); opacity:0; transition: opacity .35s}
   .bento .card:hover::after{opacity:1}
-  .b-1{grid-column: span 3; grid-row: span 2}
-  .b-2{grid-column: span 3}
-  .b-3{grid-column: span 2}
-  .b-4{grid-column: span 2; grid-row: span 2}
-  .b-5{grid-column: span 2}
-  .b-6{grid-column: span 2}
-  .b-7{grid-column: span 2}
-  .b-8{grid-column: span 2}
+  /* Layout compacto · negro 3x2 intocable · derecha en stack · 4 cuadrados abajo */
+  .b-1{grid-column: span 3; grid-row: span 2}     /* BLACK featured · NO TOCAR */
+  .b-2{grid-column: span 3}                       /* Control · rectángulo arriba derecha */
+  .b-3{grid-column: span 3}                       /* Cubicaciones · rectángulo abajo derecha */
+  .b-4{grid-column: span 2}                       /* Gestión obra · ancho 2 */
+  .b-5{grid-column: span 1}                       /* Compras · CUADRADO */
+  .b-6{grid-column: span 1}                       /* Proyectos · CUADRADO */
+  .b-7{grid-column: span 1}                       /* Contabilidad · CUADRADO */
+  .b-8{grid-column: span 1}                       /* RH · CUADRADO */
   .bento .card .ic{
     width:48px; height:48px; border-radius:13px;
     background: linear-gradient(135deg, var(--accent-soft, var(--orange-soft)) 0%, var(--paper) 100%);
@@ -359,12 +493,19 @@
     transition: transform .35s cubic-bezier(.2,.8,.2,1);
   }
   .bento .card:hover .ic{transform: scale(1.08) rotate(-3deg)}
-  .bento .card h3{margin:0; font-size: 18px; font-weight: 800; letter-spacing:-.01em}
-  .bento .card.b-1 h3{font-size: 32px; max-width: 16ch; line-height:1.05}
-  .bento .card.b-4 h3{font-size: 22px}
-  .bento .card p{margin:6px 0 0; color: var(--muted); font-size: 13px; line-height:1.5}
-  .bento .card.b-1 p{font-size: 15px; max-width: 420px}
-  .bento .card .tag{margin-top: auto; padding-top: 14px; font-family:'JetBrains Mono', monospace; font-size: 10px; font-weight:800; letter-spacing:.12em; color: var(--muted); text-transform:uppercase; display:flex; align-items:center}
+  .bento .card h3{margin:0; font-size: 17px; font-weight: 800; letter-spacing:-.01em}
+  .bento .card.b-1 h3{font-size: 30px; max-width: 16ch; line-height:1.05}
+  .bento .card.b-4 h3{font-size: 18px}
+  .bento .card.b-2 h3, .bento .card.b-3 h3{font-size: 19px}
+  /* Cuadrados pequeños: padding más compacto y texto reducido */
+  .bento .card.b-5, .bento .card.b-6, .bento .card.b-7, .bento .card.b-8{ padding:18px }
+  .bento .card.b-5 h3, .bento .card.b-6 h3, .bento .card.b-7 h3, .bento .card.b-8 h3{ font-size: 15px }
+  .bento .card.b-5 .ic, .bento .card.b-6 .ic, .bento .card.b-7 .ic, .bento .card.b-8 .ic{ width:38px; height:38px; border-radius:10px; margin-bottom:8px }
+  .bento .card p{margin:6px 0 0; color: var(--muted); font-size: 12.5px; line-height:1.5}
+  .bento .card.b-1 p{font-size: 14.5px; max-width: 420px}
+  .bento .card.b-5 p, .bento .card.b-6 p, .bento .card.b-7 p, .bento .card.b-8 p{ font-size: 11.5px; line-height: 1.4 }
+  .bento .card .tag{margin-top: auto; padding-top: 12px; font-family:'JetBrains Mono', monospace; font-size: 10px; font-weight:800; letter-spacing:.12em; color: var(--muted); text-transform:uppercase; display:flex; align-items:center}
+  .bento .card.b-5 .tag, .bento .card.b-6 .tag, .bento .card.b-7 .tag, .bento .card.b-8 .tag{ font-size: 9px; padding-top: 8px }
   .bento .card .tag .arr{margin-left:auto; color: var(--accent, var(--orange)); transition: transform .25s}
   .bento .card:hover .tag .arr{transform: translateX(5px)}
 
@@ -384,8 +525,7 @@
   .b-1 .feat-list .l .c svg{width:9px; height:9px}
 
   /* mini visualization inside b-4 */
-  .b-4 .vis{margin-top: auto; padding-top: 14px}
-  .b-4 .vis svg{width: 100%; height: 50px}
+  .b-4 .vis{display:none}
 
   .bento .card.acc-orange{--accent: var(--orange); --accent-soft: var(--orange-soft); --accent-line: rgba(242,107,31,.2); --accent-glow: rgba(242,107,31,.18)}
   .bento .card.acc-ok    {--accent: var(--success); --accent-soft: var(--success-soft); --accent-line: rgba(31,138,91,.18); --accent-glow: rgba(31,138,91,.12)}
@@ -418,15 +558,9 @@
   .prob .num{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.18em; color: var(--muted); font-weight:800}
   .prob h3{margin:0; font-size:20px; font-weight:800; letter-spacing:-.01em; line-height:1.2}
   .prob p{margin:0; font-size: 13.5px; color: var(--muted); line-height:1.55}
-  .prob .ill{height:80px; display:flex; align-items:flex-end; gap:4px; color: var(--orange)}
-  .prob .ill .b{width:14px; background: var(--orange); opacity:.25; border-radius:3px 3px 0 0}
-  .prob .ill .b.active{opacity:1}
-  .prob .ill.split .b{background: var(--ink-4); opacity:.2}
-  .prob .ill.split .b.r{background: var(--danger); opacity:1}
-  .prob .ill.docs{display:flex; gap:6px; align-items:flex-end}
-  .prob .ill.docs .doc{width:38px; height:50px; background: var(--cream-3); border:1px solid var(--line-3); border-radius:4px; position:relative}
-  .prob .ill.docs .doc::before{content:''; position:absolute; right:0; top:0; width:12px; height:12px; background: var(--paper); border-left:1px solid var(--line-3); border-bottom:1px solid var(--line-3)}
-  .prob .ill.docs .doc.red{background: var(--danger-soft); border-color: rgba(194,69,69,.3)}
+  /* Ilustraciones SVG: tabla Excel, factura, libreta rayada a mano */
+  .prob .ill{height:90px; display:flex; justify-content:center; align-items:center}
+  .prob .ill svg{height:100%; width:auto; max-width:100%; display:block}
 
   /* ── BEFORE/AFTER SLIDER ── */
   .ba-wrap{
@@ -586,7 +720,7 @@
   .rep-card:hover{transform: translateY(-6px); border-color: var(--line-3); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 38px 64px -28px rgba(15,17,22,.22)}
   .rep-card .preview{
     background: var(--paper); border:1px solid var(--line); border-radius:12px;
-    height: 180px; margin-bottom:16px; padding:14px; overflow:hidden; position:relative;
+    height: 200px; margin-bottom:16px; padding:14px; overflow:hidden; position:relative;
     box-shadow: inset 0 -12px 24px -16px rgba(15,17,22,.06);
   }
   .rep-card .preview::before{content:''; position:absolute; left:0; right:0; top:0; height:4px; background: var(--accent, var(--orange))}
@@ -647,78 +781,6 @@
   .ai-l .c{width:32px; height:32px; border-radius:9px; background: var(--orange-soft); color: var(--orange-deep); display:grid; place-items:center; box-shadow: inset 0 0 0 1px rgba(242,107,31,.2)}
   .ai-l h4{margin:0 0 3px; font-size:14.5px; font-weight:800; letter-spacing:-.005em}
   .ai-l p{margin:0; font-size:13px; color: var(--muted); line-height:1.5}
-
-  /* ── CASE STUDIES ── */
-  .cases{background: var(--bg-page); padding: 100px 0}
-  .cases-grid{display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px}
-  .case{
-    background: linear-gradient(180deg, var(--cream-2), var(--paper));
-    border:1px solid var(--line); border-radius:22px;
-    padding: 32px 28px;
-    transition: transform .4s, box-shadow .4s, border-color .25s;
-    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 18px 36px -22px rgba(15,17,22,.14);
-  }
-  .case:hover{transform: translateY(-6px); border-color: var(--line-3); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 40px 70px -28px rgba(15,17,22,.2)}
-  .case .v{font-family:'JetBrains Mono', monospace; font-size: 54px; font-weight:800; letter-spacing:-.025em; line-height:1; background: linear-gradient(135deg, var(--orange), #FFA265); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
-  .case h4{margin: 16px 0 6px; font-size:17px; font-weight:800; letter-spacing:-.005em}
-  .case p{margin:0; font-size:13px; color: var(--muted); line-height:1.55}
-  .case .cliente{margin-top:18px; padding-top:14px; border-top:1px solid var(--line-2); display:flex; align-items:center; gap:10px}
-  .case .cliente .av{width:32px; height:32px; border-radius:99px; background: linear-gradient(135deg, var(--info), #5A7AC0); color:#fff; display:grid; place-items:center; font-weight:800; font-size:12px}
-  .case .cliente b{font-size:12.5px; font-weight:800; display:block}
-  .case .cliente span{font-size:10.5px; color: var(--muted); display:block; margin-top:1px}
-
-  /* ── QUOTE ── */
-  .quote{background: var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
-  .quote blockquote{margin:0; max-width:920px; font-size: clamp(22px, 2.4vw, 32px); font-weight:400; letter-spacing:-.01em; line-height:1.35}
-  .quote blockquote b{font-weight:800}
-  .quote blockquote .serif{color: var(--orange); font-weight:400}
-  .quote-foot{margin-top:28px; display:flex; align-items:center; gap:14px}
-  .quote-foot .av{width:48px; height:48px; border-radius:99px; background: linear-gradient(135deg, #2A4FA0, #5A7AC0); color:#fff; font-weight:800; font-size:18px; display:grid; place-items:center}
-  .quote-foot b{display:block; font-size:14.5px; font-weight:800}
-  .quote-foot span{display:block; font-size:12px; color: var(--muted); margin-top:2px}
-
-  /* ── PRICING ── */
-  .pricing{background: var(--cream)}
-  .pricing-toggle{display:flex; justify-content:center; gap:10px; margin: 8px 0 36px; align-items:center}
-  .pt-switch{display:flex; padding:4px; background: var(--paper); border:1px solid var(--line); border-radius: 99px; box-shadow: 0 1px 0 rgba(15,17,22,.03)}
-  .pt-switch button{padding: 8px 18px; border-radius: 99px; font-size: 12.5px; font-weight: 800; color: var(--muted); transition: all .25s}
-  .pt-switch button.on{background: var(--ink); color:#fff; box-shadow: 0 6px 16px -6px rgba(0,0,0,.3)}
-  html[data-theme="dark"] .pt-switch button.on{background: #fff; color: var(--ink)}
-  .pt-badge{font-family:'JetBrains Mono', monospace; font-size:10px; padding:3px 8px; border-radius:99px; background: var(--success-soft); color: var(--success); font-weight:800; letter-spacing:.08em}
-  .price-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; align-items: stretch}
-  .price{
-    background: var(--paper); border:1px solid var(--line); border-radius:26px; padding:36px 32px;
-    transition: border-color .35s, transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
-    display:flex; flex-direction:column; position:relative;
-    box-shadow: 0 1px 0 rgba(15,17,22,.03), 0 18px 40px -28px rgba(15,17,22,.16);
-  }
-  .price:hover{transform: translateY(-8px); box-shadow: 0 1px 0 rgba(15,17,22,.04), 0 50px 80px -32px rgba(15,17,22,.24); border-color: var(--line-3)}
-  .price.featured{
-    background:
-      radial-gradient(ellipse 400px 300px at 50% 0%, rgba(242,107,31,.22), transparent 65%),
-      linear-gradient(180deg, #15181E, #0A0D12);
-    color:#fff; border-color: rgba(242,107,31,.3);
-    box-shadow: 0 60px 100px -28px rgba(242,107,31,.28), 0 40px 80px -28px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.08);
-    transform: translateY(-10px) scale(1.02);
-  }
-  .price.featured:hover{transform: translateY(-16px) scale(1.02)}
-  .price h3{margin:0 0 4px; font-size:14px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color: var(--muted)}
-  .price.featured h3{color: var(--orange-2)}
-  .price .sub{margin:0 0 22px; font-size:13px; color: var(--muted)}
-  .price.featured .sub{color:#A8B0BD}
-  .price .amt{font-family:'JetBrains Mono', monospace; font-size:38px; font-weight:800; letter-spacing:-.02em; line-height:1}
-  .price .amt small{font-size:13.5px; color: var(--muted); margin-left:6px; font-weight:600}
-  .price.featured .amt small{color:#A8B0BD}
-  .price ul{list-style:none; padding:22px 0 0; margin:22px 0 0; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:11px; flex:1}
-  .price.featured ul{border-top-color: rgba(255,255,255,.08)}
-  .price li{display:grid; grid-template-columns: 18px 1fr; gap:8px; font-size:13.5px; color: var(--ink-2)}
-  html[data-theme="dark"] .price li{color: var(--tx-base)}
-  .price.featured li{color:#D8DDE5}
-  .price li .c{width:16px; height:16px; border-radius:99px; background: var(--success-soft); color: var(--success); display:grid; place-items:center; margin-top:2px}
-  .price.featured li .c{background: rgba(242,107,31,.18); color: var(--orange-2)}
-  .price li .c svg{width:9px; height:9px}
-  .price .cta{margin-top:24px}
-  .price-tag{display:inline-block; margin-bottom:10px; padding:3px 9px; background: var(--orange); color:#fff; border-radius:99px; font-size:9.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase}
 
   /* ── FAQ ── */
   .faq{background: var(--bg-page)}
@@ -781,24 +843,224 @@
     .nav-links{display:none}
     .bento{grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto}
     .b-1,.b-2,.b-3,.b-4,.b-5,.b-6,.b-7,.b-8{grid-column: auto; grid-row: auto}
-    .problem-grid, .steps, .price-grid, .ai-grid, .metrics-in, .ft-in, .reports-grid, .cases-grid, .roi-grid{grid-template-columns: 1fr 1fr}
-    .floating-card{display:none}
+    .problem-grid, .steps, .ai-grid, .metrics-in, .ft-in, .reports-grid, .roi-grid{grid-template-columns: 1fr 1fr}
     .day-item{grid-template-columns: 1fr}
     .day-item .time{grid-column:auto; margin-bottom: 8px}
     .day-item .card, .day-item.left .card, .day-item.right .card{grid-column: auto; text-align:left}
     .day-tl::before{display:none}
+    section{padding: 50px 0}
+  }
+  /* Floating cards adaptables via container queries: se achican cuando hay poco espacio */
+  @container (max-width: 900px){
+    .floating-card{ transform: scale(.85); transform-origin: top left }
+    .floating-card.fc-2{ transform: scale(.85); transform-origin: bottom left }
+    .floating-card.fc-3{ transform: scale(.85); transform-origin: top right }
+    .annot{ font-size:10px }
+  }
+  @container (max-width: 700px){
+    .floating-card, .annot{ display:none }
+  }
+  /* Tablet & mobile */
+  @media (max-width: 820px){
+    .hero{ padding-top: 32px; padding-bottom: 24px }
+    .trust .logos{ gap: 28px }
+    .trust .logos span{ font-size: 15px }
+    .scroll-hint{ display:none }
+    .floating-card{display:none}
     .annot{display:none}
-    section{padding: 70px 0}
   }
   @media (max-width: 640px){
-    .bento, .problem-grid, .steps, .price-grid, .ai-grid, .metrics-in, .ft-in, .reports-grid, .cases-grid, .roi-grid{grid-template-columns: 1fr}
+    .container{ padding: 0 18px }
+    .bento, .problem-grid, .steps, .ai-grid, .metrics-in, .ft-in, .reports-grid, .roi-grid{grid-template-columns: 1fr}
+    .metrics-in{ grid-template-columns: repeat(2, 1fr) }
+    .hero h1{ line-height: 1.08; letter-spacing:-.02em; font-size: clamp(22px, 7vw, 34px) }
+    .hero p.lead{ font-size: 14px }
+    .pill-news{ font-size: 11px }
+    .nav-in{ padding: 12px 0 }
+    .nav-cta .btn.ghost{ display:none }
+  }
+  @media (max-width: 400px){
+    .hero h1{ font-size: clamp(20px, 6.5vw, 28px) }
+    .brand .nm small{ display:none }
+  }
+  /* Pantallas muy chicas/bajas: que el hero no se sienta apretado */
+  @media (max-height: 700px){
+    .hero{ min-height: auto; padding-top: clamp(28px, 4vh, 60px) }
+    .trust{ padding-bottom: clamp(12px, 2vh, 30px) }
+    .scroll-hint{ display:none }
+  }
+
+  /* ────────────── VERSIÓN MÓVIL ULTRA COMPACTA (≤ 768px) ────────────── */
+  @media (max-width: 768px){
+    /* ===== SECCIONES Y ELEMENTOS OCULTOS ===== */
+    .day,
+    .compare,
+    .ai .ai-vis,
+    .bento .b-5, .bento .b-6, .bento .b-7, .bento .b-8,
+    .reports-grid .rep-card:nth-child(n+3),    /* Solo 2 informes */
+    .problem-grid .prob:nth-child(n+3),        /* Solo 2 problem cards */
+    .steps .step:nth-child(n+4),               /* Solo 3 pasos */
+    .prob .ill,                                /* Ilustraciones SVG de problem cards */
+    .b-1 .feat-list,                           /* Lista de checks dentro del bento negro */
+    .scroll-hint,
+    .floating-card,
+    .annot,
+    .trust,                                    /* Trust strip "Lo que es CMP" */
+    .pill-news,                                /* Pill IA · NUEVO del hero */
+    .ai .sec-h p{                              /* Lead del AI section */
+      display: none !important;
+    }
+
+    /* ===== HERO: mucho más compacto, no 100dvh ===== */
+    .hero{ min-height: auto !important; padding: 28px 0 20px !important }
+    .hero h1{ font-size: clamp(22px, 6.2vw, 30px) !important; margin-bottom: 14px !important; line-height: 1.1 !important }
+    .hero p.lead{ font-size: 14px !important; margin-bottom: 18px !important; line-height: 1.45 }
+    .preview-wrap{ padding: 0 !important }
+
+    /* ===== SECCIONES: padding mínimo ===== */
+    section{ padding: 32px 0 !important }
+
+    /* ===== HEADERS compactos ===== */
+    .sec-h{ margin-bottom: 20px !important }
+    .sec-h h2{ font-size: clamp(22px, 5.6vw, 28px) !important; line-height: 1.1 !important; margin-bottom: 10px !important }
+    .sec-h.modules-headline,
+    .sec-h h2.modules-headline{ font-size: clamp(20px, 5vw, 26px) !important }
+    .sec-h p{ font-size: 13.5px !important; line-height: 1.5 }
+    .sec-tag{ font-size: 11px !important; padding: 4px 10px !important; margin-bottom: 12px !important }
+
+    /* ===== MÉTRICAS: franja delgada 2x2 ===== */
+    .metrics{ padding: 22px 0 !important }
+    .metrics-in{ grid-template-columns: 1fr 1fr !important; gap: 16px !important }
+    .metric .v{ font-size: 26px !important }
+    .metric .l{ font-size: 11px !important; margin-top: 4px !important }
+
+    /* ===== PROBLEM CARDS: ultra compactas, sin ilustración ===== */
+    .problem-grid{ gap: 10px !important }
+    .prob{ padding: 16px !important }
+    .prob .num{ font-size: 10px !important; margin-bottom: 4px }
+    .prob h3{ font-size: 15px !important; margin: 4px 0 6px !important }
+    .prob p{ font-size: 13px !important; line-height: 1.45 !important }
+
+    /* ===== BENTO: 1 col, solo 4 cards principales ===== */
+    .bento{
+      grid-template-columns: 1fr !important;
+      grid-auto-rows: auto !important;
+      gap: 10px !important;
+    }
+    .bento .card{ padding: 16px !important }
+    .bento .card.b-1, .bento .card.b-2, .bento .card.b-3, .bento .card.b-4{
+      grid-column: auto !important; grid-row: auto !important;
+    }
+    .bento .card h3{ font-size: 15px !important }
+    .bento .card.b-1 h3{ font-size: 20px !important }
+    .bento .card.b-4 h3{ font-size: 16px !important }
+    .bento .card p{ font-size: 12.5px !important; line-height: 1.4 }
+    .bento .card .ic{ width: 36px !important; height: 36px !important; margin-bottom: 8px !important }
+
+    /* ===== CÓMO FUNCIONA: 3 pasos compactos ===== */
+    .step{ padding: 18px !important }
+    .step .badge{ font-size: 11px !important }
+    .step h3{ font-size: 16px !important }
+    .step p{ font-size: 13px !important; line-height: 1.45 }
+
+    /* ===== ROI ===== */
+    .roi-grid{ grid-template-columns: 1fr !important; gap: 16px !important }
+    .roi-in, .roi-out-in{ padding: 18px !important }
+    .roi-out-in .big{ font-size: 36px !important }
+
+    /* ===== INFORMES: solo 2 cards ===== */
+    .reports-grid{ grid-template-columns: 1fr !important; gap: 12px !important }
+    .rep-card{ padding: 16px !important }
+    .rep-card .preview{ height: 150px !important; margin-bottom: 12px !important }
+    .rep-card h4{ font-size: 15px !important }
+    .rep-card p{ font-size: 12.5px !important }
+
+    /* ===== IA ===== */
+    .ai-grid{ grid-template-columns: 1fr !important; gap: 16px !important }
+    .ai-list{ gap: 10px !important }
+    .ai-l h4{ font-size: 14px !important }
+    .ai-l p{ font-size: 12.5px !important }
+
+    /* ===== FAQ ultra compacto ===== */
+    .faq-item{ padding: 12px 0 !important }
+    .faq-q{ font-size: 14px !important }
+    .faq-a{ font-size: 13px !important }
+
+    /* ===== CTA final ===== */
+    .cta-final{ padding: 36px 0 !important }
+    .cta-final h2{ font-size: clamp(22px, 5.5vw, 28px) !important }
   }
 </style>
+<script>
+  /* Anti scroll-restoration. Bombardea scroll=0 cada 20ms durante 1.2s o hasta
+     el primer input del usuario, lo que pase primero. Atrapa auto-scrolls de
+     image loading, Vite HMR, IntersectionObserver, etc., sin robar control. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  document.documentElement.style.scrollBehavior = 'auto';
+  /* Limpia cualquier hash de la URL antes de que el navegador haga scroll a él */
+  if (location.hash) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch(_){}
+  }
+  window.scrollTo(0, 0);
+
+  var __cmpUserActed = false;
+  var __cmpStop = function(){ __cmpUserActed = true; };
+  ['wheel','touchstart','keydown','mousedown'].forEach(function(ev){
+    window.addEventListener(ev, __cmpStop, { once:true, passive:true, capture:true });
+  });
+
+  var __cmpInt = setInterval(function(){
+    if (__cmpUserActed || location.hash) { clearInterval(__cmpInt); return; }
+    if (window.scrollY !== 0) {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
+  }, 20);
+  setTimeout(function(){ clearInterval(__cmpInt); }, 1200);
+</script>
 </head>
 <body>
 <div id="root"></div>
 
 <script>
+/* ───── 0. SCROLL TO TOP ON REFRESH (robusto) ─────
+   Triple cobertura: desactiva la restauración nativa, fuerza scroll 0 en cada
+   evento de carga y desactiva el smooth-scroll mientras lo hace.
+   Además limpia cualquier hash residual al cargar para no quedarse pegado. */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+/* Limpia el hash de la URL al cargar (preserva la URL limpia y fuerza top) */
+if (location.hash) {
+  history.replaceState(null, '', location.pathname + location.search);
+  window.scrollTo(0, 0);
+}
+
+/* Smooth scroll para anchors marcados con data-smooth: hacen scroll sin pegar el hash */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[data-smooth][href^="#"]');
+  if (!a) return;
+  e.preventDefault();
+  const id = a.getAttribute('href').slice(1);
+  const target = document.getElementById(id);
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+const _toTop = () => {
+  if (location.hash) return;          // respeta deep-links con ancla
+  const html = document.documentElement;
+  const prev = html.style.scrollBehavior;
+  html.style.scrollBehavior = 'auto'; // bypass smooth
+  window.scrollTo(0, 0);
+  html.scrollTop = 0; document.body.scrollTop = 0;  // fallback navegadores viejos
+  // Restaurar smooth para anchor links normales después de un tick
+  requestAnimationFrame(() => { html.style.scrollBehavior = prev || ''; });
+};
+_toTop();
+window.addEventListener('DOMContentLoaded', _toTop);
+window.addEventListener('load', _toTop);
+window.addEventListener('pageshow', _toTop);
+window.addEventListener('beforeunload', _toTop);
+
 const I = {
   budget: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 3v5h5M8 13h7M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
   control: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
@@ -830,15 +1092,14 @@ const html = `
       <a href="#flujo">Cómo funciona</a>
       <a href="#ia" class="has-dot">IA</a>
       <a href="#roi">ROI</a>
-      <a href="#precios">Precios</a>
     </div>
     <div class="nav-cta">
       <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
         <span class="sun">${I.sun}</span>
         <span class="moon">${I.moon}</span>
       </button>
-      <button class="btn ghost">Iniciar sesión</button>
-      <button class="btn primary shimmer">Demo gratis</button>
+      <a class="btn ghost" href="https://app.controlobra.ai/login" rel="noopener">Iniciar sesión</a>
+      <a class="btn primary shimmer" href="https://app.controlobra.ai/login" rel="noopener">Demo gratis</a>
     </div>
   </div>
 </nav>
@@ -856,42 +1117,55 @@ const html = `
       Tus presupuestos con IA — ahora 10× más rápidos
       <span class="arr">→</span>
     </div>
-    <h1>El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras de <b><span class="rot" id="rot">
+    <h1>El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b> de <span class="rot" id="rot">
       <span class="on">vivienda residencial.</span>
       <span>vivienda vertical.</span>
       <span>obra horizontal.</span>
       <span>desarrollos turísticos.</span>
-    </span></b></h1>
+    </span></h1>
     <p class="lead">De la cotización al cierre de obra: presupuesto, control de costos, cubicaciones y gestión — ahora con <b style="color:#fff; font-weight:700">inteligencia artificial</b> que te ayuda a presupuestar, detectar desviaciones y redactar informes en minutos.</p>
-    <div class="hero-cta">
-      <button class="btn orange big shimmer">Solicitar demo guiada ${I.arr}</button>
-      <button class="demo"><span class="play">${I.play}</span>Ver el producto en 3 min</button>
-    </div>
-
     <div class="trust">
-      <div class="label">Confían en CMP</div>
+      <div class="label">Lo que es CMP</div>
       <div class="logos-wrap">
         <div class="logos">
-          <span>Mesón Grande</span>
-          <span>Reforma Capital</span>
-          <span>Encinos R.E.</span>
-          <span>Pinares</span>
-          <span>Misión SP</span>
-          <span>Altavista</span>
-          <span>Cañadas</span>
-          <span>Las Encinas</span>
+          <span>Presupuestos</span>
+          <span>Control de obra</span>
+          <span>Cubicaciones</span>
+          <span>Certificaciones</span>
+          <span>Compras</span>
+          <span>Almacén</span>
+          <span>Pedidos de obra</span>
+          <span>Inventarios</span>
+          <span>Cronogramas</span>
+          <span>Rentabilidad</span>
+          <span>Desviaciones</span>
+          <span>Factibilidades</span>
+          <span>Flujos de caja</span>
+          <span>Informes ejecutivos</span>
+          <span>Alertas</span>
           <!-- duplicado para loop -->
-          <span>Mesón Grande</span>
-          <span>Reforma Capital</span>
-          <span>Encinos R.E.</span>
-          <span>Pinares</span>
-          <span>Misión SP</span>
-          <span>Altavista</span>
-          <span>Cañadas</span>
-          <span>Las Encinas</span>
+          <span>Presupuestos</span>
+          <span>Control de obra</span>
+          <span>Cubicaciones</span>
+          <span>Certificaciones</span>
+          <span>Compras</span>
+          <span>Almacén</span>
+          <span>Pedidos de obra</span>
+          <span>Inventarios</span>
+          <span>Cronogramas</span>
+          <span>Rentabilidad</span>
+          <span>Desviaciones</span>
+          <span>Factibilidades</span>
+          <span>Flujos de caja</span>
+          <span>Informes ejecutivos</span>
+          <span>Alertas</span>
         </div>
       </div>
     </div>
+    <a href="#problem" class="scroll-hint" data-smooth aria-label="Ver más">
+      <span>Explorar</span>
+      <div class="arrow"></div>
+    </a>
   </div>
 
   <div class="container">
@@ -902,87 +1176,52 @@ const html = `
       <div class="annot a3"><div class="num">3</div><div class="txt">BITÁCORA DIARIA</div></div>
 
       <div class="floating-card fc-1" data-magnet>
-        <div style="font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6B7280; font-weight:800; margin-bottom:4px">Avance MG73</div>
+        <div style="font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#4A5160; font-weight:800; margin-bottom:4px">Avance MG73</div>
         <div style="display:flex; gap:8px; align-items:baseline">
           <div style="font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; letter-spacing:-.01em; color:#0E1116">33.24%</div>
-          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:2px 6px; background:#FBE6E6; color:#C24545; border-radius:99px; font-weight:800">−49 pts</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:2px 6px; background:#FBE6E6; color:#A03333; border-radius:99px; font-weight:800">−49 pts</span>
         </div>
         <div style="height:6px; background:#F2F3F6; border-radius:99px; margin-top:8px; overflow:hidden"><div style="width:33%; height:100%; background:#F26B1F; border-radius:99px"></div></div>
-        <div style="font-size:10.5px; color:#6B7280; margin-top:6px">vs. plan 70% · Corte #10</div>
+        <div style="font-size:10.5px; color:#4A5160; margin-top:6px">vs. plan 70% · Corte #10</div>
       </div>
 
       <div class="floating-card fc-2" data-magnet>
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
-          <div style="width:24px; height:24px; border-radius:7px; background:#E5F2EB; color:#1F8A5B; display:grid; place-items:center; animation: pulseRing 2s infinite">${I.check}</div>
+          <div style="width:24px; height:24px; border-radius:7px; background:#E5F2EB; color:#176B47; display:grid; place-items:center; animation: pulseRing 2s infinite">${I.check}</div>
           <div style="font-size:11.5px; font-weight:800; color:#0E1116">Cubicación C-08 aprobada</div>
         </div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:800; color:#1F8A5B">+ $5.04 M</div>
-        <div style="font-size:10.5px; color:#6B7280; margin-top:3px">Firmada por R. Mesón · hace 4 min</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:800; color:#176B47">+ $5.04 M</div>
+        <div style="font-size:10.5px; color:#4A5160; margin-top:3px">Firmada por R. Mesón · hace 4 min</div>
       </div>
 
       <div class="floating-card fc-3" data-magnet>
-        <div style="font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#6B7280; font-weight:800; margin-bottom:6px">Margen recuperado</div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; background: linear-gradient(135deg, #F26B1F, #FFA265); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent">+ 5.4%</div>
+        <div style="font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#4A5160; font-weight:800; margin-bottom:6px">Margen recuperado</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:800; background: linear-gradient(135deg, #D85A14, #F26B1F); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent">+ 5.4%</div>
         <div style="display:flex; gap:3px; margin-top:8px">
           <div style="flex:1; height:4px; background:#F26B1F; border-radius:99px"></div>
           <div style="flex:1; height:4px; background:#F26B1F; border-radius:99px"></div>
           <div style="flex:1; height:4px; background:#F26B1F; border-radius:99px"></div>
           <div style="flex:1; height:4px; background:#F2F3F6; border-radius:99px"></div>
         </div>
-        <div style="font-size:10.5px; color:#6B7280; margin-top:6px">acumulado · trimestre</div>
+        <div style="font-size:10.5px; color:#4A5160; margin-top:6px">acumulado · trimestre</div>
       </div>
 
       <div class="preview-frame">
         <div class="browser-bar">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div class="url"><span class="dot"></span>cmp.mx/<b>app/dashboard/MG73</b></div>
+          <div class="url"><span class="dot"></span>app.controlobra.ai/<b>dashboard</b></div>
         </div>
         <div class="preview-canvas">
-          <div class="dash-grid">
-            <div>
-              <div class="pc" style="margin-bottom:12px">
-                <div class="h">
-                  <div class="ic" style="background:#F26B1F">${I.budget}</div>
-                  <div><h4>Presupuesto activo · MG73</h4><div class="sub">P-019 · v3.2 · Definitivo</div></div>
-                  <span class="badge">19 cap.</span>
-                </div>
-                <div class="stat">
-                  <div class="k"><div class="l">Total venta</div><div class="v">$102.65 M</div></div>
-                  <div class="k"><div class="l">Cubicado</div><div class="v" style="color:#2A4FA0">$34.12 M</div></div>
-                  <div class="k"><div class="l">Pagado</div><div class="v" style="color:#1F8A5B">$30.79 M</div></div>
-                </div>
-              </div>
-              <div class="pc">
-                <div class="h">
-                  <div class="ic" style="background:#2A4FA0">${I.control}</div>
-                  <div><h4>Curva S · plan vs real</h4><div class="sub">10 cortes · ciclo 2026</div></div>
-                </div>
-                <div class="bars">
-                  <div class="b" style="height:8%"></div><div class="b" style="height:14%"></div><div class="b" style="height:22%"></div><div class="b" style="height:30%"></div><div class="b" style="height:42%"></div><div class="b" style="height:52%"></div><div class="b" style="height:62%"></div><div class="b" style="height:70%"></div><div class="b" style="height:48%"></div><div class="b" style="height:55%"></div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="pc" style="margin-bottom:12px">
-                <div class="h">
-                  <div class="ic" style="background:#7A4DBF">${I.spark}</div>
-                  <div><h4>Cubicaciones · histórico</h4><div class="sub">C1 → C8</div></div>
-                </div>
-                <div class="row"><span class="code">C-06</span><span>30 sep · cierre</span><span class="num" style="color:#1F8A5B">+$4.28 M</span></div>
-                <div class="row"><span class="code">C-07</span><span>31 oct · aprobada</span><span class="num" style="color:#1F8A5B">+$4.67 M</span></div>
-                <div class="row"><span class="code">C-08</span><span>30 nov · revisión</span><span class="num" style="color:#C58A1A">+$5.04 M</span></div>
-              </div>
-              <div class="pc">
-                <div class="h">
-                  <div class="ic" style="background:#1F8A5B">${I.bita}</div>
-                  <div><h4>Bitácora del día</h4><div class="sub">15/05/26 · Día 187</div></div>
-                </div>
-                <div class="row"><span class="code">MG.04</span><span>Armado zapatas B</span><span class="num">38%</span></div>
-                <div class="row"><span class="code">MG.05</span><span>Muros piso 1</span><span class="num">32%</span></div>
-                <div class="row"><span class="code">SST</span><span>0 incidentes · 47 pers.</span><span class="num" style="color:#1F8A5B">OK</span></div>
-              </div>
-            </div>
-          </div>
+          <img
+            class="hero-shot"
+            src="/assets/dashboard-hero.png"
+            alt="Dashboard de gerencia de CMP — KPIs, curva S, salud del proyecto y avance por capítulo"
+            width="3280"
+            height="2230"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
       </div>
     </div>
@@ -993,15 +1232,15 @@ const html = `
 <section class="metrics">
   <div class="container metrics-in reveal-stagger">
     <div class="metric reveal">
-      <div class="v"><span class="pl">−</span><span class="count" data-to="72">0</span>%</div>
+      <div class="v"><span class="pl">−</span><span class="count" data-to="60">0</span>%</div>
       <div class="l">tiempo para elaborar un presupuesto completo</div>
     </div>
     <div class="metric reveal">
-      <div class="v"><span class="pl">+</span><span class="count" data-to="5.4" data-dec="1">0</span>%</div>
+      <div class="v"><span class="pl">+</span><span class="count" data-to="4">0</span>%</div>
       <div class="l">margen recuperado al detectar desviaciones a tiempo</div>
     </div>
     <div class="metric reveal">
-      <div class="v"><span class="count" data-to="3">0</span> días</div>
+      <div class="v"><span class="count" data-to="2">0</span> días</div>
       <div class="l">para cerrar una cubicación con el cliente</div>
     </div>
     <div class="metric reveal">
@@ -1055,23 +1294,138 @@ const html = `
         <h3>Presupuestos en Excel sin trazabilidad</h3>
         <p>Cada versión es un archivo nuevo. Nadie sabe cuál es la base aprobada y la cotización vence sin avisar.</p>
         <div class="ill">
-          <div class="b" style="height:30%"></div><div class="b" style="height:55%"></div><div class="b" style="height:40%"></div><div class="b active" style="height:80%"></div><div class="b" style="height:65%"></div><div class="b" style="height:50%"></div><div class="b" style="height:75%"></div><div class="b" style="height:35%"></div>
+          <!-- Tabla de Excel -->
+          <svg viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="200" height="90" rx="3" fill="#FFFFFF" stroke="#D0D7DE"/>
+            <rect x="0" y="0" width="200" height="13" fill="#217346"/>
+            <text x="14" y="9" fill="#FFFFFF" font-size="7" font-weight="700" font-family="Arial">A</text>
+            <text x="46" y="9" fill="#FFFFFF" font-size="7" font-weight="700" font-family="Arial">B</text>
+            <text x="86" y="9" fill="#FFFFFF" font-size="7" font-weight="700" font-family="Arial">C</text>
+            <text x="126" y="9" fill="#FFFFFF" font-size="7" font-weight="700" font-family="Arial">D</text>
+            <text x="166" y="9" fill="#FFFFFF" font-size="7" font-weight="700" font-family="Arial">E</text>
+            <rect x="0" y="13" width="20" height="77" fill="#F6F8FA"/>
+            <text x="10" y="24" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">1</text>
+            <text x="10" y="38" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">2</text>
+            <text x="10" y="52" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">3</text>
+            <text x="10" y="66" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">4</text>
+            <text x="10" y="80" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">5</text>
+            <g stroke="#E1E4E8" stroke-width="0.6">
+              <line x1="20" y1="13" x2="20" y2="90"/>
+              <line x1="60" y1="13" x2="60" y2="90"/>
+              <line x1="100" y1="13" x2="100" y2="90"/>
+              <line x1="140" y1="13" x2="140" y2="90"/>
+              <line x1="180" y1="13" x2="180" y2="90"/>
+              <line x1="0" y1="28" x2="200" y2="28"/>
+              <line x1="0" y1="42" x2="200" y2="42"/>
+              <line x1="0" y1="56" x2="200" y2="56"/>
+              <line x1="0" y1="70" x2="200" y2="70"/>
+            </g>
+            <!-- selected cell -->
+            <rect x="60" y="42" width="40" height="14" fill="none" stroke="#217346" stroke-width="1.5"/>
+            <text x="40" y="24" fill="#24292F" font-size="6" text-anchor="middle" font-family="Arial">v1.2</text>
+            <text x="40" y="38" fill="#24292F" font-size="6" text-anchor="middle" font-family="Arial">v1.3</text>
+            <text x="40" y="52" fill="#24292F" font-size="6" text-anchor="middle" font-family="Arial" font-weight="700">v2.0</text>
+            <text x="40" y="66" fill="#C24545" font-size="6" text-anchor="middle" font-family="Arial">FINAL</text>
+            <text x="40" y="80" fill="#C24545" font-size="6" text-anchor="middle" font-family="Arial">FINAL_2</text>
+            <text x="80" y="24" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">120k</text>
+            <text x="80" y="38" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">132k</text>
+            <text x="80" y="52" fill="#F26B1F" font-size="6" text-anchor="middle" font-family="Arial" font-weight="700">145k</text>
+            <text x="80" y="66" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">158k</text>
+            <text x="80" y="80" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">?</text>
+            <text x="120" y="24" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">5%</text>
+            <text x="120" y="38" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">8%</text>
+            <text x="120" y="52" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">12%</text>
+            <text x="160" y="24" fill="#57606A" font-size="6" text-anchor="middle" font-family="Arial">OK</text>
+            <text x="160" y="52" fill="#C24545" font-size="6" text-anchor="middle" font-family="Arial">!</text>
+          </svg>
         </div>
       </div>
       <div class="prob tilt">
         <div class="num">02 · ANTES</div>
         <h3>Control de costos a destiempo</h3>
         <p>Te enteras del sobrecosto cuando ya facturaste. Sin forma de proyectar a cierre o comparar versiones.</p>
-        <div class="ill split">
-          <div class="b" style="height:60%"></div><div class="b" style="height:65%"></div><div class="b" style="height:70%"></div><div class="b r" style="height:95%"></div><div class="b" style="height:55%"></div><div class="b" style="height:50%"></div>
+        <div class="ill">
+          <!-- Factura -->
+          <svg viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+            <!-- Sombra de la hoja -->
+            <rect x="48" y="6" width="110" height="84" rx="3" fill="#D9DCE2" opacity=".5"/>
+            <!-- Hoja blanca -->
+            <rect x="45" y="3" width="110" height="84" rx="3" fill="#FFFFFF" stroke="#D0D7DE"/>
+            <!-- Header naranja -->
+            <rect x="45" y="3" width="110" height="14" rx="3" fill="#F26B1F"/>
+            <rect x="45" y="13" width="110" height="4" fill="#F26B1F"/>
+            <text x="100" y="13" fill="#FFFFFF" font-size="8" font-weight="800" text-anchor="middle" font-family="Arial" letter-spacing="1">FACTURA</text>
+            <!-- N° factura -->
+            <text x="52" y="25" fill="#6B7280" font-size="5" font-family="Arial">N° 0042-2026</text>
+            <text x="148" y="25" fill="#6B7280" font-size="5" font-family="Arial" text-anchor="end">21/05/26</text>
+            <!-- Separador -->
+            <line x1="52" y1="29" x2="148" y2="29" stroke="#E1E4E8"/>
+            <!-- Items -->
+            <text x="52" y="38" fill="#24292F" font-size="5.5" font-family="Arial">Cimentación</text>
+            <text x="148" y="38" fill="#24292F" font-size="5.5" font-family="Arial" text-anchor="end">$ 12,450</text>
+            <text x="52" y="46" fill="#24292F" font-size="5.5" font-family="Arial">Estructura</text>
+            <text x="148" y="46" fill="#24292F" font-size="5.5" font-family="Arial" text-anchor="end">$ 28,900</text>
+            <text x="52" y="54" fill="#24292F" font-size="5.5" font-family="Arial">Albañilería</text>
+            <text x="148" y="54" fill="#24292F" font-size="5.5" font-family="Arial" text-anchor="end">$ 15,200</text>
+            <text x="52" y="62" fill="#24292F" font-size="5.5" font-family="Arial">Acabados</text>
+            <text x="148" y="62" fill="#24292F" font-size="5.5" font-family="Arial" text-anchor="end">$ 9,750</text>
+            <!-- Línea total -->
+            <line x1="52" y1="68" x2="148" y2="68" stroke="#24292F" stroke-width="0.8"/>
+            <text x="52" y="78" fill="#24292F" font-size="6.5" font-weight="800" font-family="Arial">TOTAL</text>
+            <text x="148" y="78" fill="#F26B1F" font-size="7" font-weight="800" font-family="Arial" text-anchor="end">$ 66,300</text>
+            <!-- Sello "PAGADO" diagonal sutil -->
+            <g transform="translate(135 50) rotate(-18)">
+              <rect x="-15" y="-5" width="30" height="11" rx="2" fill="none" stroke="#C24545" stroke-width="0.8" opacity=".55"/>
+              <text x="0" y="2.5" fill="#C24545" font-size="5" font-weight="800" text-anchor="middle" font-family="Arial" letter-spacing="0.5" opacity=".75">PAGADO</text>
+            </g>
+          </svg>
         </div>
       </div>
       <div class="prob tilt">
         <div class="num">03 · ANTES</div>
         <h3>Cubicar al cliente toma 3 días</h3>
         <p>Mediciones en libreta, fotos en el teléfono, sumas a mano. El cliente pide ajustes y se vuelve a empezar.</p>
-        <div class="ill docs">
-          <div class="doc"></div><div class="doc red"></div><div class="doc"></div><div class="doc"></div>
+        <div class="ill">
+          <!-- Libreta rayada con escritura a mano -->
+          <svg viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hoja amarillenta -->
+            <rect x="20" y="2" width="160" height="86" rx="3" fill="#FFFBEA" stroke="#E1D9B3" stroke-width="0.8"/>
+            <!-- Espiral de libreta -->
+            <g fill="#A8B0BD">
+              <circle cx="28" cy="10" r="1.6"/><circle cx="28" cy="22" r="1.6"/><circle cx="28" cy="34" r="1.6"/>
+              <circle cx="28" cy="46" r="1.6"/><circle cx="28" cy="58" r="1.6"/><circle cx="28" cy="70" r="1.6"/>
+              <circle cx="28" cy="82" r="1.6"/>
+            </g>
+            <!-- Línea roja de margen -->
+            <line x1="40" y1="2" x2="40" y2="88" stroke="#E55A5A" stroke-width="0.6" opacity=".7"/>
+            <!-- Líneas azules horizontales (renglones) -->
+            <g stroke="#9BB5D9" stroke-width="0.4" opacity=".55">
+              <line x1="20" y1="18" x2="180" y2="18"/>
+              <line x1="20" y1="28" x2="180" y2="28"/>
+              <line x1="20" y1="38" x2="180" y2="38"/>
+              <line x1="20" y1="48" x2="180" y2="48"/>
+              <line x1="20" y1="58" x2="180" y2="58"/>
+              <line x1="20" y1="68" x2="180" y2="68"/>
+              <line x1="20" y1="78" x2="180" y2="78"/>
+            </g>
+            <!-- Escritura a mano (líneas onduladas como texto manuscrito) -->
+            <g stroke="#2A4FA0" stroke-width="0.9" fill="none" stroke-linecap="round">
+              <path d="M 44 16 Q 60 14, 80 16 T 120 15 L 130 15"/>
+              <path d="M 44 26 Q 70 24, 100 26 T 160 24"/>
+              <path d="M 44 36 Q 55 34, 75 36 L 110 35"/>
+              <path d="M 44 46 Q 65 44, 95 46 T 140 44 L 165 44"/>
+              <path d="M 44 56 Q 60 54, 85 56"/>
+              <path d="M 44 66 Q 70 64, 110 66 T 155 65"/>
+              <path d="M 44 76 Q 60 74, 90 76 T 130 75"/>
+            </g>
+            <!-- Una tachadura/corrección en rojo -->
+            <path d="M 100 36 L 130 35" stroke="#E55A5A" stroke-width="1.2" stroke-linecap="round"/>
+            <!-- Suma manuscrita en la esquina -->
+            <g stroke="#2A4FA0" stroke-width="0.9" fill="none" stroke-linecap="round">
+              <path d="M 142 56 L 148 56"/>
+              <path d="M 145 53 L 145 59"/>
+            </g>
+          </svg>
         </div>
       </div>
     </div>
@@ -1083,7 +1437,7 @@ const html = `
   <div class="container">
     <div class="sec-h reveal">
       <div class="sec-tag"><span class="d"></span>La plataforma con IA</div>
-      <h2>Una sola herramienta <span class="serif">con inteligencia artificial</span> que conecta <b>presupuesto, obra y caja.</b></h2>
+      <h2 class="modules-headline">Una sola herramienta <span class="serif">con inteligencia artificial</span> que conecta <b>presupuesto, control, obra y flujo de caja.</b></h2>
       <p>8 módulos potenciados por IA, diseñados específicamente para constructoras de vivienda. La IA vino para quedarse — que trabaje por ti.</p>
     </div>
 
@@ -1298,7 +1652,7 @@ const html = `
         <div class="roi-out-in">
           <span class="tag">Estimación anual</span>
           <h4>Ahorro y recuperación de margen</h4>
-          <div class="big">$<span id="oTotal">9.6</span><small>millones MXN</small></div>
+          <div class="big">$<span id="oTotal">9.6</span><small>millones</small></div>
           <div class="breakdown">
             <div class="row">Margen recuperado (+5.4%)<b>$<span id="oMar">10.8</span> M</b></div>
             <div class="row">Tiempo de equipo ahorrado<b>$<span id="oTime">1.4</span> M</b></div>
@@ -1372,12 +1726,6 @@ const html = `
         <div class="col no">${I.x}</div>
         <div class="col cmp yes">${I.check}</div>
       </div>
-      <div class="ct-row">
-        <div class="feat">Costo mensual</div>
-        <div class="col"><span style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:800">$0</span></div>
-        <div class="col"><span style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:800">$80 K+</span></div>
-        <div class="col cmp"><span style="font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:800; color: var(--orange-deep)">desde $8.9 K</span></div>
-      </div>
     </div>
   </div>
 </section>
@@ -1391,67 +1739,305 @@ const html = `
       <p>Cada módulo trae plantillas listas. Tipografía editorial, tablas con jerarquía visual y gráficas que cuentan una historia.</p>
     </div>
     <div class="reports-grid reveal-stagger reveal">
+      <!-- 1. Resumen ejecutivo: 4 KPIs + barras por capítulo (como dashboard de gerencia) -->
       <div class="rep-card">
         <div class="preview">
           <div class="line l"></div><div class="line s"></div>
-          <div class="grid-mini"><div></div><div></div><div></div><div></div></div>
-          <div class="bars-mini"><div class="b on" style="height:30%"></div><div class="b on" style="height:55%"></div><div class="b on" style="height:75%"></div><div class="b" style="height:45%"></div><div class="b" style="height:60%"></div><div class="b" style="height:35%"></div></div>
+          <svg viewBox="0 0 220 110" style="width:100%; height:115px; margin-top:8px" xmlns="http://www.w3.org/2000/svg">
+            <!-- 4 KPI tiles -->
+            <g>
+              <rect x="0"   y="0" width="50" height="28" rx="3" fill="#FBE6CC" opacity=".5"/>
+              <rect x="0"   y="0" width="50" height="3"  fill="#F26B1F"/>
+              <text x="4" y="13" font-size="5" fill="#6B7280" font-family="Inter">CONTRATADO</text>
+              <text x="4" y="23" font-size="8" font-weight="800" fill="#0E1116" font-family="Inter">79.7M</text>
+
+              <rect x="55"  y="0" width="50" height="28" rx="3" fill="#F2F3F6"/>
+              <rect x="55"  y="0" width="50" height="3"  fill="#9AA1AB"/>
+              <text x="59" y="13" font-size="5" fill="#6B7280" font-family="Inter">BASE</text>
+              <text x="59" y="23" font-size="8" font-weight="800" fill="#0E1116" font-family="Inter">79.5M</text>
+
+              <rect x="110" y="0" width="50" height="28" rx="3" fill="#F2F3F6"/>
+              <rect x="110" y="0" width="50" height="3"  fill="#FFA265"/>
+              <text x="114" y="13" font-size="5" fill="#6B7280" font-family="Inter">PROYECTADO</text>
+              <text x="114" y="23" font-size="8" font-weight="800" fill="#0E1116" font-family="Inter">79.9M</text>
+
+              <rect x="165" y="0" width="55" height="28" rx="3" fill="#E5F2EB"/>
+              <rect x="165" y="0" width="55" height="3"  fill="#1F8A5B"/>
+              <text x="169" y="13" font-size="5" fill="#6B7280" font-family="Inter">EJECUTADO</text>
+              <text x="169" y="23" font-size="8" font-weight="800" fill="#1F8A5B" font-family="Inter">13.2M</text>
+            </g>
+            <!-- Top 5 capítulos -->
+            <g transform="translate(0 38)">
+              <text x="0" y="6" font-size="5" fill="#6B7280" font-family="Inter" font-weight="700">TOP CAPÍTULOS</text>
+              <g>
+                <rect x="0"  y="10" width="220" height="6" rx="3" fill="#F2F3F6"/>
+                <rect x="0"  y="10" width="180" height="6" rx="3" fill="#F26B1F"/>
+              </g>
+              <g>
+                <rect x="0"  y="22" width="220" height="6" rx="3" fill="#F2F3F6"/>
+                <rect x="0"  y="22" width="140" height="6" rx="3" fill="#F26B1F" opacity=".85"/>
+              </g>
+              <g>
+                <rect x="0"  y="34" width="220" height="6" rx="3" fill="#F2F3F6"/>
+                <rect x="0"  y="34" width="95"  height="6" rx="3" fill="#F26B1F" opacity=".7"/>
+              </g>
+              <g>
+                <rect x="0"  y="46" width="220" height="6" rx="3" fill="#F2F3F6"/>
+                <rect x="0"  y="46" width="70"  height="6" rx="3" fill="#F26B1F" opacity=".55"/>
+              </g>
+              <g>
+                <rect x="0"  y="58" width="220" height="6" rx="3" fill="#F2F3F6"/>
+                <rect x="0"  y="58" width="42"  height="6" rx="3" fill="#F26B1F" opacity=".4"/>
+              </g>
+            </g>
+          </svg>
         </div>
         <h4>Resumen ejecutivo</h4>
         <p>KPIs financieros, Top 5 capítulos, riesgos. La página que le mandas al director.</p>
         <span class="tag">PRESUPUESTOS · CONTROL</span>
       </div>
+
+      <!-- 2. Curva S: plan dashed vs real area, como el dashboard de gerencia -->
       <div class="rep-card acc-info">
         <div class="preview">
           <div class="line l"></div><div class="line s"></div>
-          <svg viewBox="0 0 200 80" style="width:100%; height:80px; margin-top:8px">
-            <path d="M0,70 L30,60 L60,55 L90,45 L120,30 L150,20 L180,15 L200,12" fill="none" stroke="#2A4FA0" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M0,72 L30,65 L60,60 L90,55 L120,48 L150,40 L180,35 L200,30" fill="none" stroke="#9AA1AB" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <svg viewBox="0 0 220 120" style="width:100%; height:115px; margin-top:8px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid lines -->
+            <g stroke="#E8EAEE" stroke-width="0.5">
+              <line x1="0" y1="20" x2="220" y2="20"/>
+              <line x1="0" y1="50" x2="220" y2="50"/>
+              <line x1="0" y1="80" x2="220" y2="80"/>
+              <line x1="0" y1="110" x2="220" y2="110"/>
+            </g>
+            <!-- Y-axis labels -->
+            <text x="0" y="22" font-size="5" fill="#9AA1AB" font-family="Inter">100%</text>
+            <text x="0" y="52" font-size="5" fill="#9AA1AB" font-family="Inter">75%</text>
+            <text x="0" y="82" font-size="5" fill="#9AA1AB" font-family="Inter">50%</text>
+            <!-- Plan (dashed) -->
+            <path d="M20,108 C40,100 60,85 80,68 S120,38 140,28 S180,18 215,15" fill="none" stroke="#9AA1AB" stroke-width="1.3" stroke-dasharray="4 3" stroke-linecap="round"/>
+            <!-- Real area filled -->
+            <path d="M20,108 C40,105 60,98 80,88 S120,68 140,52 S180,38 215,32 L215,110 L20,110 Z" fill="#F26B1F" opacity=".15"/>
+            <!-- Real line -->
+            <path d="M20,108 C40,105 60,98 80,88 S120,68 140,52 S180,38 215,32" fill="none" stroke="#F26B1F" stroke-width="2.2" stroke-linecap="round"/>
+            <!-- Cortes dots -->
+            <g fill="#F26B1F">
+              <circle cx="20"  cy="108" r="2.2"/>
+              <circle cx="60"  cy="98"  r="2.2"/>
+              <circle cx="100" cy="78"  r="2.2"/>
+              <circle cx="140" cy="52"  r="2.2"/>
+              <circle cx="180" cy="38"  r="2.2"/>
+              <circle cx="215" cy="32"  r="2.2"/>
+            </g>
+            <!-- Labels -->
+            <text x="20"  y="118" font-size="5" fill="#9AA1AB" font-family="Inter" text-anchor="middle">C1</text>
+            <text x="60"  y="118" font-size="5" fill="#9AA1AB" font-family="Inter" text-anchor="middle">C3</text>
+            <text x="100" y="118" font-size="5" fill="#9AA1AB" font-family="Inter" text-anchor="middle">C5</text>
+            <text x="140" y="118" font-size="5" fill="#9AA1AB" font-family="Inter" text-anchor="middle">C7</text>
+            <text x="180" y="118" font-size="5" fill="#9AA1AB" font-family="Inter" text-anchor="middle">C9</text>
           </svg>
         </div>
         <h4>Curva S y tendencia</h4>
         <p>Plan vs real en los 10 cortes del ciclo. Marca brecha y proyección de cierre.</p>
         <span class="tag">CONTROL DE COSTOS</span>
       </div>
+
+      <!-- 3. Acta de cubicación: documento con tabla de partidas y total -->
       <div class="rep-card acc-purp">
         <div class="preview">
           <div class="line l"></div><div class="line s"></div>
-          <div class="donut"></div>
+          <svg viewBox="0 0 220 120" style="width:100%; height:115px; margin-top:8px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Document header -->
+            <rect x="0" y="0" width="220" height="16" rx="3" fill="#7A4DBF"/>
+            <text x="6" y="11" font-size="6.5" font-weight="800" fill="#FFFFFF" font-family="Inter" letter-spacing=".5">ACTA DE CUBICACIÓN N° 08</text>
+            <text x="195" y="11" font-size="5" fill="#FFFFFF" font-family="Inter" opacity=".85">30/11/26</text>
+            <!-- Document body -->
+            <rect x="0" y="16" width="220" height="104" fill="#FFFFFF" stroke="#E8EAEE" stroke-width="0.6"/>
+            <!-- Table rows -->
+            <text x="6" y="28"  font-size="5.5" fill="#0E1116" font-family="Inter" font-weight="700">Estructura</text>
+            <text x="214" y="28" font-size="5.5" fill="#0E1116" font-family="Inter" text-anchor="end" font-weight="700">$ 13.76M</text>
+            <line x1="6" y1="31" x2="214" y2="31" stroke="#EEF0F3" stroke-width="0.4"/>
+
+            <text x="6" y="40" font-size="5.5" fill="#0E1116" font-family="Inter">Cimentación</text>
+            <text x="214" y="40" font-size="5.5" fill="#0E1116" font-family="Inter" text-anchor="end">$ 1.18M</text>
+            <line x1="6" y1="43" x2="214" y2="43" stroke="#EEF0F3" stroke-width="0.4"/>
+
+            <text x="6" y="52" font-size="5.5" fill="#0E1116" font-family="Inter">Mov. tierra</text>
+            <text x="214" y="52" font-size="5.5" fill="#0E1116" font-family="Inter" text-anchor="end">$ 3.40M</text>
+            <line x1="6" y1="55" x2="214" y2="55" stroke="#EEF0F3" stroke-width="0.4"/>
+
+            <text x="6" y="64" font-size="5.5" fill="#0E1116" font-family="Inter">Preliminares</text>
+            <text x="214" y="64" font-size="5.5" fill="#0E1116" font-family="Inter" text-anchor="end">$ 0.85M</text>
+
+            <!-- Subtotales -->
+            <line x1="6" y1="74" x2="214" y2="74" stroke="#0E1116" stroke-width="0.6"/>
+            <text x="6" y="84" font-size="5" fill="#6B7280" font-family="Inter">Sub-total</text>
+            <text x="214" y="84" font-size="5" fill="#6B7280" font-family="Inter" text-anchor="end">$ 19.19M</text>
+            <text x="6" y="93" font-size="5" fill="#6B7280" font-family="Inter">Retención 5%</text>
+            <text x="214" y="93" font-size="5" fill="#C24545" font-family="Inter" text-anchor="end">− $ 0.96M</text>
+            <text x="6" y="102" font-size="5" fill="#6B7280" font-family="Inter">IVA 18%</text>
+            <text x="214" y="102" font-size="5" fill="#6B7280" font-family="Inter" text-anchor="end">+ $ 3.28M</text>
+            <!-- Total -->
+            <rect x="0" y="106" width="220" height="14" fill="#F3EFFB"/>
+            <text x="6" y="115" font-size="6.5" font-weight="800" fill="#7A4DBF" font-family="Inter">TOTAL</text>
+            <text x="214" y="115" font-size="7" font-weight="800" fill="#7A4DBF" font-family="Inter" text-anchor="end">$ 21.51M</text>
+          </svg>
         </div>
         <h4>Acta de cubicación</h4>
         <p>Documento listo para firma con liquidación, retención, amortización e IVA.</p>
         <span class="tag">PROYECTOS · CLIENTE</span>
       </div>
+
+      <!-- 4. Análisis ABC: Pareto - barras descendentes + curva acumulada -->
       <div class="rep-card acc-warn">
         <div class="preview">
           <div class="line l"></div><div class="line s"></div>
-          <div class="bars-mini" style="height:60px"><div class="b on" style="height:40%"></div><div class="b on" style="height:65%"></div><div class="b" style="height:30%"></div><div class="b on" style="height:80%"></div><div class="b" style="height:55%"></div><div class="b on" style="height:90%"></div><div class="b on" style="height:70%"></div></div>
+          <svg viewBox="0 0 220 120" style="width:100%; height:115px; margin-top:8px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid -->
+            <g stroke="#E8EAEE" stroke-width="0.5">
+              <line x1="0" y1="20" x2="220" y2="20"/>
+              <line x1="0" y1="50" x2="220" y2="50"/>
+              <line x1="0" y1="80" x2="220" y2="80"/>
+              <line x1="0" y1="105" x2="220" y2="105"/>
+            </g>
+            <!-- Bars descending (Pareto) -->
+            <g>
+              <rect x="6"   y="20"  width="14" height="85" fill="#F26B1F"/>
+              <rect x="24"  y="32"  width="14" height="73" fill="#F26B1F" opacity=".9"/>
+              <rect x="42"  y="42"  width="14" height="63" fill="#F26B1F" opacity=".8"/>
+              <rect x="60"  y="52"  width="14" height="53" fill="#F26B1F" opacity=".7"/>
+              <rect x="78"  y="62"  width="14" height="43" fill="#FFA265" opacity=".75"/>
+              <rect x="96"  y="70"  width="14" height="35" fill="#FFA265" opacity=".65"/>
+              <rect x="114" y="76"  width="14" height="29" fill="#FFA265" opacity=".55"/>
+              <rect x="132" y="82"  width="14" height="23" fill="#9AA1AB" opacity=".55"/>
+              <rect x="150" y="86"  width="14" height="19" fill="#9AA1AB" opacity=".45"/>
+              <rect x="168" y="92"  width="14" height="13" fill="#9AA1AB" opacity=".35"/>
+              <rect x="186" y="96"  width="14" height="9"  fill="#9AA1AB" opacity=".30"/>
+              <rect x="204" y="100" width="14" height="5"  fill="#9AA1AB" opacity=".25"/>
+            </g>
+            <!-- Accumulated curve -->
+            <path d="M13,72 L31,58 L49,45 L67,33 L85,22 L103,18 L121,14 L139,12 L157,10 L175,9 L193,8 L211,7" fill="none" stroke="#7A4DBF" stroke-width="1.5" stroke-linecap="round"/>
+            <g fill="#7A4DBF">
+              <circle cx="13" cy="72" r="1.5"/>
+              <circle cx="85" cy="22" r="1.5"/>
+              <circle cx="211" cy="7" r="1.5"/>
+            </g>
+            <!-- A/B/C labels -->
+            <text x="35"  y="116" font-size="6" font-weight="800" fill="#F26B1F" font-family="Inter" text-anchor="middle">A · 20%</text>
+            <text x="103" y="116" font-size="6" font-weight="800" fill="#FFA265" font-family="Inter" text-anchor="middle">B · 30%</text>
+            <text x="180" y="116" font-size="6" font-weight="800" fill="#9AA1AB" font-family="Inter" text-anchor="middle">C · 50%</text>
+          </svg>
         </div>
         <h4>Análisis ABC de insumos</h4>
         <p>Pareto de recursos clasificados A/B/C. Para negociar con proveedores.</p>
         <span class="tag">PRESUPUESTOS · COMPRAS</span>
       </div>
+
+      <!-- 5. Soporte fotográfico: grid de fotos con pin GPS -->
       <div class="rep-card acc-ok">
         <div class="preview">
           <div class="line l"></div><div class="line s"></div>
-          <div class="grid-mini" style="margin-top:14px"><div style="background:#1F8A5B; opacity:.3"></div><div style="background:#1F8A5B; opacity:.6"></div><div style="background:#1F8A5B"></div><div></div></div>
-          <div class="grid-mini" style="margin-top:6px"><div></div><div style="background:#C58A1A; opacity:.5"></div><div></div><div></div></div>
+          <svg viewBox="0 0 220 120" style="width:100%; height:115px; margin-top:8px" xmlns="http://www.w3.org/2000/svg">
+            <!-- 6 photo cells (2 rows x 3 cols) -->
+            <g>
+              <!-- Foto 1 -->
+              <rect x="0" y="0" width="68" height="48" rx="4" fill="#E5F2EB"/>
+              <circle cx="22" cy="20" r="8" fill="#1F8A5B" opacity=".4"/>
+              <rect x="0" y="36" width="68" height="12" fill="#1F8A5B" opacity=".25"/>
+              <!-- pin GPS -->
+              <circle cx="60" cy="6" r="3" fill="#F26B1F"/>
+              <circle cx="60" cy="6" r="1.3" fill="#FFFFFF"/>
+
+              <!-- Foto 2 -->
+              <rect x="76" y="0" width="68" height="48" rx="4" fill="#FFE9D6"/>
+              <rect x="80" y="10" width="60" height="20" fill="#F26B1F" opacity=".35"/>
+              <rect x="76" y="36" width="68" height="12" fill="#F26B1F" opacity=".2"/>
+              <circle cx="136" cy="6" r="3" fill="#F26B1F"/>
+              <circle cx="136" cy="6" r="1.3" fill="#FFFFFF"/>
+
+              <!-- Foto 3 -->
+              <rect x="152" y="0" width="68" height="48" rx="4" fill="#F3EFFB"/>
+              <circle cx="186" cy="22" r="10" fill="#7A4DBF" opacity=".35"/>
+              <rect x="152" y="36" width="68" height="12" fill="#7A4DBF" opacity=".2"/>
+              <circle cx="212" cy="6" r="3" fill="#F26B1F"/>
+              <circle cx="212" cy="6" r="1.3" fill="#FFFFFF"/>
+
+              <!-- Foto 4 -->
+              <rect x="0" y="56" width="68" height="48" rx="4" fill="#E5F2EB"/>
+              <rect x="6" y="62" width="56" height="22" fill="#1F8A5B" opacity=".3"/>
+              <rect x="0" y="92" width="68" height="12" fill="#1F8A5B" opacity=".2"/>
+              <circle cx="60" cy="62" r="3" fill="#F26B1F"/>
+              <circle cx="60" cy="62" r="1.3" fill="#FFFFFF"/>
+
+              <!-- Foto 5 -->
+              <rect x="76" y="56" width="68" height="48" rx="4" fill="#FBE6E6"/>
+              <circle cx="110" cy="76" r="9" fill="#C24545" opacity=".35"/>
+              <rect x="76" y="92" width="68" height="12" fill="#C24545" opacity=".2"/>
+              <circle cx="136" cy="62" r="3" fill="#F26B1F"/>
+              <circle cx="136" cy="62" r="1.3" fill="#FFFFFF"/>
+
+              <!-- Foto 6 -->
+              <rect x="152" y="56" width="68" height="48" rx="4" fill="#F2F3F6"/>
+              <rect x="158" y="64" width="56" height="18" fill="#9AA1AB" opacity=".4"/>
+              <rect x="152" y="92" width="68" height="12" fill="#9AA1AB" opacity=".25"/>
+              <circle cx="212" cy="62" r="3" fill="#F26B1F"/>
+              <circle cx="212" cy="62" r="1.3" fill="#FFFFFF"/>
+            </g>
+            <!-- Footer label -->
+            <text x="0" y="118" font-size="5" fill="#9AA1AB" font-family="Inter" font-weight="700">6 EVIDENCIAS · GPS · FIRMA DIGITAL</text>
+          </svg>
         </div>
         <h4>Soporte fotográfico</h4>
         <p>Evidencias georeferenciadas con firma del supervisor. Anexo de cubicación.</p>
         <span class="tag">GESTIÓN DE OBRA</span>
       </div>
+
+      <!-- 6. Comparativo de versiones: barras laterales V vs P por capítulo (como dashboard) -->
       <div class="rep-card">
         <div class="preview">
           <div class="line l"></div><div class="line s"></div>
-          <svg viewBox="0 0 200 70" style="width:100%; height:70px; margin-top:10px">
-            <rect x="0" y="20" width="20" height="50" fill="#1F8A5B" opacity=".25"/>
-            <rect x="30" y="15" width="20" height="55" fill="#1F8A5B" opacity=".4"/>
-            <rect x="60" y="25" width="20" height="45" fill="#1F8A5B" opacity=".55"/>
-            <rect x="90" y="10" width="20" height="60" fill="#1F8A5B" opacity=".7"/>
-            <rect x="120" y="5" width="20" height="65" fill="#C24545"/>
-            <rect x="150" y="22" width="20" height="48" fill="#1F8A5B" opacity=".5"/>
-            <rect x="180" y="8" width="20" height="62" fill="#C24545"/>
+          <svg viewBox="0 0 220 120" style="width:100%; height:115px; margin-top:8px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Title row -->
+            <text x="0" y="6" font-size="5" fill="#6B7280" font-family="Inter" font-weight="700">v3.0</text>
+            <text x="60" y="6" font-size="5" fill="#6B7280" font-family="Inter" font-weight="700">v3.2</text>
+            <text x="120" y="6" font-size="5" fill="#6B7280" font-family="Inter" font-weight="700">Δ</text>
+            <line x1="0" y1="9" x2="220" y2="9" stroke="#E8EAEE" stroke-width="0.5"/>
+
+            <!-- MG.04 -->
+            <text x="0" y="20" font-size="5.5" fill="#0E1116" font-family="Inter" font-weight="700">MG.04 Estructura</text>
+            <rect x="0"  y="24" width="55" height="4" fill="#2A4FA0" opacity=".25"/>
+            <rect x="0"  y="24" width="48" height="4" fill="#2A4FA0"/>
+            <rect x="60" y="24" width="55" height="4" fill="#FFA265" opacity=".25"/>
+            <rect x="60" y="24" width="52" height="4" fill="#FFA265"/>
+            <text x="118" y="28" font-size="5" font-weight="800" fill="#C24545" font-family="Inter">+5.0%</text>
+
+            <!-- MG.03 -->
+            <text x="0" y="40" font-size="5.5" fill="#0E1116" font-family="Inter" font-weight="700">MG.03 Cimentación</text>
+            <rect x="0"  y="44" width="55" height="4" fill="#2A4FA0" opacity=".25"/>
+            <rect x="0"  y="44" width="35" height="4" fill="#2A4FA0"/>
+            <rect x="60" y="44" width="55" height="4" fill="#FFA265" opacity=".25"/>
+            <rect x="60" y="44" width="32" height="4" fill="#FFA265"/>
+            <text x="118" y="48" font-size="5" font-weight="800" fill="#1F8A5B" font-family="Inter">−1.8%</text>
+
+            <!-- MG.02 -->
+            <text x="0" y="60" font-size="5.5" fill="#0E1116" font-family="Inter" font-weight="700">MG.02 Mov. tierra</text>
+            <rect x="0"  y="64" width="55" height="4" fill="#2A4FA0" opacity=".25"/>
+            <rect x="0"  y="64" width="22" height="4" fill="#2A4FA0"/>
+            <rect x="60" y="64" width="55" height="4" fill="#FFA265" opacity=".25"/>
+            <rect x="60" y="64" width="28" height="4" fill="#FFA265"/>
+            <text x="118" y="68" font-size="5" font-weight="800" fill="#C24545" font-family="Inter">+3.4%</text>
+
+            <!-- MG.01 -->
+            <text x="0" y="80" font-size="5.5" fill="#0E1116" font-family="Inter" font-weight="700">MG.01 Preliminares</text>
+            <rect x="0"  y="84" width="55" height="4" fill="#2A4FA0" opacity=".25"/>
+            <rect x="0"  y="84" width="14" height="4" fill="#2A4FA0"/>
+            <rect x="60" y="84" width="55" height="4" fill="#FFA265" opacity=".25"/>
+            <rect x="60" y="84" width="12" height="4" fill="#FFA265"/>
+            <text x="118" y="88" font-size="5" font-weight="800" fill="#1F8A5B" font-family="Inter">−0.9%</text>
+
+            <!-- Total delta -->
+            <line x1="0" y1="98" x2="220" y2="98" stroke="#0E1116" stroke-width="0.5"/>
+            <text x="0" y="108" font-size="5.5" fill="#0E1116" font-family="Inter" font-weight="800">DESVIACIÓN TOTAL</text>
+            <text x="220" y="108" font-size="6.5" font-weight="800" fill="#F26B1F" font-family="Inter" text-anchor="end">+0.50%</text>
           </svg>
         </div>
         <h4>Comparativo de versiones</h4>
@@ -1508,138 +2094,6 @@ const html = `
   </div>
 </section>
 
-<!-- ─── CASE STUDIES ─── -->
-<section class="cases">
-  <div class="container">
-    <div class="sec-h center reveal">
-      <div class="sec-tag"><span class="d"></span>Casos de éxito</div>
-      <h2>Lo que nuestros clientes <span class="serif">recuperaron</span> con <b>CMP</b>.</h2>
-    </div>
-    <div class="cases-grid reveal-stagger reveal">
-      <div class="case">
-        <div class="v">$2.4M</div>
-        <h4>Mesón Grande recuperó margen con IA</h4>
-        <p>La IA de CMP detectó 12 desviaciones que antes pasaban desapercibidas. El director técnico cerró el año 6 pts arriba del objetivo.</p>
-        <div class="cliente">
-          <div class="av">MG</div>
-          <div>
-            <b>Inmobiliaria Mesón Grande</b>
-            <span>4 obras activas · Querétaro</span>
-          </div>
-        </div>
-      </div>
-      <div class="case">
-        <div class="v">8 días</div>
-        <h4>Encinos R.E. cierra más rápido con IA</h4>
-        <p>De 10 a 2 días el cierre del control de obra. La IA redacta los informes y el comité financiero tiene datos vivos al día 3.</p>
-        <div class="cliente">
-          <div class="av" style="background: linear-gradient(135deg, #1F8A5B, #4DBE85)">EN</div>
-          <div>
-            <b>Encinos Real Estate</b>
-            <span>6 desarrollos · Monterrey</span>
-          </div>
-        </div>
-      </div>
-      <div class="case">
-        <div class="v">94%</div>
-        <h4>Reforma Capital · cubicaciones aprobadas a la primera</h4>
-        <p>Con acta digital firmada en línea, el cliente aprueba en 24h. Pasaron del 30% antes de CMP al 94% en el segundo trimestre.</p>
-        <div class="cliente">
-          <div class="av" style="background: linear-gradient(135deg, #7A4DBF, #A07AE0)">RC</div>
-          <div>
-            <b>Reforma Capital S.A.P.I.</b>
-            <span>3 torres en CDMX</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── QUOTE ─── -->
-<section class="quote">
-  <div class="container">
-    <blockquote class="reveal">
-      "Antes de CMP, cerrar el control mensual nos tomaba <b>10 días</b>. <span class="serif">Hoy, con la IA, lo cerramos en 2.</span> Y el cliente firma la cubicación sin levantar el teléfono."
-    </blockquote>
-    <div class="quote-foot reveal">
-      <div class="av">RM</div>
-      <div>
-        <b>Roberto Mesón</b>
-        <span>Dirección de Proyecto · Inmobiliaria Mesón Grande</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── PRICING ─── -->
-<section class="pricing" id="precios">
-  <div class="container">
-    <div class="sec-h center reveal">
-      <div class="sec-tag"><span class="d"></span>Precios</div>
-      <h2>Empieza por el <b>módulo</b> que <span class="serif">más necesitas.</span></h2>
-      <p>Plan transparente, sin cargos por usuario sorpresa.</p>
-    </div>
-
-    <div class="pricing-toggle reveal">
-      <div class="pt-switch">
-        <button class="on" id="ptMes">Mensual</button>
-        <button id="ptAno">Anual</button>
-      </div>
-      <span class="pt-badge">Ahorra 15% al año</span>
-    </div>
-
-    <div class="price-grid reveal-stagger reveal">
-      <div class="price">
-        <h3>Esencial</h3>
-        <p class="sub">Para constructoras de 1–3 obras simultáneas</p>
-        <div class="amt">$<span class="pamt" data-mes="8,900" data-ano="7,565">8,900</span><small>/ mes</small></div>
-        <ul>
-          <li><div class="c">${I.check}</div><span><b>Presupuestos · 5 activos</b></span></li>
-          <li><div class="c">${I.check}</div><span>Control de costos · cortes mensuales</span></li>
-          <li><div class="c">${I.check}</div><span>Cubicaciones con acta al cliente</span></li>
-          <li><div class="c">${I.check}</div><span>5 usuarios incluidos</span></li>
-          <li><div class="c">${I.check}</div><span>Informes en PDF/Excel</span></li>
-          <li><div class="c">${I.check}</div><span>Soporte por email</span></li>
-        </ul>
-        <div class="cta"><button class="btn primary" style="width:100%; border-radius:12px; height:44px">Empezar prueba</button></div>
-      </div>
-
-      <div class="price featured">
-        <span class="price-tag">Más elegido</span>
-        <h3>Profesional</h3>
-        <p class="sub">Para constructoras consolidadas con 4–15 obras</p>
-        <div class="amt">$<span class="pamt" data-mes="24,500" data-ano="20,825">24,500</span><small>/ mes</small></div>
-        <ul>
-          <li><div class="c">${I.check}</div><span><b>Presupuestos ilimitados</b></span></li>
-          <li><div class="c">${I.check}</div><span>Control · cortes quincenales</span></li>
-          <li><div class="c">${I.check}</div><span>Gestión de obra completa · bitácora · fotos</span></li>
-          <li><div class="c">${I.check}</div><span>Compras con flujo de aprobación</span></li>
-          <li><div class="c">${I.check}</div><span><b>IA · Asistente ilimitado</b></span></li>
-          <li><div class="c">${I.check}</div><span>20 usuarios · portal del cliente</span></li>
-          <li><div class="c">${I.check}</div><span>Soporte prioritario</span></li>
-        </ul>
-        <div class="cta"><button class="btn orange shimmer" style="width:100%; border-radius:12px; height:44px">Solicitar demo</button></div>
-      </div>
-
-      <div class="price">
-        <h3>Enterprise</h3>
-        <p class="sub">Para grupos inmobiliarios y desarrolladores grandes</p>
-        <div class="amt" style="font-size:30px; font-family: Manrope; font-weight: 800">A medida</div>
-        <ul>
-          <li><div class="c">${I.check}</div><span><b>Todo lo de Profesional</b></span></li>
-          <li><div class="c">${I.check}</div><span>SSO empresarial · SAML 2.0</span></li>
-          <li><div class="c">${I.check}</div><span>Integraciones con tu ERP corporativo</span></li>
-          <li><div class="c">${I.check}</div><span>SLA personalizado · respaldo dedicado</span></li>
-          <li><div class="c">${I.check}</div><span>Usuarios ilimitados · API completa</span></li>
-          <li><div class="c">${I.check}</div><span>Customer Success Manager</span></li>
-        </ul>
-        <div class="cta"><button class="btn primary" style="width:100%; border-radius:12px; height:44px">Contactar ventas</button></div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ─── FAQ ─── -->
 <section class="faq">
   <div class="container">
@@ -1653,19 +2107,15 @@ const html = `
         <div class="faq-a">En promedio 2 semanas: la primera para configurar tu catálogo de partidas y cargar el presupuesto base; la segunda para entrenar al residente y al equipo de compras. Tu cubicación más reciente queda lista para enviar al cliente en el día 10.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q"><span class="n">02</span>¿Puedo importar mis presupuestos hechos en Excel?<span class="arr">⌃</span></div>
-        <div class="faq-a">Sí. CMP acepta plantillas Excel/CSV con jerarquía Capítulo → Partida → Recurso. Tu equipo de onboarding hace el primer import contigo en una sesión de 60 minutos.</div>
+        <div class="faq-q"><span class="n">02</span>¿Puedo importar mis presupuestos hechos en Excel o Presto?<span class="arr">⌃</span></div>
+        <div class="faq-a">Sí. CMP acepta plantillas Excel/CSV con jerarquía Capítulo → Partida → Recurso, y también importa presupuestos exportados desde <b>Presto</b> (formato BC3/FIEBDC-3). Tu equipo de onboarding hace el primer import contigo en una sesión de 60 minutos.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q"><span class="n">03</span>¿Funciona sin internet en obra?<span class="arr">⌃</span></div>
         <div class="faq-a">La app móvil del residente trabaja offline: sube fotos, registra avance y captura la bitácora. Cuando vuelve la señal, sincroniza automáticamente.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q"><span class="n">04</span>¿Cómo se conecta con mi contador o mi sistema fiscal?<span class="arr">⌃</span></div>
-        <div class="faq-a">CMP exporta pólizas, CFDI y conciliación bancaria en formatos compatibles con Contpaq, Aspel y SAP. En el plan Enterprise montamos integración bidireccional vía API.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q"><span class="n">05</span>¿La IA tiene acceso a mis datos sensibles?<span class="arr">⌃</span></div>
+        <div class="faq-q"><span class="n">04</span>¿La IA tiene acceso a mis datos sensibles?<span class="arr">⌃</span></div>
         <div class="faq-a">Tu información nunca entrena modelos externos. La IA de CMP corre sobre tu propio repositorio cifrado y solo el personal que tú autorices accede a sus consultas.</div>
       </div>
     </div>
@@ -1678,8 +2128,8 @@ const html = `
     <h2>La <span class="serif">IA</span> ya está aquí. <b>Que trabaje por ti.</b></h2>
     <p>Agenda una demo de 30 minutos. Te mostramos cómo la IA de CMP arma tu primer presupuesto en vivo, con un proyecto real tuyo cargado.</p>
     <div class="cta-row">
-      <button class="btn orange big shimmer">Solicitar demo guiada ${I.arr}</button>
-      <button class="btn ghost big" style="color:#fff">Hablar con ventas</button>
+      <a class="btn orange big shimmer" href="https://app.controlobra.ai/login" rel="noopener">Solicitar demo guiada ${I.arr}</a>
+      <a class="btn ghost big" href="mailto:ventas@controlobra.ai" style="color:#fff">Hablar con ventas</a>
     </div>
     <div class="micro">SIN TARJETA · SIN COMPROMISO · CANCELAS CUANDO QUIERAS</div>
   </div>
@@ -1709,7 +2159,8 @@ const html = `
           <div class="lg"><img src="/assets/logo-icon-hd.png" alt="CMP"/></div>
           <div class="nm" style="color:#fff">CONTROL MANAGEMENT<small>P · R · O</small></div>
         </div>
-        <p>El ERP profesional para constructoras de vivienda. Diseñado en México por constructores que vivieron el problema.</p>
+        <p>El ERP profesional con IA para constructoras LATAM. Diseñado en República Dominicana por constructores que vivieron el problema.</p>
+        <p style="margin-top:10px; font-size:12px"><a href="mailto:soporte@controlobra.ai" style="color:#C8CFD7">soporte@controlobra.ai</a></p>
       </div>
       <div class="ft-col">
         <h4>Producto</h4>
@@ -1749,7 +2200,7 @@ const html = `
       </div>
     </div>
     <div class="ft-bottom">
-      <span>© 2026 CMP · Construido con cuidado en MX-Centro</span>
+      <span>© 2026 CMP · Construido con cuidado en República Dominicana</span>
       <div class="links">
         <a href="#">Términos</a>
         <a href="#">Privacidad</a>
@@ -1768,6 +2219,18 @@ themeToggle?.addEventListener('click', ()=>{
   const cur = document.documentElement.getAttribute('data-theme');
   document.documentElement.setAttribute('data-theme', cur==='dark' ? 'light' : 'dark');
 });
+
+/* ───── 1b. STICKY NAV — translúcida al inicio, glass al scrollear ───── */
+(() => {
+  const navEl = document.querySelector('.nav');
+  if (!navEl) return;
+  const update = () => {
+    if (window.scrollY > 24) navEl.classList.add('scrolled');
+    else navEl.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
 
 /* ───── 2. FAQ ───── */
 document.querySelectorAll('.faq-item').forEach(it=>{
@@ -1905,18 +2368,7 @@ function calcROI(){
 });
 calcROI();
 
-/* ───── 10. PRICING TOGGLE ───── */
-const ptMes = document.getElementById('ptMes');
-const ptAno = document.getElementById('ptAno');
-function switchPrice(period){
-  document.querySelectorAll('.pamt').forEach(el=>{
-    el.textContent = el.dataset[period];
-  });
-}
-ptMes?.addEventListener('click', ()=>{ ptMes.classList.add('on'); ptAno.classList.remove('on'); switchPrice('mes'); });
-ptAno?.addEventListener('click', ()=>{ ptAno.classList.add('on'); ptMes.classList.remove('on'); switchPrice('ano'); });
-
-/* ───── 11. LIVE TICKER COUNTERS ───── */
+/* ───── 10. LIVE TICKER COUNTERS ───── */
 let liveOnline = 12;
 setInterval(()=>{
   liveOnline += Math.random() > .5 ? 1 : -1;

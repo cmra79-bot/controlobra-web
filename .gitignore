@@ -23,3 +23,8 @@ pnpm-debug.log*
 # Cloudflare/Vercel
 .wrangler/
 .vercel/
+
+# Claude / IDE local
+.claude/
+*.mjs.tmp
+_*.mjs
