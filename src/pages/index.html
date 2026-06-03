@@ -338,10 +338,13 @@
       0 0 0 1px rgba(255,255,255,.10),
       inset 0 1px 0 rgba(255,255,255,.08);
     position:relative;
-    transform: perspective(2000px) rotateX(2deg);
+    transform: perspective(2000px) rotateX(2deg) translateZ(0);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform;
     transition: transform .6s ease;
   }
-  .preview-frame:hover{transform: perspective(2000px) rotateX(0deg)}
+  .preview-frame:hover{transform: perspective(2000px) rotateX(0deg) translateZ(0)}
   .preview-frame::before{
     content:''; position:absolute; inset:-1px; border-radius:22px 22px 0 0;
     background: linear-gradient(180deg, rgba(242,107,31,.5), transparent 30%);
@@ -359,7 +362,18 @@
 
   .preview-canvas{background:#F7F8FA; border-radius:10px 10px 0 0; position:relative; overflow:hidden; line-height:0}
   .preview-canvas::before{content:''; position:absolute; inset:0; pointer-events:none; background: linear-gradient(180deg, transparent 80%, rgba(10,13,18,.35)); z-index:2}
-  .preview-canvas img.hero-shot{display:block; width:100%; height:auto; image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; -webkit-font-smoothing:antialiased}
+  .preview-canvas img.hero-shot{
+    display:block; width:100%; height:auto;
+    /* high-quality downscale (la imagen es 3280px, se renderiza ~1144px) */
+    image-rendering: auto;
+    image-rendering: high-quality;
+    image-rendering: -webkit-optimize-contrast;
+    -ms-interpolation-mode: bicubic;
+    /* fuerza composite layer GPU con buena calidad para sobrevivir el rotateX del padre */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
   .dash-grid{display:grid; grid-template-columns: 1fr 1fr; gap: 12px; height:100%}
   .pc{background:#fff; border:1px solid #E8EAEE; border-radius:12px; padding:14px}
