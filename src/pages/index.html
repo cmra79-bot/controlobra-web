@@ -1005,6 +1005,103 @@
     .cta-final h2{ font-size: clamp(22px, 5.5vw, 28px) !important }
   }
 
+  /* ─────────────────────────────────────────────────────────────
+     DEMO MODAL
+  ───────────────────────────────────────────────────────────── */
+  .demo-overlay{
+    position:fixed; inset:0; z-index:850;
+    background:rgba(10,13,18,.72);
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    display:grid; place-items:center;
+    padding:clamp(16px,4vw,40px);
+    opacity:0; pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .demo-overlay.open{ opacity:1; pointer-events:all }
+  .demo-modal{
+    background:#fff; border-radius:22px;
+    width:100%; max-width:500px;
+    padding:clamp(28px,5vw,44px);
+    position:relative;
+    transform:translateY(22px) scale(.96);
+    transition:transform .38s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 60px 140px rgba(0,0,0,.25),0 0 0 1px rgba(0,0,0,.06);
+    max-height:90dvh; overflow-y:auto;
+  }
+  .demo-overlay.open .demo-modal{ transform:translateY(0) scale(1) }
+  .demo-close{
+    position:absolute; top:16px; right:16px;
+    width:32px; height:32px; border-radius:99px;
+    background:#F7F8FA; border:none; cursor:pointer;
+    display:grid; place-items:center; color:#6B7280;
+    transition:background .15s, color .15s;
+  }
+  .demo-close:hover{ background:#E8EAEE; color:#0E1116 }
+  .demo-kicker{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:#F26B1F;
+    background:rgba(242,107,31,.08); border-radius:99px;
+    padding:4px 10px; margin-bottom:12px;
+  }
+  .demo-header h3{
+    font-size:22px; font-weight:800; letter-spacing:-.02em;
+    color:#0E1116; margin:0 0 8px;
+  }
+  .demo-header p{ font-size:14px; color:#6B7280; margin:0; line-height:1.55 }
+  .df-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px }
+  .df-group{ display:flex; flex-direction:column; gap:5px; margin-bottom:14px }
+  .df-label{ font-size:12.5px; font-weight:600; color:#374151; letter-spacing:-.005em }
+  .df-input,.df-select{
+    height:42px; border:1.5px solid #E8EAEE; border-radius:10px;
+    padding:0 14px; font-size:14px;
+    font-family:'Inter',system-ui,sans-serif;
+    color:#0E1116; background:#fff; outline:none;
+    width:100%; box-sizing:border-box;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .df-input::placeholder{ color:#B0B8C4 }
+  .df-input:focus,.df-select:focus{
+    border-color:#F26B1F;
+    box-shadow:0 0 0 3px rgba(242,107,31,.12);
+  }
+  .df-select{
+    cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+    padding-right:36px;
+  }
+  .df-submit{
+    width:100%; height:48px; border-radius:12px;
+    background:#F26B1F; color:#fff; border:none; cursor:pointer;
+    font-size:15px; font-weight:700;
+    font-family:'Inter',system-ui,sans-serif;
+    letter-spacing:-.01em;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-top:22px;
+    transition:background .2s, transform .15s, box-shadow .2s;
+    box-shadow:0 8px 24px rgba(242,107,31,.35);
+  }
+  .df-submit:hover:not(:disabled){
+    background:#e55f10; transform:translateY(-1px);
+    box-shadow:0 12px 32px rgba(242,107,31,.45);
+  }
+  .df-submit:active:not(:disabled){ transform:translateY(0) }
+  .df-submit:disabled{ opacity:.6; cursor:not-allowed }
+  .df-fine{ font-size:11.5px; color:#9CA3AF; text-align:center; margin-top:12px }
+  .demo-success{ display:none; text-align:center; padding:20px 0 8px }
+  .demo-success .ok-icon{
+    width:64px; height:64px; border-radius:50%;
+    background:rgba(16,185,129,.1);
+    display:grid; place-items:center; margin:0 auto 18px;
+  }
+  .demo-success h3{ font-size:20px; font-weight:800; color:#0E1116; margin:0 0 8px }
+  .demo-success p{ font-size:14px; color:#6B7280; margin:0 }
+  @media(max-width:480px){
+    .df-row{ grid-template-columns:1fr }
+    .demo-header h3{ font-size:19px }
+  }
+
   /* ───── WhatsApp Floating Button ───── */
   .wa-fab{
     position: fixed;
@@ -1190,7 +1287,7 @@ const html = `
         <span class="moon">${I.moon}</span>
       </button>
       <a class="btn ghost" href="https://app.controlobra.ai/login" rel="noopener">Iniciar sesión</a>
-      <a class="btn primary shimmer" href="https://app.controlobra.ai/login" rel="noopener">Demo gratis</a>
+      <button class="btn primary shimmer" data-demo>Demo gratis</button>
     </div>
   </div>
 </nav>
@@ -2219,8 +2316,8 @@ const html = `
     <h2>La <span class="serif">IA</span> ya está aquí. <b>Que trabaje por ti.</b></h2>
     <p>Agenda una demo de 30 minutos. Te mostramos cómo la IA de CMP arma tu primer presupuesto en vivo, con un proyecto real tuyo cargado.</p>
     <div class="cta-row">
-      <a class="btn orange big shimmer" href="https://app.controlobra.ai/login" rel="noopener">Solicitar demo guiada ${I.arr}</a>
-      <a class="btn ghost big" href="mailto:ventas@controlobra.ai" style="color:#fff">Hablar con ventas</a>
+      <button class="btn orange big shimmer" data-demo>Solicitar demo guiada ${I.arr}</button>
+      <a class="btn ghost big" href="https://wa.me/18096376377?text=Hola%2C%20quisiera%20hablar%20con%20ventas%20de%20CMP." target="_blank" rel="noopener" style="color:#fff">Hablar por WhatsApp</a>
     </div>
     <div class="micro">SIN TARJETA · SIN COMPROMISO · CANCELAS CUANDO QUIERAS</div>
   </div>
@@ -2300,6 +2397,77 @@ const html = `
     </div>
   </div>
 </footer>
+
+<!-- ─── DEMO MODAL ─── -->
+<div class="demo-overlay" id="demoOverlay" role="dialog" aria-modal="true" aria-label="Solicitar demo de CMP">
+  <div class="demo-modal">
+    <button class="demo-close" id="demoClose" aria-label="Cerrar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="demo-header" style="margin-bottom:24px">
+      <div class="demo-kicker">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Demo de 30 minutos · Gratis · Sin compromiso
+      </div>
+      <h3>Conoce CMP en vivo</h3>
+      <p>Te mostramos el ERP con un proyecto de tu empresa cargado. Ves cómo funciona para tu operación exacta.</p>
+    </div>
+
+    <form id="demoForm" novalidate>
+      <input type="hidden" name="_subject" value="Nueva solicitud de demo — controlobra.ai">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+
+      <div class="df-row">
+        <div class="df-group">
+          <label class="df-label" for="df_nombre">Nombre completo *</label>
+          <input class="df-input" id="df_nombre" name="nombre" type="text" placeholder="Carlos Ramírez" required autocomplete="name">
+        </div>
+        <div class="df-group">
+          <label class="df-label" for="df_empresa">Empresa / Constructora *</label>
+          <input class="df-input" id="df_empresa" name="empresa" type="text" placeholder="Constructora MG" required autocomplete="organization">
+        </div>
+      </div>
+
+      <div class="df-row">
+        <div class="df-group">
+          <label class="df-label" for="df_obras">Obras activas</label>
+          <select class="df-select" id="df_obras" name="obras_activas">
+            <option value="" disabled selected>Seleccionar…</option>
+            <option>1 obra</option>
+            <option>2 – 5 obras</option>
+            <option>6 – 15 obras</option>
+            <option>16 o más</option>
+          </select>
+        </div>
+        <div class="df-group">
+          <label class="df-label" for="df_tel">WhatsApp *</label>
+          <input class="df-input" id="df_tel" name="whatsapp" type="tel" placeholder="+1 809 000 0000" required autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="df-group" style="margin-bottom:0">
+        <label class="df-label" for="df_email">Correo electrónico *</label>
+        <input class="df-input" id="df_email" name="email" type="email" placeholder="carlos@constructora.com" required autocomplete="email">
+      </div>
+
+      <button class="df-submit" type="submit" id="dfBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 12 21 4l-4 17-5-8-9-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Agendar demo gratuita
+      </button>
+      <p class="df-fine">Sin tarjeta de crédito · Cancelas cuando quieras</p>
+    </form>
+
+    <div class="demo-success" id="demoSuccess">
+      <div class="ok-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="#10B981" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>¡Listo, te contactamos pronto!</h3>
+      <p>Recibirás un mensaje de WhatsApp en las próximas horas para agendar la sesión.</p>
+    </div>
+  </div>
+</div>
 
 <!-- ─── WhatsApp Floating Button ─── -->
 <a class="wa-fab"
@@ -2473,12 +2641,105 @@ calcROI();
 
 /* ───── 10. LIVE TICKER COUNTERS ───── */
 let liveOnline = 12;
+
 setInterval(()=>{
   liveOnline += Math.random() > .5 ? 1 : -1;
   liveOnline = Math.max(8, Math.min(18, liveOnline));
   const el = document.getElementById('liveOnline');
   if(el) el.textContent = liveOnline;
 }, 6000);
+
+/* ───── 11. DEMO MODAL ───── */
+(function(){
+  // FormSubmit.co: envía emails a controlfinance@hotmail.com sin necesidad de backend.
+  // Primera vez que alguien envíe el form, llegarás un email de activación a tu correo.
+  // Haz clic en el enlace de ese email y desde ese momento todos los leads llegan automáticamente.
+  const SUBMIT_URL = 'https://formsubmit.co/ajax/controlfinance@hotmail.com';
+
+  const overlay = document.getElementById('demoOverlay');
+  const closeBtn = document.getElementById('demoClose');
+  const form     = document.getElementById('demoForm');
+  const success  = document.getElementById('demoSuccess');
+  const submitBtn = document.getElementById('dfBtn');
+  if (!overlay) return;
+
+  function openDemo(){
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // reset por si ya había enviado antes
+    if(form) { form.style.display=''; form.reset(); }
+    if(success) success.style.display = 'none';
+    if(submitBtn){ submitBtn.disabled=false; submitBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 12 21 4l-4 17-5-8-9-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> Agendar demo gratuita'; }
+    // focus primer campo
+    setTimeout(()=>{ document.getElementById('df_nombre')?.focus(); }, 200);
+  }
+
+  function closeDemo(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Abrir desde cualquier botón con data-demo
+  document.querySelectorAll('[data-demo]').forEach(el=>{
+    el.addEventListener('click', e=>{ e.preventDefault(); openDemo(); });
+  });
+
+  // Cerrar con X
+  closeBtn?.addEventListener('click', closeDemo);
+
+  // Cerrar al clicar el fondo oscuro
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) closeDemo(); });
+
+  // Cerrar con ESC
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDemo(); });
+
+  // Submit del form
+  form?.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+
+    // Validación básica
+    const req = form.querySelectorAll('[required]');
+    let valid = true;
+    req.forEach(f=>{ if(!f.value.trim()){ f.style.borderColor='#EF4444'; valid=false; } else f.style.borderColor=''; });
+    if(!valid){ req[0]?.focus(); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Enviando…';
+
+    try {
+      const data = new FormData(form);
+      const res  = await fetch(SUBMIT_URL, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: data,
+      });
+      const json = await res.json();
+
+      if(json.success === 'true' || json.success === true){
+        form.style.display = 'none';
+        success.style.display = 'block';
+        setTimeout(closeDemo, 5000);
+      } else {
+        throw new Error('form error');
+      }
+    } catch(_){
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 12 21 4l-4 17-5-8-9-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> Agendar demo gratuita';
+      // fallback: WhatsApp
+      window.open('https://wa.me/18096376377?text=Hola%2C%20quiero%20solicitar%20una%20demo%20de%20CMP%20para%20mi%20constructora.', '_blank');
+    }
+  });
+
+  // Quitar borde rojo al escribir
+  form?.querySelectorAll('.df-input,.df-select').forEach(f=>{
+    f.addEventListener('input', ()=>{ f.style.borderColor=''; });
+  });
+})();
+
+// keyframe del spinner
+const _demoStyle = document.createElement('style');
+_demoStyle.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+document.head.appendChild(_demoStyle);
 </script>
 </body>
 </html>
