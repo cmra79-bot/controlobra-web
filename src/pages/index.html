@@ -1280,6 +1280,7 @@ const html = `
       <a href="#flujo">Cómo funciona</a>
       <a href="#ia" class="has-dot">IA</a>
       <a href="#roi">ROI</a>
+      <a href="#precios-obra">Precios Obra</a>
     </div>
     <div class="nav-cta">
       <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
@@ -1744,6 +1745,141 @@ const html = `
           <div class="ph"><span class="dot"></span>Retención 5%<span class="num">−$252 K</span></div>
           <div class="ph"><span class="dot"></span>Por cobrar<span class="num">$4.79 M</span></div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRECIOS OBRA ─── -->
+<style>
+  .po-sec{ background: var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line); overflow:hidden; padding:50px 0 }
+  .po-grid{ display:grid; grid-template-columns:.92fr 1.08fr; gap:46px; align-items:center }
+  .po-flag{ width:27px; height:18px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,.22); flex:none }
+  .po-sec .sec-tag{ display:inline-flex; align-items:center; gap:9px }
+  .po-sec h2{ margin:0 0 12px; font-size:clamp(32px,4vw,52px); font-weight:300; letter-spacing:-.02em; line-height:1.05 }
+  .po-sec h2 b{ font-weight:800 }
+  .po-sec h2 .serif{ color:var(--orange); font-weight:300 }
+  @media(max-width:640px){ .po-sec h2{ font-size:clamp(22px,5.6vw,28px); line-height:1.1 } }
+  .po-list{ display:flex; flex-direction:column; gap:12px; margin:16px 0 18px }
+  .po-l{ display:grid; grid-template-columns:34px 1fr; gap:13px; align-items:flex-start }
+  .po-l .c{ width:34px; height:34px; border-radius:9px; background:var(--orange-soft); color:var(--orange-deep); display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; box-shadow:inset 0 0 0 1px rgba(242,107,31,.2) }
+  .po-l h4{ margin:0 0 3px; font-size:14.5px; font-weight:800; letter-spacing:-.005em }
+  .po-l p{ margin:0; font-size:13px; color:var(--muted); line-height:1.5 }
+  .po-lead{ text-align:justify }
+  .po-cats-block{ margin-top:30px }
+  .po-cat-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:16px }
+  .po-cat-card{ background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:17px 14px; text-align:center; transition:border-color .18s, transform .18s, box-shadow .18s }
+  .po-cat-card:hover{ border-color:var(--orange); transform:translateY(-3px); box-shadow:0 18px 34px -20px rgba(242,107,31,.4) }
+  .po-cat-card .ci{ width:46px; height:46px; border-radius:13px; display:grid; place-items:center; margin:0 auto 12px }
+  .po-cat-card .cn{ font-size:13.5px; font-weight:800; color:var(--ink); letter-spacing:-.01em }
+  @media(max-width:760px){ .po-cat-grid{ grid-template-columns:repeat(3,1fr) } }
+  @media(max-width:460px){ .po-cat-grid{ grid-template-columns:repeat(2,1fr) } }
+  .po-cta{ display:flex; align-items:center; gap:15px; flex-wrap:wrap }
+  .po-free{ font-size:13px; color:var(--muted) }
+  /* mockup: base de datos interactiva */
+  .po-vis{
+    background: linear-gradient(160deg, #1B2029, #0A0D12);
+    border-radius:22px; padding:20px; color:#fff; position:relative; overflow:hidden;
+    box-shadow: 0 60px 100px -30px rgba(242,107,31,.18), 0 40px 80px -30px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.08);
+    transform: perspective(2000px) rotateY(-3deg); transition: transform .6s ease;
+  }
+  .po-vis:hover{ transform: perspective(2000px) rotateY(0deg) }
+  .po-vis::before{ content:''; position:absolute; inset:0; background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px); background-size:34px 34px }
+  .po-vis::after{ content:''; position:absolute; right:-90px; top:-90px; width:280px; height:280px; background: radial-gradient(circle, rgba(242,107,31,.4), transparent 60%) }
+  .po-vis-in{ position:relative; z-index:1 }
+  .po-vis-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:13px }
+  .po-vis-title{ font-size:11px; font-weight:800; letter-spacing:.14em; color:#9AA3B2 }
+  .po-live{ display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-family:'JetBrains Mono',monospace; color:#7DD3A8 }
+  .po-live b{ width:6px; height:6px; border-radius:99px; background:#22C55E; box-shadow:0 0 8px rgba(34,197,94,.8) }
+  .po-search{ display:flex; align-items:center; gap:9px; padding:9px 13px; border:1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); border-radius:11px; color:#6B7280; font-size:12.5px; margin-bottom:12px }
+  .po-row{ display:grid; grid-template-columns:30px 1fr auto; gap:11px; align-items:center; padding:9px 10px; border-radius:12px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); margin-bottom:6px }
+  .po-row .ic{ width:30px; height:30px; border-radius:8px; background: rgba(242,107,31,.16); color:#FFA265; display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800 }
+  .po-row .nm{ font-size:13px; font-weight:700; color:#fff; line-height:1.2 }
+  .po-row .sub{ font-size:10.5px; color:#8A93A0; margin-top:2px; display:flex; align-items:center; gap:6px }
+  .po-row .zdot{ width:7px; height:7px; border-radius:99px; display:inline-block; flex:none }
+  .po-row .pr{ text-align:right }
+  .po-row .pr .p{ font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15px; color:#fff }
+  .po-row .pr .u{ font-size:10px; color:#8A93A0 }
+  .po-bar{ height:4px; border-radius:3px; background: rgba(255,255,255,.08); position:relative; margin-top:6px }
+  .po-bar span{ position:absolute; top:-2px; width:8px; height:8px; border-radius:99px; background: var(--orange); border:2px solid #12161C }
+  @media (max-width:900px){ .po-grid{ grid-template-columns:1fr; gap:32px } .po-vis{ transform:none } }
+</style>
+<section class="po-sec" id="precios-obra">
+  <div class="container">
+    <div class="po-grid">
+      <!-- LEFT: texto -->
+      <div class="reveal">
+        <div class="sec-tag">
+          <svg class="po-flag" viewBox="0 0 30 20" aria-label="República Dominicana">
+            <rect width="30" height="20" fill="#fff"/>
+            <rect x="0" y="0" width="12.5" height="7.5" fill="#002D62"/>
+            <rect x="17.5" y="0" width="12.5" height="7.5" fill="#CE1126"/>
+            <rect x="0" y="12.5" width="12.5" height="7.5" fill="#CE1126"/>
+            <rect x="17.5" y="12.5" width="12.5" height="7.5" fill="#002D62"/>
+          </svg>
+          Gratis · Datos abiertos · RD
+        </div>
+        <h2>Precios Obra: ¿cuánto cuesta <b>construir hoy</b> en <span class="serif">RD</span>?</h2>
+        <p class="po-lead">La base de datos colaborativa de precios de construcción del país — verificada por la comunidad técnica, por zona y siempre al día. Gratis y sin cuenta para consultar.</p>
+
+        <div class="po-list">
+          <div class="po-l"><div class="c">01</div><div><h4>Busca por zona</h4><p>El precio de cualquier material, jornal, equipo o subcontrato, según dónde construyes.</p></div></div>
+          <div class="po-l"><div class="c">02</div><div><h4>Compara mín · prom · máx</h4><p>Con la fecha de actualización y las validaciones de la comunidad técnica.</p></div></div>
+          <div class="po-l"><div class="c">03</div><div><h4>Aporta y gana puntos</h4><p>Suma precios que faltan y gana reputación por cada aporte aprobado.</p></div></div>
+        </div>
+
+        <div class="po-cta">
+          <a class="btn primary" href="https://app.controlobra.ai/login" rel="noopener">Entrar a Precios Obra</a>
+          <span class="po-free">Es gratis — inicia sesión y entra al catálogo.</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: mockup base de datos -->
+      <div class="reveal">
+        <div class="po-vis">
+          <div class="po-vis-in">
+            <div class="po-vis-top">
+              <div class="po-vis-title">CATÁLOGO DE PRECIOS · RD</div>
+              <span class="po-live"><b></b>en vivo</span>
+            </div>
+            <div class="po-search">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F26B1F" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+              Buscar cemento, varilla, mano de obra…
+            </div>
+            <div class="po-row">
+              <div class="ic">M</div>
+              <div><div class="nm">Cemento gris Portland</div><div class="sub"><span class="zdot" style="background:#2563EB"></span>Norte · funda 42.5 kg · <span style="color:#7DD3A8">✓ 24</span></div><div class="po-bar"><span style="left:44%"></span></div></div>
+              <div class="pr"><div class="p">385</div><div class="u">funda</div></div>
+            </div>
+            <div class="po-row">
+              <div class="ic">M</div>
+              <div><div class="nm">Varilla 1/2" grado 40</div><div class="sub"><span class="zdot" style="background:#EF4444"></span>Sur · quintal · <span style="color:#7DD3A8">✓ 18</span></div><div class="po-bar"><span style="left:48%"></span></div></div>
+              <div class="pr"><div class="p">3,180</div><div class="u">qq</div></div>
+            </div>
+            <div class="po-row">
+              <div class="ic">O</div>
+              <div><div class="nm">Maestro constructor</div><div class="sub"><span class="zdot" style="background:#2563EB"></span>Norte · jornal · <span style="color:#7DD3A8">✓ 15</span></div><div class="po-bar"><span style="left:43%"></span></div></div>
+              <div class="pr"><div class="p">2,200</div><div class="u">día</div></div>
+            </div>
+            <div class="po-row">
+              <div class="ic">T</div>
+              <div><div class="nm">Camión volteo — arena</div><div class="sub"><span class="zdot" style="background:#FACC15"></span>Este · viaje 12 m³ · <span style="color:#7DD3A8">✓ 9</span></div><div class="po-bar"><span style="left:46%"></span></div></div>
+              <div class="pr"><div class="p">5,800</div><div class="u">viaje</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- categorías: qué puedes consultar (fila simétrica de 5) -->
+    <div class="po-cats-block reveal">
+      <div class="sec-tag" style="justify-content:center; margin:0 auto 4px; width:max-content"><span class="d"></span>Qué puedes consultar</div>
+      <div class="po-cat-grid">
+        <div class="po-cat-card"><div class="ci" style="background:#FFE3CC"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#C5501A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v9"/></svg></div><div class="cn">Materiales</div></div>
+        <div class="po-cat-card"><div class="ci" style="background:#F1ECFD"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z"/><path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M4 15v-3a6 6 0 0 1 6-6"/><path d="M20 15v-3a6 6 0 0 0-6-6"/></svg></div><div class="cn">Mano de obra</div></div>
+        <div class="po-cat-card"><div class="ci" style="background:#E4F4F8"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#0E7490" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="cn">Equipos</div></div>
+        <div class="po-cat-card"><div class="ci" style="background:#FEF3D6"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18h-5"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="8" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div><div class="cn">Transporte</div></div>
+        <div class="po-cat-card"><div class="ci" style="background:#E7F6EC"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M15 2v5h5"/><path d="M9 14l2 2 4-4"/></svg></div><div class="cn">Subcontratos</div></div>
       </div>
     </div>
   </div>
