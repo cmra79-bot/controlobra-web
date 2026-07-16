@@ -1,0 +1,92 @@
+---
+import PrecioLayout from '../../../layouts/PrecioLayout.astro'
+import TablaPrecios from '../../../components/TablaPrecios.astro'
+import CtaCalculadora from '../../../components/CtaCalculadora.astro'
+import { getCategorias, getCategoria, TIPOS } from '../../../lib/precios.js'
+
+export async function getStaticPaths() {
+  const cats = await getCategorias()
+  return cats.map((c) => ({ params: { cat: c.slug } }))
+}
+
+const { cat } = Astro.params
+const data = await getCategoria(cat)
+if (!data) return Astro.redirect('/precios/')
+
+const tipo = TIPOS[data.tipo] || TIPOS.MATERIAL
+const title = `Precios de ${data.nombre.toLowerCase()} en República Dominicana 2026`
+const description = `Precios de ${data.nombre.toLowerCase()} en RD por zona (Norte, Sur, Este). ${data.total} productos reportados por la comunidad de Precios Obra.`
+
+// Otras categorías del mismo tipo, para enlaces internos.
+const cats = await getCategorias()
+const relacionadas = cats.filter((c) => c.tipo === data.tipo && c.slug !== cat).slice(0, 8)
+const APP = 'https://app.controlobra.ai/precios-obra'
+---
+<PrecioLayout title={title} description={description} canonicalPath={`/precios/categoria/${data.slug}`}>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Catálogo</a> <span>›</span> {data.nombre}
+  </nav>
+
+  <div class="head">
+    <span class="tipo" style={`--tc:${tipo.color};--tb:${tipo.bg}`}>{tipo.label}</span>
+    <h1>Precios de {data.nombre.toLowerCase()} en República Dominicana</h1>
+    <p class="lead">Precios de {data.nombre.toLowerCase()} en RD por zona (Cibao Norte, Sur y Este), según los reportes de la comunidad técnica de Precios Obra.</p>
+    <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.total} productos con precio</div>
+  </div>
+
+  <section>
+    <h2>Precios por producto y zona</h2>
+    <p class="sub">
+      {data.truncado
+        ? `Mostrando ${data.productos.length} de ${data.total} productos. Explorá el catálogo completo en la app.`
+        : 'Cada precio es el más reciente reportado por la comunidad para ese producto en cada zona.'}
+    </p>
+    <TablaPrecios productos={data.productos} />
+    {data.truncado && (
+      <a class="ver-todos" href={APP}>Ver los {data.total} productos en la app de Precios Obra ↗</a>
+    )}
+  </section>
+
+  <CtaCalculadora />
+
+  {relacionadas.length > 0 && (
+    <section>
+      <h2>Más categorías de {tipo.label.toLowerCase()}</h2>
+      <div class="chips">
+        {relacionadas.map((c) => (
+          <a class="chip" href={`/precios/categoria/${c.slug}`}>{c.nombre}<span class="n">{c.nProductos}</span></a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <p class="disc">Datos aportados por la comunidad de Precios Obra. Referenciales, no cotizaciones formales. Los precios varían por proveedor, volumen y fecha.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--brand-deep); }
+  .crumb span { color: var(--line-2); }
+
+  .head { margin-top: 20px; }
+  .tipo { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px; color: var(--tc); background: var(--tb); letter-spacing: .02em; }
+  h1 { font-size: clamp(30px, 5.5vw, 46px); font-weight: 800; line-height: 1.05; letter-spacing: -.02em; margin: 14px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 14px 0 0; max-width: 64ch; }
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px; background: var(--fresh-soft); color: var(--fresh); font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  section { margin-top: 42px; }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+
+  .ver-todos { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; color: var(--brand-deep); text-decoration: none; }
+  .ver-todos:hover { text-decoration: underline; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 15px; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); transition: border-color .15s, color .15s; }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+  .chip .n { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); font-weight: 400; }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
+</style>

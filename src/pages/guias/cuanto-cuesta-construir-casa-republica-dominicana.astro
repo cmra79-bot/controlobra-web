@@ -1,0 +1,167 @@
+---
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import { getCostoConstruccion, MATERIALES } from '../../lib/precios.js'
+
+const g = await getCostoConstruccion()
+const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
+
+const title = 'Cuánto cuesta construir una casa en República Dominicana 2026'
+const description = `Cuánto cuesta construir una casa en RD en 2026: precio por m² según terminación (desde RD$ ${fmt(g.porTerminacion[0].total)}/m²) y ejemplos por tamaño. Estimado con precios reales de la comunidad.`
+
+// Datos estructurados FAQ: Google puede mostrar las preguntas en el resultado.
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuánto cuesta construir una casa en República Dominicana en 2026?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Construir una casa de terminación estándar en RD cuesta alrededor de RD$ ${fmt(g.estandar.total)} por m² (todo incluido: materiales, mano de obra, indirectos e ITBIS). Una casa de 150 m² ronda los RD$ ${fmt(g.estandar.total * 150)}.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué incluye el precio por metro cuadrado?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Incluye el costo directo de obra (materiales y mano de obra), los indirectos (dirección técnica, administración, seguros, imprevistos y utilidad) y el ITBIS. No incluye el terreno ni el mobiliario.',
+      },
+    },
+  ],
+}
+
+const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintura']
+  .map((s) => MATERIALES.find((m) => m.slug === s)).filter(Boolean)
+---
+<PrecioLayout title={title} description={description} canonicalPath="/guias/cuanto-cuesta-construir-casa-republica-dominicana" jsonld={jsonld}>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Cuánto cuesta construir una casa
+  </nav>
+
+  <p class="eyebrow">Guía · República Dominicana</p>
+  <h1>¿Cuánto cuesta construir una casa en República Dominicana?</h1>
+  <p class="lead">Una estimación realista del costo de construir una casa en RD en 2026, con el precio por metro cuadrado según la terminación y ejemplos por tamaño. Los números salen del mismo modelo de la calculadora de ControlObra, con precios reales aportados por la comunidad.</p>
+
+  <div class="badge"><span class="dot"></span> Actualizado {g.actualizado}</div>
+
+  <div class="hero">
+    <div>
+      <div class="hlabel">Costo estándar · todo incluido</div>
+      <div class="big tnum">RD$ {fmt(g.estandar.total)}<small> / m²</small></div>
+      <div class="hnote">Materiales + mano de obra + indirectos ({g.indirectoPct}%) + ITBIS · casa de 1 nivel, terminación estándar</div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Precio por m² según la terminación</h2>
+    <p class="sub">A mejor terminación, mayor costo por metro cuadrado. Valores de referencia para casa de 1 nivel.</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Terminación</th><th class="num">Costo directo /m²</th><th class="num">Todo incluido /m²</th></tr>
+        </thead>
+        <tbody>
+          {g.porTerminacion.map((t) => (
+            <tr>
+              <td class="pn">{t.nombre}</td>
+              <td class="num tnum">RD$ {fmt(t.directo)}</td>
+              <td class="num price tnum">RD$ {fmt(t.total)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+    <p class="mini">«Todo incluido» = costo directo + indirectos ({g.indirectoPct}%) + ITBIS. No incluye el terreno.</p>
+  </section>
+
+  <section>
+    <h2>Cuánto costaría tu casa según el tamaño</h2>
+    <p class="sub">Ejemplos con terminación estándar (RD$ {fmt(g.estandar.total)}/m², todo incluido).</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Tamaño de la casa</th><th class="num">Costo estimado</th></tr>
+        </thead>
+        <tbody>
+          {g.tamanos.map((t) => (
+            <tr>
+              <td class="pn">{t.m2} m²</td>
+              <td class="num price tnum">RD$ {fmt(t.total)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section>
+    <h2>¿Qué incluye (y qué no) este costo?</h2>
+    <p><strong>Incluye:</strong> el costo directo de obra (todos los materiales y la mano de obra de cada capítulo: preliminares, estructura, mampostería, terminaciones, instalaciones, etc.), los indirectos (dirección técnica, gastos administrativos, seguros y fianzas, imprevistos y utilidad) y el ITBIS.</p>
+    <p><strong>No incluye:</strong> el terreno, los estudios y permisos, el mobiliario ni las amenidades especiales (piscina, jacuzzi). El precio también varía por zona: en el Este (zona turística) suele ser más alto y en el Sur algo más bajo.</p>
+  </section>
+
+  <section>
+    <h2>¿De qué depende el costo final?</h2>
+    <p>El costo de construir en RD lo definen sobre todo cuatro factores: el <strong>tamaño</strong> (más m², más costo, aunque el precio por m² baja un poco a mayor escala), la <strong>terminación</strong> (básica, estándar o premium), la <strong>zona</strong> del país y el <strong>precio de los materiales</strong> al momento de comprar. Como los materiales pesan buena parte del costo directo, conviene revisar los precios actuales antes de arrancar.</p>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Precios de los materiales clave</h2>
+    <p class="sub">Consultá el precio actualizado de lo que más pesa en una casa.</p>
+    <div class="chips">
+      {materialesClave.map((m) => (
+        <a class="chip" href={`/precios/${m.slug}`}>{m.emoji} {m.nombre}</a>
+      ))}
+    </div>
+  </section>
+
+  <p class="disc">Estimación referencial construida con el modelo de la calculadora de ControlObra y precios aportados por la comunidad. No sustituye un presupuesto profesional detallado. Los valores varían por zona, proveedor y fecha.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--brand-deep); }
+  .crumb span { color: var(--line-2); }
+
+  .eyebrow { margin-top: 22px; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-deep); }
+  h1 { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: clamp(28px, 5.5vw, 42px); line-height: 1.1; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 16px 0 0; max-width: 64ch; }
+
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px; background: var(--fresh-soft); color: var(--fresh); font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .hero { margin-top: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 26px 28px; box-shadow: var(--shadow); }
+  .hlabel { font-size: 12.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .big { font-size: clamp(38px, 8vw, 54px); font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-top: 8px; }
+  .big small { font-size: 20px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+  .hnote { font-size: 13px; color: var(--ink-2); margin-top: 8px; max-width: 52ch; }
+
+  section { margin-top: 44px; }
+  h2 { font-size: 21px; letter-spacing: -.02em; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  .mini { color: var(--muted); font-size: 12.5px; margin-top: 10px; }
+  p { margin: 0 0 14px; }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 360px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 12px 18px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 13px 18px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: color-mix(in srgb, var(--brand-soft) 30%, transparent); }
+  .pn { font-weight: 600; }
+  .price { font-weight: 700; font-family: 'DM Mono', monospace; font-size: 13.5px; white-space: nowrap; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--ink); background: var(--paper); transition: border-color .15s, color .15s; }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
+</style>

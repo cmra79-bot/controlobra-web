@@ -1,7 +1,7 @@
 ---
-// Layout de las páginas de precios (SEO). Renderiza el <head> completo con
-// título/descripción/canonical/Open Graph y, opcionalmente, datos estructurados
-// JSON-LD que se pasan como prop `jsonld`.
+// Layout de las páginas de precios (SEO), con el look de la app pública de
+// Precios Obra: fondo de cuadrícula, tipografía Archivo/Hanken/DM Mono, header
+// con el logo esfera. Renderiza el <head> completo con SEO + JSON-LD opcional.
 const {
   title,
   description,
@@ -23,10 +23,11 @@ const APP = 'https://app.controlobra.ai'
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
   <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#F0691E" />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="es_DO" />
-  <meta property="og:site_name" content="ControlObra" />
+  <meta property="og:site_name" content="PreciosObra · ControlObra" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
@@ -35,22 +36,28 @@ const APP = 'https://app.controlobra.ai'
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png" />
+  <link rel="icon" type="image/png" href="/assets/favicon-controlobra.png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-controlobra.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
 </head>
 <body>
   <header class="topbar">
     <div class="wrap bar">
-      <a class="logo" href="/">
-        <span class="mark">◐</span> ControlObra
+      <a class="brand" href="/precios/">
+        <img src="/assets/logo-icon.png" alt="" width="38" height="38" />
+        <span class="brand-tx">PreciosObra<small>REPÚBLICA DOMINICANA</small></span>
       </a>
       <nav class="nav">
-        <a href="/precios/">Precios</a>
+        <a href="/precios/">Catálogo</a>
+        <a href="/guias/">Guías</a>
         <a href={`${APP}/precios-obra/calculadora`}>Calculadora</a>
-        <a href="/">El ERP</a>
+        <a class="nav-cta" href={`${APP}/precios-obra`}>Abrir la app ↗</a>
       </nav>
     </div>
   </header>
@@ -61,13 +68,12 @@ const APP = 'https://app.controlobra.ai'
 
   <footer class="foot">
     <div class="wrap">
-      <p><strong>ControlObra</strong> · Precios abiertos de construcción de República Dominicana.</p>
-      <p class="tiny">Precios referenciales aportados por la comunidad, no cotizaciones formales. Un producto de Control Management Pro.</p>
+      <p><strong>PreciosObra</strong> · Datos abiertos de construcción de República Dominicana · un producto de ControlObra.</p>
+      <p class="tiny">Precios referenciales aportados por la comunidad técnica del país, no cotizaciones formales.</p>
     </div>
   </footer>
 
   <script is:inline>
-    // Respeta el tema del sistema y guarda la preferencia.
     (function () {
       try {
         var t = localStorage.getItem('theme')
@@ -81,43 +87,58 @@ const APP = 'https://app.controlobra.ai'
 
 <style is:global>
   :root {
-    --bg: #F7F8FA;
+    --bg: #FFFFFF;
     --paper: #FFFFFF;
-    --ink: #0A0D12;
-    --ink-2: #3B4149;
-    --muted: #6B7280;
-    --line: #E8EAEE;
-    --line-2: #DADEE4;
-    --brand: #F26B1F;
+    --paper-2: #FDFCFA;
+    --ink: #1F1913;
+    --ink-2: #5A5045;
+    --muted: #8A8175;
+    --line: #ECE7DF;
+    --line-2: #E0D9CE;
+    --brand: #F0691E;
     --brand-deep: #C5501A;
-    --brand-soft: #FFE3CC;
+    --brand-soft: #FDE4D3;
+    --brand-wash: #FEF3EA;
     --z-norte: #2A4FA0;
     --z-sur: #C24545;
     --z-este: #1F8A5B;
-    --up: #C24545;
-    --down: #1F8A5B;
-    --fresh: #1F8A5B;
-    --fresh-soft: #E5F2EB;
-    --shadow: 0 1px 2px rgba(10,13,18,.04), 0 10px 30px -14px rgba(10,13,18,.16);
+    --fresh: #15803D;
+    --fresh-soft: #E8F6EC;
+    /* colores por tipo de recurso (idénticos a la app) */
+    --t-material: #B8500F;   --t-material-bg: #FDE4D3;
+    --t-mo: #7C3AED;         --t-mo-bg: #F1ECFD;
+    --t-equipos: #0E7490;    --t-equipos-bg: #E4F4F8;
+    --t-transporte: #B45309; --t-transporte-bg: #FEF3D6;
+    --t-todo: #15803D;       --t-todo-bg: #E8F6EC;
+    --grid: rgba(80,100,130,0.05);
+    --grid-edge: rgba(80,100,130,0.085);
+    --shadow: 0 1px 2px rgba(31,25,19,.04), 0 10px 30px -16px rgba(31,25,19,.14);
   }
   :root[data-theme='dark'] {
-    --bg: #07090D;
-    --paper: #0F1318;
-    --ink: #E8EAEE;
-    --ink-2: #C2C8D0;
-    --muted: #9AA1AB;
-    --line: #1B2029;
-    --line-2: #262C36;
+    --bg: #12100E;
+    --paper: #1A1613;
+    --paper-2: #211C17;
+    --ink: #F3EDE4;
+    --ink-2: #CBC2B6;
+    --muted: #9A9186;
+    --line: #2A241E;
+    --line-2: #352E26;
     --brand: #FF8340;
     --brand-deep: #FFA268;
-    --brand-soft: #33200F;
+    --brand-soft: #3A2413;
+    --brand-wash: #241812;
     --z-norte: #6E93E0;
     --z-sur: #E58A8A;
     --z-este: #5CC297;
-    --up: #E58A8A;
-    --down: #5CC297;
     --fresh: #5CC297;
     --fresh-soft: #16281F;
+    --t-material: #E8925A;   --t-material-bg: #3A2413;
+    --t-mo: #B79AF5;         --t-mo-bg: #241A38;
+    --t-equipos: #56B6CE;    --t-equipos-bg: #102A31;
+    --t-transporte: #E0A65C; --t-transporte-bg: #33240F;
+    --t-todo: #5CC297;       --t-todo-bg: #16281F;
+    --grid: rgba(150,170,200,0.05);
+    --grid-edge: rgba(150,170,200,0.08);
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
   }
 
@@ -126,35 +147,41 @@ const APP = 'https://app.controlobra.ai'
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     margin: 0;
-    background: var(--bg);
     color: var(--ink);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='rgba(80,100,130,0.05)' stroke-width='1'><line x1='16' y1='0' x2='16' y2='80'/><line x1='32' y1='0' x2='32' y2='80'/><line x1='48' y1='0' x2='48' y2='80'/><line x1='64' y1='0' x2='64' y2='80'/><line x1='0' y1='16' x2='80' y2='16'/><line x1='0' y1='32' x2='80' y2='32'/><line x1='0' y1='48' x2='80' y2='48'/><line x1='0' y1='64' x2='80' y2='64'/></g><g fill='none' stroke='rgba(80,100,130,0.085)' stroke-width='1'><line x1='0' y1='0' x2='80' y2='0'/><line x1='0' y1='0' x2='0' y2='80'/></g></svg>");
   }
-  .wrap { width: 100%; max-width: 780px; margin: 0 auto; padding: 0 22px; }
+  h1, h2, h3 { font-family: 'Archivo', system-ui, sans-serif; }
+  .wrap { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 22px; }
   .tnum { font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'DM Mono', monospace; }
   a { color: inherit; }
 
   .topbar {
     position: sticky; top: 0; z-index: 30;
-    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
   }
-  .bar { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-  .logo { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 16px; letter-spacing: -.02em; text-decoration: none; }
-  .logo .mark {
-    width: 27px; height: 27px; border-radius: 8px; color: #fff; font-size: 15px;
-    display: grid; place-items: center;
-    background: linear-gradient(135deg, var(--brand), #F8A56A);
-  }
-  .nav { display: flex; gap: 20px; font-size: 14px; font-weight: 500; color: var(--muted); }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .brand img { display: block; }
+  .brand-tx { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -.02em; line-height: 1; color: var(--ink); display: flex; flex-direction: column; gap: 3px; }
+  .brand-tx small { font-family: 'DM Mono', monospace; font-weight: 400; font-size: 8.5px; letter-spacing: .14em; color: var(--muted); }
+  .nav { display: flex; align-items: center; gap: 22px; font-size: 14.5px; font-weight: 600; color: var(--ink-2); font-family: 'Hanken Grotesk', sans-serif; }
   .nav a { text-decoration: none; }
-  .nav a:hover { color: var(--ink); }
-  @media (max-width: 540px) { .nav a:last-child { display: none; } }
+  .nav a:hover { color: var(--brand-deep); }
+  .nav-cta {
+    color: #fff; background: var(--brand); padding: 9px 16px; border-radius: 999px;
+    font-weight: 700; white-space: nowrap; transition: background .15s ease;
+  }
+  .nav-cta:hover { color: #fff; background: var(--brand-deep); }
+  @media (max-width: 660px) { .nav a:not(.nav-cta) { display: none; } .brand-tx small { display: none; } }
 
-  .foot { margin-top: 64px; border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); }
-  .foot p { margin: 0 0 4px; font-size: 13px; }
+  .foot { margin-top: 70px; border-top: 1px solid var(--line); padding: 30px 0 52px; color: var(--muted); }
+  .foot p { margin: 0 0 5px; font-size: 13px; }
   .foot .tiny { font-size: 12px; }
 </style>
