@@ -1,0 +1,68 @@
+---
+// Tabla de precios: una fila por producto, una columna por zona (Norte/Sur/Este).
+import { ZONAS } from '../lib/precios.js'
+const { productos } = Astro.props
+
+const fmt = (v) =>
+  Number.isFinite(v)
+    ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 })
+    : '—'
+---
+<div class="table-card">
+  <div class="tscroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th class="num">Ud.</th>
+          {ZONAS.map((z) => (
+            <th class="num">
+              <span class="zdot" style={`--zc:${z.color}`}></span>{z.label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {productos.map((p) => (
+          <tr>
+            <td class="pn">
+              {p.nombre}
+              {p.marca && <span class="marca">{p.marca}</span>}
+            </td>
+            <td class="num ud">{p.unidad}</td>
+            {ZONAS.map((z) => (
+              <td class="num price tnum">
+                {p.zonas[z.id] ? `RD$ ${fmt(p.zonas[z.id])}` : '—'}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .table-card {
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    background: var(--paper); box-shadow: var(--shadow);
+  }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 480px; }
+  thead th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); font-weight: 700; padding: 12px 16px;
+    background: color-mix(in srgb, var(--bg) 60%, var(--paper));
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; white-space: nowrap;
+  }
+  th.num, td.num { text-align: right; }
+  .zdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--zc); margin-right: 6px; vertical-align: middle; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: color-mix(in srgb, var(--brand-soft) 30%, transparent); }
+  .pn { font-weight: 600; color: var(--ink); }
+  .marca { display: inline-block; margin-left: 8px; font-weight: 500; font-size: 12px; color: var(--muted); }
+  .ud { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  .price { font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 13px; white-space: nowrap; }
+</style>

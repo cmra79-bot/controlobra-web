@@ -1,0 +1,160 @@
+---
+// Layout de las páginas de precios (SEO). Renderiza el <head> completo con
+// título/descripción/canonical/Open Graph y, opcionalmente, datos estructurados
+// JSON-LD que se pasan como prop `jsonld`.
+const {
+  title,
+  description,
+  canonicalPath = '/',
+  jsonld = null,
+} = Astro.props
+
+const site = 'https://controlobra.ai'
+const canonical = new URL(canonicalPath, site).href
+const ogImage = `${site}/assets/og-image.png`
+const APP = 'https://app.controlobra.ai'
+---
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_DO" />
+  <meta property="og:site_name" content="ControlObra" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap bar">
+      <a class="logo" href="/">
+        <span class="mark">◐</span> ControlObra
+      </a>
+      <nav class="nav">
+        <a href="/precios/">Precios</a>
+        <a href={`${APP}/precios-obra/calculadora`}>Calculadora</a>
+        <a href="/">El ERP</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <slot />
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p><strong>ControlObra</strong> · Precios abiertos de construcción de República Dominicana.</p>
+      <p class="tiny">Precios referenciales aportados por la comunidad, no cotizaciones formales. Un producto de Control Management Pro.</p>
+    </div>
+  </footer>
+
+  <script is:inline>
+    // Respeta el tema del sistema y guarda la preferencia.
+    (function () {
+      try {
+        var t = localStorage.getItem('theme')
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', t)
+      } catch (e) {}
+    })()
+  </script>
+</body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #F7F8FA;
+    --paper: #FFFFFF;
+    --ink: #0A0D12;
+    --ink-2: #3B4149;
+    --muted: #6B7280;
+    --line: #E8EAEE;
+    --line-2: #DADEE4;
+    --brand: #F26B1F;
+    --brand-deep: #C5501A;
+    --brand-soft: #FFE3CC;
+    --z-norte: #2A4FA0;
+    --z-sur: #C24545;
+    --z-este: #1F8A5B;
+    --up: #C24545;
+    --down: #1F8A5B;
+    --fresh: #1F8A5B;
+    --fresh-soft: #E5F2EB;
+    --shadow: 0 1px 2px rgba(10,13,18,.04), 0 10px 30px -14px rgba(10,13,18,.16);
+  }
+  :root[data-theme='dark'] {
+    --bg: #07090D;
+    --paper: #0F1318;
+    --ink: #E8EAEE;
+    --ink-2: #C2C8D0;
+    --muted: #9AA1AB;
+    --line: #1B2029;
+    --line-2: #262C36;
+    --brand: #FF8340;
+    --brand-deep: #FFA268;
+    --brand-soft: #33200F;
+    --z-norte: #6E93E0;
+    --z-sur: #E58A8A;
+    --z-este: #5CC297;
+    --up: #E58A8A;
+    --down: #5CC297;
+    --fresh: #5CC297;
+    --fresh-soft: #16281F;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 780px; margin: 0 auto; padding: 0 22px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 16px; letter-spacing: -.02em; text-decoration: none; }
+  .logo .mark {
+    width: 27px; height: 27px; border-radius: 8px; color: #fff; font-size: 15px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--brand), #F8A56A);
+  }
+  .nav { display: flex; gap: 20px; font-size: 14px; font-weight: 500; color: var(--muted); }
+  .nav a { text-decoration: none; }
+  .nav a:hover { color: var(--ink); }
+  @media (max-width: 540px) { .nav a:last-child { display: none; } }
+
+  .foot { margin-top: 64px; border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); }
+  .foot p { margin: 0 0 4px; font-size: 13px; }
+  .foot .tiny { font-size: 12px; }
+</style>

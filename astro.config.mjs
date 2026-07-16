@@ -1,9 +1,11 @@
 import { defineConfig } from 'astro/config'
+import sitemap from '@astrojs/sitemap'
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://controlobra.ai',
   output: 'static',
+  integrations: [sitemap()],
   build: {
     // Genera la salida en `dist/` lista para Cloudflare Pages / Vercel.
     assets: '_assets',

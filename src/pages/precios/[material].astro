@@ -1,0 +1,144 @@
+---
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import TablaPrecios from '../../components/TablaPrecios.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import { MATERIALES, getMaterial } from '../../lib/precios.js'
+
+// Genera una página por cada material del catálogo, en tiempo de build.
+export async function getStaticPaths() {
+  return MATERIALES.map((m) => ({ params: { material: m.slug } }))
+}
+
+const { material } = Astro.params
+const data = await getMaterial(material)
+if (!data) return Astro.redirect('/precios/')
+
+const fmt = (v) =>
+  Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
+
+// Datos estructurados: Google puede mostrar el precio en el resultado.
+const jsonld = data.tipico
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: `${data.nombre} (precio en República Dominicana)`,
+      description: data.seoDesc,
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'DOP',
+        lowPrice: Math.round(data.minPrecio),
+        highPrice: Math.round(data.maxPrecio),
+        offerCount: data.nProductos,
+        areaServed: 'República Dominicana',
+      },
+    }
+  : null
+
+// Otros materiales para enlaces internos.
+const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
+---
+<PrecioLayout
+  title={data.seoTitle}
+  description={data.seoDesc}
+  canonicalPath={`/precios/${data.slug}`}
+  jsonld={jsonld}
+>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Precios</a> <span>›</span> {data.nombre}
+  </nav>
+
+  <p class="eyebrow">Precios de construcción · República Dominicana</p>
+  <h1>{data.h1}</h1>
+  <p class="lead">{data.intro}</p>
+
+  {data.nProductos > 0 ? (
+    <>
+      <div class="badge">
+        <span class="dot"></span> Actualizado {data.actualizado} · {data.nProductos} productos con precio
+      </div>
+
+      <div class="hero">
+        <div>
+          <div class="hlabel">Precio típico · {data.unidad}</div>
+          <div class="big tnum">RD$ {fmt(data.tipico)}</div>
+          <div class="hnote">Rango RD$ {fmt(data.minPrecio)} – {fmt(data.maxPrecio)} · {data.nProductos} productos reportados</div>
+        </div>
+        <div class="zonas">
+          {data.zonaStats.map((z) => (
+            <div class="zona" style={`--zc:${z.color}`}>
+              <div class="zl">{z.label}</div>
+              <div class="zp tnum">{z.prom ? `RD$ ${fmt(z.prom)}` : '—'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <section>
+        <h2>Precios por producto y zona</h2>
+        <p class="sub">Cada precio es el más reciente reportado por la comunidad para ese producto en cada zona.</p>
+        <TablaPrecios productos={data.productos} />
+      </section>
+    </>
+  ) : (
+    <div class="empty">
+      <p>Todavía no hay precios de {data.nombre.toLowerCase()} reportados en el catálogo.
+      ¿Conocés el precio? <a href="https://app.controlobra.ai/precios-obra/sugerir">Aportalo acá</a> y ayudás a toda la comunidad.</p>
+    </div>
+  )}
+
+  <section>
+    <h2>¿Por qué varía el precio?</h2>
+    <p>{data.porque}</p>
+    <p>Para una obra completa, un solo material no define el costo total. Antes de comprar conviene estimar el presupuesto completo —materiales, mano de obra e indirectos— con precios de tu zona.</p>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Otros precios de construcción en RD</h2>
+    <div class="chips">
+      {otros.map((m) => (
+        <a class="chip" href={`/precios/${m.slug}`}>{m.emoji} {m.nombre}</a>
+      ))}
+    </div>
+  </section>
+
+  <p class="disc">Datos aportados por la comunidad de Precios Obra. Referenciales, no cotizaciones formales. Los precios pueden variar por proveedor, volumen y fecha de compra.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--brand-deep); }
+  .crumb span { color: var(--line-2); }
+
+  .eyebrow { margin-top: 22px; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-deep); }
+  h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(30px, 6vw, 44px); line-height: 1.08; letter-spacing: -.01em; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 16px 0 0; max-width: 62ch; }
+
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px; background: var(--fresh-soft); color: var(--fresh); font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .hero { margin-top: 24px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 26px 28px; box-shadow: var(--shadow); display: flex; align-items: flex-end; justify-content: space-between; gap: 26px; flex-wrap: wrap; }
+  .hlabel { font-size: 12.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .big { font-size: clamp(38px, 8vw, 56px); font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-top: 8px; }
+  .hnote { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+  .zonas { display: flex; gap: 10px; }
+  .zona { border: 1px solid var(--line); border-left: 3px solid var(--zc); border-radius: 10px; padding: 10px 14px; min-width: 92px; }
+  .zl { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .zp { font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-top: 3px; }
+
+  section { margin-top: 44px; }
+  h2 { font-size: 21px; letter-spacing: -.02em; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  p { margin: 0 0 14px; }
+
+  .empty { margin-top: 24px; padding: 24px; border: 1px dashed var(--line-2); border-radius: 14px; color: var(--ink-2); }
+  .empty a { color: var(--brand-deep); font-weight: 600; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--ink); background: var(--paper); transition: border-color .15s, color .15s; }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
+</style>

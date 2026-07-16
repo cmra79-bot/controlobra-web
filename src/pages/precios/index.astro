@@ -1,0 +1,69 @@
+---
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import { MATERIALES, getMaterial } from '../../lib/precios.js'
+
+// Trae un resumen (promedio + unidad) de cada material para el índice.
+const items = await Promise.all(
+  MATERIALES.map(async (m) => {
+    const d = await getMaterial(m.slug)
+    return {
+      slug: m.slug,
+      nombre: m.nombre,
+      emoji: m.emoji,
+      unidad: m.unidad,
+      prom: d?.tipico ?? null,
+      n: d?.nProductos ?? 0,
+    }
+  })
+)
+
+const fmt = (v) =>
+  Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
+
+const title = 'Precios de materiales de construcción en República Dominicana 2026'
+const description =
+  'Precios actualizados de cemento, varilla, arena, block, pintura y más materiales de construcción en RD, por zona. Datos de la comunidad de Precios Obra.'
+---
+<PrecioLayout title={title} description={description} canonicalPath="/precios/">
+  <p class="eyebrow">República Dominicana</p>
+  <h1>Precios de materiales de construcción en RD</h1>
+  <p class="lead">Consultá el precio actualizado de los principales materiales de construcción en República Dominicana, por zona (Cibao Norte, Sur y Este). Datos reportados por la comunidad de constructores de Precios Obra.</p>
+
+  <div class="grid">
+    {items.map((it) => (
+      <a class="card" href={`/precios/${it.slug}`}>
+        <div class="top">
+          <span class="emoji">{it.emoji}</span>
+          <span class="name">{it.nombre}</span>
+        </div>
+        <div class="price tnum">{it.prom ? `RD$ ${fmt(it.prom)}` : 'Sin datos aún'}</div>
+        <div class="meta">{it.prom ? `típico · ${it.unidad}` : 'aportá el primero'}{it.n ? ` · ${it.n} productos` : ''}</div>
+        <span class="go">Ver precios →</span>
+      </a>
+    ))}
+  </div>
+
+  <p class="disc">Precios referenciales aportados por la comunidad. Pueden variar por proveedor, volumen y fecha. Actualizados continuamente.</p>
+</PrecioLayout>
+
+<style>
+  .eyebrow { margin-top: 30px; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-deep); }
+  h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(30px, 6vw, 44px); line-height: 1.08; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 16px 0 0; max-width: 64ch; }
+
+  .grid { margin-top: 32px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .card {
+    border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: var(--paper);
+    text-decoration: none; color: var(--ink); box-shadow: var(--shadow);
+    transition: border-color .15s ease, transform .15s ease; display: flex; flex-direction: column; gap: 5px;
+  }
+  .card:hover { border-color: var(--brand); transform: translateY(-2px); }
+  .top { display: flex; align-items: center; gap: 10px; }
+  .emoji { font-size: 22px; }
+  .name { font-weight: 700; font-size: 15px; }
+  .price { font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin-top: 6px; }
+  .meta { font-size: 12px; color: var(--muted); }
+  .go { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
+</style>
