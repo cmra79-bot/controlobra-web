@@ -1,0 +1,82 @@
+---
+import PrecioLayout from '../../../layouts/PrecioLayout.astro'
+import TablaPrecios from '../../../components/TablaPrecios.astro'
+import CtaCalculadora from '../../../components/CtaCalculadora.astro'
+import { TIPO_RESUMEN, getTopPorTipo, TIPOS } from '../../../lib/precios.js'
+
+export async function getStaticPaths() {
+  return Object.values(TIPO_RESUMEN).map((v) => ({ params: { tipo: v.slug } }))
+}
+
+const { tipo } = Astro.params
+const data = await getTopPorTipo(tipo)
+if (!data) return Astro.redirect('/precios/')
+
+const est = TIPOS[data.tipo] || TIPOS.MATERIAL
+const title = data.seoTitle
+const description = `${data.intro} ${data.mostrados} de ${data.total} ${data.nombre} con precio por zona.`
+
+// Enlaces a los otros resúmenes por tipo.
+const otros = Object.values(TIPO_RESUMEN).filter((v) => v.slug !== tipo)
+const APP = 'https://app.controlobra.ai/precios-obra'
+---
+<PrecioLayout title={title} description={description} canonicalPath={`/precios/resumen/${tipo}`}>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Catálogo</a> <span>›</span> {data.nombre}
+  </nav>
+
+  <div class="head">
+    <span class="tipo" style={`--tc:${est.color};--tb:${est.bg}`}>{est.label}</span>
+    <h1>Precios de {data.nombre} en República Dominicana</h1>
+    <p class="lead">{data.intro}</p>
+    <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.mostrados} principales de {data.total} con precio</div>
+  </div>
+
+  <section>
+    <h2>Los principales precios de {data.nombre}</h2>
+    <p class="sub">Selección de los {data.mostrados} más completos y actualizados, cada uno con su precio por zona (Cibao Norte, Sur y Este).</p>
+    <TablaPrecios productos={data.productos} />
+    <a class="ver-todos" href={APP}>Ver los {data.total} precios de {data.nombre} en la app ↗</a>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Otros precios de construcción</h2>
+    <div class="chips">
+      {otros.map((v) => (
+        <a class="chip" href={`/precios/resumen/${v.slug}`}>{v.emoji} {v.nombre.charAt(0).toUpperCase() + v.nombre.slice(1)}</a>
+      ))}
+      <a class="chip" href="/precios/">🗂️ Todas las categorías</a>
+    </div>
+  </section>
+
+  <p class="disc">Datos aportados por la comunidad de Precios Obra. Referenciales, no cotizaciones formales. Los precios varían por proveedor, volumen y fecha.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--brand-deep); }
+  .crumb span { color: var(--line-2); }
+
+  .head { margin-top: 20px; }
+  .tipo { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px; color: var(--tc); background: var(--tb); letter-spacing: .02em; }
+  h1 { font-size: clamp(30px, 5.5vw, 46px); font-weight: 800; line-height: 1.05; letter-spacing: -.02em; margin: 14px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 14px 0 0; max-width: 64ch; }
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px; background: var(--fresh-soft); color: var(--fresh); font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  section { margin-top: 42px; }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+
+  .ver-todos { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; color: var(--brand-deep); text-decoration: none; }
+  .ver-todos:hover { text-decoration: underline; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 15px; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); transition: border-color .15s, color .15s; }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
+</style>

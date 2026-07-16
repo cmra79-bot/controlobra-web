@@ -460,6 +460,43 @@ export async function getCategoria(slug) {
   }
 }
 
+// Páginas-resumen "los 30 principales por tipo" (materiales, equipos, mano de
+// obra, subcontratos). Selección: productos con más cobertura de zonas y más
+// recientes (no hay señal de popularidad en la BD).
+export const TIPO_RESUMEN = {
+  MATERIAL:   { slug: 'materiales',   nombre: 'materiales de construcción', emoji: '🧱',
+                seoTitle: 'Precios de los materiales de construcción más usados en RD 2026',
+                intro: 'Los precios de los principales materiales de construcción en República Dominicana, por zona, según los reportes de la comunidad de Precios Obra.' },
+  EQUIPOS:    { slug: 'equipos',      nombre: 'equipos y maquinaria', emoji: '🚜',
+                seoTitle: 'Precios de equipos y maquinaria de construcción en RD 2026',
+                intro: 'Los precios de alquiler y compra de equipos y maquinaria de construcción en RD, por zona, según los reportes de la comunidad de Precios Obra.' },
+  MANO_OBRA:  { slug: 'mano-de-obra', nombre: 'mano de obra', emoji: '👷',
+                seoTitle: 'Precios de mano de obra de construcción en RD 2026',
+                intro: 'Los precios de la mano de obra de construcción en República Dominicana (por partida y actividad), por zona, según los reportes de la comunidad de Precios Obra.' },
+  TODO_COSTO: { slug: 'subcontratos', nombre: 'subcontratos', emoji: '📋',
+                seoTitle: 'Precios de subcontratos de construcción en RD 2026',
+                intro: 'Los precios de subcontratos de construcción en RD (partidas a todo costo: material + mano de obra), por zona, según los reportes de la comunidad de Precios Obra.' },
+}
+
+export async function getTopPorTipo(slug, n = 30) {
+  const entry = Object.entries(TIPO_RESUMEN).find(([, v]) => v.slug === slug)
+  if (!entry) return null
+  const [tipo, def] = entry
+  const items = await fetchAll()
+  const productos = agrupar(items.filter((it) => it.tipo_recurso === tipo))
+  // Selección: más zonas primero, luego más reciente.
+  const zc = (p) => Object.keys(p.zonas).length
+  const ranked = [...productos].sort((a, b) => zc(b) - zc(a) || (b.fecha || '').localeCompare(a.fecha || ''))
+  const top = ranked.slice(0, n).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+  return {
+    tipo, ...def,
+    productos: top,
+    total: productos.length,
+    mostrados: top.length,
+    actualizado: fmtHoy(),
+  }
+}
+
 // Estadísticas del catálogo para la tarjeta "Estado del catálogo".
 export async function getStats() {
   try {
