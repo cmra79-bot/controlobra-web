@@ -478,16 +478,40 @@ export const TIPO_RESUMEN = {
                 intro: 'Los precios de subcontratos de construcción en RD (partidas a todo costo: material + mano de obra), por zona, según los reportes de la comunidad de Precios Obra.' },
 }
 
+// Materiales reconocibles que la gente busca (para que lideren, no accesorios).
+const MAT_RELEVANTES = ['cemento', 'varilla', 'cabilla', 'block', 'bloque', 'arena', 'grava', 'gravilla',
+  'cerámica', 'ceramica', 'porcelanato', 'pintura', 'tubo', 'tubería', 'tuberia', 'cable', 'zinc', 'aluzinc',
+  'madera', 'plywood', 'tablon', 'tablón', 'inodoro', 'lavamanos', 'alambre', 'clavo', 'mortero', 'acero',
+  'hierro', 'pega', 'impermeabilizante', 'tinaco', 'breaker', 'lámina', 'lamina', 'perfil', 'canaleta',
+  'sellador', 'aditivo', 'estribo', 'malla', 'polietileno', 'silicon']
+
 export async function getTopPorTipo(slug, n = 30) {
   const entry = Object.entries(TIPO_RESUMEN).find(([, v]) => v.slug === slug)
   if (!entry) return null
   const [tipo, def] = entry
   const items = await fetchAll()
   const productos = agrupar(items.filter((it) => it.tipo_recurso === tipo))
-  // Selección: más zonas primero, luego más reciente.
   const zc = (p) => Object.keys(p.zonas).length
-  const ranked = [...productos].sort((a, b) => zc(b) - zc(a) || (b.fecha || '').localeCompare(a.fecha || ''))
-  const top = ranked.slice(0, n).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+  // Para materiales, priorizar los reconocibles (cemento, varilla…) sobre
+  // accesorios (abrazaderas, adaptadores) que inundan por cobertura.
+  const rel = (p) => {
+    if (tipo !== 'MATERIAL') return 0
+    const nombre = (p.nombre || '').toLowerCase()
+    return MAT_RELEVANTES.some((k) => nombre.includes(k)) ? 1 : 0
+  }
+  const ranked = [...productos].sort((a, b) =>
+    rel(b) - rel(a) || zc(b) - zc(a) || (b.fecha || '').localeCompare(a.fecha || ''))
+  // Dedup por familia de nombre (1ª palabra): máx 2 variantes por tipo de
+  // producto, para que la tabla sea diversa y no 8 "alambre …".
+  const vistos = {}
+  const sel = []
+  for (const p of ranked) {
+    const clave = (p.nombre || '').toLowerCase().normalize('NFD').replace(/[^a-z ]/g, '').trim().split(' ')[0]
+    vistos[clave] = (vistos[clave] || 0) + 1
+    if (vistos[clave] <= 2) sel.push(p)
+    if (sel.length >= n) break
+  }
+  const top = sel.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
   return {
     tipo, ...def,
     productos: top,
@@ -495,6 +519,85 @@ export async function getTopPorTipo(slug, n = 30) {
     mostrados: top.length,
     actualizado: fmtHoy(),
   }
+}
+
+// ---------------------------------------------------------------------------
+// PÁGINAS POR PROVINCIA — cobertura de búsquedas locales ("precio del cemento
+// en Santiago"). Cada provincia se mapea a su zona (Norte/Sur/Este) y muestra
+// los precios de esa zona con marco local propio.
+// ---------------------------------------------------------------------------
+
+// Ciudades/apodos conocidos por provincia, para el copy (SEO local).
+const CIUDAD_PROV = {
+  'Distrito Nacional': 'Santo Domingo', 'La Altagracia': 'Higüey y Punta Cana',
+  'La Vega': 'La Vega y Jarabacoa', 'Espaillat': 'Moca', 'Duarte': 'San Francisco de Macorís',
+  'Peravia': 'Baní', 'Monseñor Nouel': 'Bonao', 'Sánchez Ramírez': 'Cotuí',
+  'Hermanas Mirabal': 'Salcedo', 'Valverde': 'Mao', 'María Trinidad Sánchez': 'Nagua',
+}
+
+let _zonasPromise = null
+function fetchZonas() {
+  if (!_zonasPromise) {
+    _zonasPromise = (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/zonas`)
+        return res.ok ? await res.json() : []
+      } catch { return [] }
+    })()
+  }
+  return _zonasPromise
+}
+
+export async function getProvincias() {
+  const zonas = await fetchZonas()
+  const out = []
+  for (const z of zonas) {
+    const provs = (z.provincias || '').split(',').map((p) => p.trim()).filter(Boolean)
+    for (const nombre of provs) {
+      out.push({
+        slug: slugify(nombre),
+        nombre,
+        ciudad: CIUDAD_PROV[nombre] || nombre,
+        zonaId: z.id,
+        zonaLabel: (ZONAS.find((zz) => zz.id === z.id) || {}).label || z.nombre,
+        zonaColor: z.color || '#F0691E',
+        provinciasZona: provs,
+      })
+    }
+  }
+  return out
+}
+
+// Resumen de los materiales curados (cemento, varilla…) con su precio típico
+// por zona. Memoizado: se calcula una vez y sirve a las 32 provincias.
+let _matResumenPromise = null
+function getMaterialesResumen() {
+  if (!_matResumenPromise) {
+    _matResumenPromise = (async () => {
+      const lista = await Promise.all(MATERIALES.map((m) => getMaterial(m.slug)))
+      return lista.filter(Boolean).map((d) => ({
+        slug: d.slug,
+        nombre: d.nombre,
+        unidad: d.unidad,
+        // precio típico por zona (mediana ya calculada en zonaStats)
+        zonas: Object.fromEntries(d.zonaStats.map((z) => [z.id, z.prom])),
+      }))
+    })()
+  }
+  return _matResumenPromise
+}
+
+export async function getProvincia(slug) {
+  const provincias = await getProvincias()
+  const def = provincias.find((p) => p.slug === slug)
+  if (!def) return null
+  // Materiales curados (recognizables) con el precio de la zona de la provincia.
+  const resumen = await getMaterialesResumen()
+  const productos = resumen
+    .filter((m) => Number.isFinite(m.zonas[def.zonaId]))
+    .map((m) => ({ slug: m.slug, nombre: m.nombre, unidad: m.unidad, precio: m.zonas[def.zonaId] }))
+  const hermanas = provincias.filter((p) => p.zonaId === def.zonaId && p.slug !== slug)
+  return { ...def, productos, hermanas, actualizado: fmtHoy() }
 }
 
 // Estadísticas del catálogo para la tarjeta "Estado del catálogo".

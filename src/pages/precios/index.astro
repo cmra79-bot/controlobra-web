@@ -1,10 +1,11 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
-import { MATERIALES, getMaterial, getCategorias, getStats, TIPOS, ORDEN_TIPOS, TIPO_RESUMEN } from '../../lib/precios.js'
+import { MATERIALES, getMaterial, getCategorias, getStats, getProvincias, TIPOS, ORDEN_TIPOS, TIPO_RESUMEN, ZONAS } from '../../lib/precios.js'
 
-const [cats, stats, destacadosRaw] = await Promise.all([
+const [cats, stats, provincias, destacadosRaw] = await Promise.all([
   getCategorias(),
   getStats(),
+  getProvincias(),
   Promise.all(
     MATERIALES.slice(0, 8).map(async (m) => {
       const d = await getMaterial(m.slug)
@@ -96,6 +97,22 @@ const description =
     ))}
   </section>
 
+  <section>
+    <h2>Precios por provincia</h2>
+    <p class="sub">Consultá los precios de tu provincia. Se agrupan por zona (Cibao Norte, Sur y Este).</p>
+    {ZONAS.map((z) => {
+      const provs = provincias.filter((p) => p.zonaId === z.id)
+      return provs.length > 0 && (
+        <div class="pgroup">
+          <div class="plabel" style={`--zc:${z.color}`}><span class="pd"></span>{z.label}</div>
+          <div class="chips">
+            {provs.map((p) => (<a class="chip" href={`/precios/provincia/${p.slug}`}>{p.nombre}</a>))}
+          </div>
+        </div>
+      )
+    })}
+  </section>
+
   <p class="disc">Precios referenciales aportados por la comunidad. Pueden variar por proveedor, volumen y fecha. Actualizados continuamente.</p>
 </PrecioLayout>
 
@@ -150,6 +167,10 @@ const description =
   .tc-emoji { font-size: 24px; }
   .tc-nombre { font-weight: 700; font-size: 15.5px; font-family: 'Archivo', sans-serif; }
   .tc-go { font-size: 12.5px; font-weight: 700; color: var(--tc); }
+
+  .pgroup { margin-bottom: 20px; }
+  .plabel { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 11px; }
+  .plabel .pd { width: 9px; height: 9px; border-radius: 50%; background: var(--zc); }
 
   .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
 </style>
