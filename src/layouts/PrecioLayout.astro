@@ -13,6 +13,9 @@ const site = 'https://controlobra.ai'
 const canonical = new URL(canonicalPath, site).href
 const ogImage = `${site}/assets/og-image.png`
 const APP = 'https://app.controlobra.ai'
+// Botón "compartir por WhatsApp": abre WhatsApp con el mensaje + link ya listos.
+const shareText = `${title}\n👉 ${canonical}\n\nPrecios reales de construcción en RD, gratis. Compartilo con quien esté construyendo 👷`
+const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 ---
 <!doctype html>
 <html lang="es" data-theme="light">
@@ -64,6 +67,12 @@ const APP = 'https://app.controlobra.ai'
 
   <main class="wrap">
     <slot />
+    <div class="wa-share">
+      <a href={waShare} target="_blank" rel="noopener" aria-label="Compartir por WhatsApp">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.15-1.7-.85-2-.95-.26-.1-.45-.15-.64.15-.19.28-.73.94-.9 1.13-.16.19-.33.2-.62.07-.29-.15-1.22-.45-2.33-1.44-.86-.77-1.44-1.71-1.61-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.5.15-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.08-.15-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.48-.16-.01-.36-.01-.55-.01-.19 0-.5.07-.77.36-.26.29-1 .98-1 2.38s1.03 2.76 1.17 2.95c.14.19 2.01 3.08 4.88 4.32.68.29 1.21.47 1.63.6.68.22 1.31.19 1.8.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34zM12 2a10 10 0 0 0-8.6 15.06L2 22l5.06-1.33A10 10 0 1 0 12 2z"/></svg>
+        Compartir por WhatsApp
+      </a>
+    </div>
   </main>
 
   <footer class="foot">
@@ -181,7 +190,16 @@ const APP = 'https://app.controlobra.ai'
   .nav-cta:hover { color: #fff; background: var(--brand-deep); }
   @media (max-width: 660px) { .nav a:not(.nav-cta) { display: none; } .brand-tx small { display: none; } }
 
-  .foot { margin-top: 70px; border-top: 1px solid var(--line); padding: 30px 0 52px; color: var(--muted); }
+  .wa-share { margin-top: 40px; display: flex; justify-content: center; }
+  .wa-share a {
+    display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+    background: #25D366; color: #fff; font-weight: 700; font-size: 15px;
+    padding: 12px 22px; border-radius: 999px; box-shadow: 0 8px 20px -10px rgba(37,211,102,.7);
+    transition: background .15s ease, transform .15s ease;
+  }
+  .wa-share a:hover { background: #1EBE5D; transform: translateY(-2px); color: #fff; }
+
+  .foot { margin-top: 40px; border-top: 1px solid var(--line); padding: 30px 0 52px; color: var(--muted); }
   .foot p { margin: 0 0 5px; font-size: 13px; }
   .foot .tiny { font-size: 12px; }
 </style>
