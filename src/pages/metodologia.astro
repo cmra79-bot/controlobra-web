@@ -1,0 +1,111 @@
+---
+import PrecioLayout from '../layouts/PrecioLayout.astro'
+import { getStats, getProvincias, ZONAS } from '../lib/precios.js'
+
+const [stats, provincias] = await Promise.all([getStats(), getProvincias()])
+const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
+
+const title = 'Metodología · cómo calculamos los precios de construcción en RD'
+const description = 'Cómo se recopilan, actualizan y calculan los precios de construcción de ControlObra: datos de la comunidad técnica de RD, por zona, con precio típico (mediana) y rango.'
+
+const APP = 'https://app.controlobra.ai/precios-obra'
+const zonasProv = ZONAS.map((z) => ({
+  ...z,
+  provs: provincias.filter((p) => p.zonaId === z.id).map((p) => p.nombre),
+}))
+---
+<PrecioLayout title={title} description={description} canonicalPath="/metodologia">
+  <nav class="crumb"><a href="/">Inicio</a> <span>›</span> Metodología</nav>
+
+  <p class="eyebrow">Sobre los datos</p>
+  <h1>Cómo calculamos los precios de construcción en RD</h1>
+  <p class="lead">PreciosObra es un catálogo abierto de precios de construcción de República Dominicana, construido con los reportes de la comunidad técnica del país. Acá te explicamos de dónde salen los datos, cómo se actualizan y cómo calculamos cada precio.</p>
+
+  {stats && (
+    <div class="stats">
+      <div class="st"><b class="tnum">{fmt(stats.total)}</b><span>precios publicados</span></div>
+      <div class="st"><b class="tnum">{fmt(stats.act30)}</b><span>actualizados en 30 días</span></div>
+      <div class="st"><b class="tnum">3</b><span>zonas del país</span></div>
+    </div>
+  )}
+
+  <section>
+    <h2>De dónde vienen los precios</h2>
+    <p>Los precios los aporta la <strong>comunidad técnica de la construcción en RD</strong> —ingenieros, maestros constructores, ferreteros y compradores— a través de la app de Precios Obra. Cada persona reporta lo que realmente paga por un material, equipo o mano de obra, en su zona. No son precios inventados ni copiados: son reportes reales de obra.</p>
+  </section>
+
+  <section>
+    <h2>Cómo se recopilan y actualizan</h2>
+    <p>Cada reporte incluye el producto, la unidad, la zona y la fecha. Los precios se agrupan por producto y por zona, y se muestran con su <strong>fecha de última actualización</strong>. El catálogo se actualiza de forma continua: cuando alguien aporta un precio más reciente, reemplaza al anterior y queda registrado el histórico. Hoy el catálogo tiene <strong>{fmt(stats?.total || 0)} precios publicados</strong>.</p>
+  </section>
+
+  <section>
+    <h2>Cómo calculamos el «precio típico»</h2>
+    <p>Cuando hay varios productos de un mismo material, mostramos un <strong>precio típico</strong> usando la <strong>mediana</strong> —el valor central— en lugar del promedio. La mediana es más robusta: no se distorsiona por un precio muy alto o muy bajo aislado. Junto al típico mostramos siempre el <strong>rango</strong> (del más barato al más caro) y el <strong>número de productos reportados</strong>, para que veas la dispersión real.</p>
+    <p>Los precios se muestran por <strong>zona</strong> (Cibao Norte, Sur y Este), porque el costo de un mismo material cambia según la región, sobre todo por el transporte.</p>
+  </section>
+
+  <section>
+    <h2>Las tres zonas y sus provincias</h2>
+    <p class="sub">Cada precio corresponde a una de estas tres zonas del país.</p>
+    <div class="zonas">
+      {zonasProv.map((z) => (
+        <div class="zcard" style={`--zc:${z.color}`}>
+          <div class="zt"><span class="zd"></span>{z.label}</div>
+          <div class="zp">{z.provs.join(' · ')}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <h2>Qué son (y qué no son) estos precios</h2>
+    <p>Son <strong>precios de referencia</strong> para orientar y comparar. <strong>No son una cotización formal</strong>: el precio final que pagues puede variar por proveedor, volumen de compra, fecha y condiciones específicas de tu obra. Úsalos como punto de partida, y confirmá siempre con tu proveedor antes de comprar.</p>
+  </section>
+
+  <section>
+    <h2>Quién está detrás</h2>
+    <p>PreciosObra es un producto de <strong>ControlObra (Control Management Pro)</strong>, el ERP de construcción para constructoras de vivienda en RD. Publicamos estos datos de forma abierta y gratuita para toda la comunidad, como parte de nuestra plataforma de presupuesto y control de obra.</p>
+  </section>
+
+  <section>
+    <h2>Cómo aportar o corregir un precio</h2>
+    <p>Si conocés un precio actualizado o ves uno desactualizado, podés aportarlo en la app de Precios Obra. Cada aporte mejora el catálogo para toda la comunidad.</p>
+    <a class="cta-link" href={`${APP}/sugerir`} target="_blank" rel="noopener">Aportar un precio en la app ↗</a>
+  </section>
+
+  <p class="disc">Precios referenciales aportados por la comunidad técnica de República Dominicana. No constituyen cotizaciones formales.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--brand-deep); }
+  .crumb span { color: var(--line-2); }
+
+  .eyebrow { margin-top: 22px; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-deep); }
+  h1 { font-size: clamp(29px, 5.2vw, 44px); font-weight: 800; line-height: 1.08; letter-spacing: -.02em; margin: 12px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 16px 0 0; max-width: 66ch; }
+
+  .stats { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .st { flex: 1; min-width: 150px; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--paper); box-shadow: var(--shadow); }
+  .st b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .st span { font-size: 12.5px; color: var(--muted); }
+
+  section { margin-top: 40px; }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 10px; }
+  .sub { color: var(--muted); font-size: 14px; margin: -4px 0 14px; }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  strong { font-weight: 700; }
+
+  .zonas { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .zcard { border: 1px solid var(--line); border-left: 4px solid var(--zc); border-radius: 12px; padding: 14px 18px; background: var(--paper); }
+  .zt { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+  .zt .zd { width: 9px; height: 9px; border-radius: 50%; background: var(--zc); }
+  .zp { font-size: 13.5px; color: var(--muted); margin-top: 6px; line-height: 1.7; }
+
+  .cta-link { display: inline-block; margin-top: 4px; font-size: 15px; font-weight: 700; color: var(--brand-deep); text-decoration: none; }
+  .cta-link:hover { text-decoration: underline; }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
+</style>
