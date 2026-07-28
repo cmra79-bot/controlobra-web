@@ -50,7 +50,7 @@ const description =
       {ORDEN_TIPOS.filter((t) => TIPO_RESUMEN[t]).map((t) => {
         const v = TIPO_RESUMEN[t]; const s = TIPOS[t] || {}
         return (
-          <a class="tcard" href={`/precios/resumen/${v.slug}`} style={`--tc:${s.color};--tb:${s.bg}`}>
+          <a class="tcard" href={`/precios/resumen/${v.slug}/`} style={`--tc:${s.color};--tb:${s.bg}`}>
             <span class="tc-emoji">{v.emoji}</span>
             <span class="tc-nombre">{v.nombre.charAt(0).toUpperCase() + v.nombre.slice(1)}</span>
             <span class="tc-go">Ver precios →</span>
@@ -64,7 +64,7 @@ const description =
     <h2>Materiales más buscados</h2>
     <div class="grid">
       {destacadosRaw.map((it) => (
-        <a class="card" href={`/precios/${it.slug}`}>
+        <a class="card" href={`/precios/${it.slug}/`}>
           <div class="top"><span class="emoji">{it.emoji}</span><span class="name">{it.nombre}</span></div>
           <div class="price tnum">{it.prom ? `RD$ ${fmt(it.prom)}` : '—'}</div>
           <div class="meta">{it.prom ? `típico · ${it.unidad}` : 'sin datos'}{it.n ? ` · ${it.n} productos` : ''}</div>
@@ -73,7 +73,7 @@ const description =
     </div>
   </section>
 
-  <a class="guia-banner" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana">
+  <a class="guia-banner" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana/">
     <div>
       <div class="gb-eyebrow">Guía</div>
       <div class="gb-title">¿Cuánto cuesta construir una casa en RD?</div>
@@ -90,7 +90,7 @@ const description =
         <div class="tlabel" style={`--tc:${g.color};--tb:${g.bg}`}>{g.label}<span class="tn">{g.cats.length}</span></div>
         <div class="chips">
           {g.cats.map((c) => (
-            <a class="chip" href={`/precios/categoria/${c.slug}`}>{c.nombre}<span class="n tnum">{c.nProductos}</span></a>
+            <a class="chip" href={`/precios/categoria/${c.slug}/`}>{c.nombre}<span class="n tnum">{c.nProductos}</span></a>
           ))}
         </div>
       </div>
@@ -106,7 +106,7 @@ const description =
         <div class="pgroup">
           <div class="plabel" style={`--zc:${z.color}`}><span class="pd"></span>{z.label}</div>
           <div class="chips">
-            {provs.map((p) => (<a class="chip" href={`/precios/provincia/${p.slug}`}>{p.nombre}</a>))}
+            {provs.map((p) => (<a class="chip" href={`/precios/provincia/${p.slug}/`}>{p.nombre}</a>))}
           </div>
         </div>
       )

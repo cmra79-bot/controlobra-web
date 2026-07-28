@@ -53,7 +53,7 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
 <PrecioLayout
   title={data.seoTitle}
   description={data.seoDesc}
-  canonicalPath={`/precios/${data.slug}`}
+  canonicalPath={`/precios/${data.slug}/`}
   jsonld={jsonld}
 >
   <nav class="crumb">
@@ -132,7 +132,7 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
     <h2>Otros precios de construcción en RD</h2>
     <div class="chips">
       {otros.map((m) => (
-        <a class="chip" href={`/precios/${m.slug}`}>{m.emoji} {m.nombre}</a>
+        <a class="chip" href={`/precios/${m.slug}/`}>{m.emoji} {m.nombre}</a>
       ))}
     </div>
   </section>

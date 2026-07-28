@@ -33,7 +33,7 @@ const jsonld = data.productos.length
 const title = `Precios de materiales de construcción en ${data.nombre} 2026`
 const description = `Precios de materiales de construcción en ${data.nombre}${enSantoDomingo ? ` (${data.ciudad})` : ''}, República Dominicana. Cemento, varilla, block, arena y más, actualizados por la comunidad.`
 ---
-<PrecioLayout title={title} description={description} canonicalPath={`/precios/provincia/${data.slug}`} jsonld={jsonld}>
+<PrecioLayout title={title} description={description} canonicalPath={`/precios/provincia/${data.slug}/`} jsonld={jsonld}>
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Catálogo</a> <span>›</span> {data.nombre}
   </nav>
@@ -55,7 +55,7 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
         <tbody>
           {data.productos.map((p) => (
             <tr>
-              <td class="pn">{p.slug ? <a href={`/precios/${p.slug}`}>{p.nombre}</a> : p.nombre}</td>
+              <td class="pn">{p.slug ? <a href={`/precios/${p.slug}/`}>{p.nombre}</a> : p.nombre}</td>
               <td class="num ud">{p.unidad}</td>
               <td class="num price tnum">RD$ {fmt(p.precio)}</td>
             </tr>
@@ -73,7 +73,7 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
       <h2>Precios en otras provincias de la zona {data.zonaLabel}</h2>
       <div class="chips">
         {data.hermanas.map((h) => (
-          <a class="chip" href={`/precios/provincia/${h.slug}`}>{h.nombre}</a>
+          <a class="chip" href={`/precios/provincia/${h.slug}/`}>{h.nombre}</a>
         ))}
       </div>
     </section>
