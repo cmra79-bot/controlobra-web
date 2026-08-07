@@ -7,10 +7,35 @@ const {
   description,
   canonicalPath = '/',
   jsonld = null,
+  // [{ nombre, path }] — la misma ruta que se ve arriba de la página. Google la
+  // muestra en el resultado en lugar de la URL cruda, que se lee mejor y ayuda
+  // al clic. Las migas ya existían visualmente pero sin marcado, así que Google
+  // no las entendía como estructura.
+  breadcrumbs = null,
 } = Astro.props
 
 const site = 'https://controlobra.ai'
 const canonical = new URL(canonicalPath, site).href
+
+const migasLd = breadcrumbs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((b, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: b.nombre,
+        item: new URL(b.path, site).href,
+      })),
+    }
+  : null
+
+// Se fusiona con lo que mande la página (Product, FAQPage, WebPage…).
+const bloques = [
+  ...(Array.isArray(jsonld) ? jsonld : jsonld ? [jsonld] : []),
+  ...(migasLd ? [migasLd] : []),
+]
+const jsonldFinal = bloques.length ? (bloques.length === 1 ? bloques[0] : bloques) : null
 const ogImage = `${site}/assets/og-image.png`
 const APP = 'https://app.controlobra.ai'
 // Botón "compartir por WhatsApp": abre WhatsApp con el mensaje + link ya listos.
@@ -48,7 +73,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+  {jsonldFinal && <script type="application/ld+json" set:html={JSON.stringify(jsonldFinal)} />}
 </head>
 <body>
   <header class="topbar">

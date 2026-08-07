@@ -1,0 +1,239 @@
+---
+/**
+ * Guía "¿Cuánto cuesta una pared de block en RD?"
+ *
+ * Ataca la consulta con más volumen del sitio desde el ángulo que el buscador
+ * no puede resumir. "Precio del block" te da un número que Google muestra en
+ * sus propios resultados; "cuánto cuesta MI pared" exige la cuenta, y esa solo
+ * se hace acá. Todos los números salen del catálogo real en tiempo de build.
+ */
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CalculadoraInline from '../../components/CalculadoraInline.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import { getParedBlock, isoHoy, mesAno } from '../../lib/precios.js'
+
+const g = await getParedBlock()
+const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
+const ref = g.referencia
+
+const title = `¿Cuánto cuesta una pared de block en RD? Costo por m² · ${mesAno()}`
+const description = `Cuánto sale levantar una pared de block en República Dominicana: costo por m² según el espesor (4", 6", 8"), cuántos blocks necesitás y ejemplos por tamaño de pared. Con precios reales actualizados a diario.`
+
+const respuesta = ref
+  ? `Levantar 1 m² de pared con block de ${ref.pulgadas}" cuesta alrededor de RD$ ${fmt(ref.costoM2)} solo en blocks, contando los ${g.blocksPorM2} blocks por m² más un 5% por roturas. Una pared de 40 m² sale unos RD$ ${fmt(40 * ref.costoM2)}. No incluye el mortero de pega, los refuerzos ni la mano de obra.`
+  : null
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      ...(ref ? [{
+        '@type': 'Question',
+        name: '¿Cuánto cuesta una pared de block en República Dominicana?',
+        acceptedAnswer: { '@type': 'Answer', text: respuesta },
+      }] : []),
+      {
+        '@type': 'Question',
+        name: '¿Cuántos blocks lleva 1 m² de pared?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Con block de cara 8" x 16" —el estándar en RD— se necesitan ${g.blocksPorM2} blocks por m² de pared. Conviene comprar un 5% extra por roturas y cortes, así que en la práctica se pide alrededor de ${Math.round(g.blocksPorM2 * g.extraRoturas)} blocks por m².`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Qué espesor de block conviene para una pared?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'El block de 6" es el más usado para muros de carga y fachadas. El de 4" se usa en divisiones internas, donde no hay carga. El de 8" y 12" se reservan para muros de contención, linderos y cargas mayores.',
+        },
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: 'https://controlobra.ai/guias/cuanto-cuesta-una-pared-de-block/',
+    dateModified: isoHoy(),
+    inLanguage: 'es-DO',
+  },
+]
+---
+<PrecioLayout
+  title={title}
+  description={description}
+  canonicalPath="/guias/cuanto-cuesta-una-pared-de-block/"
+  jsonld={jsonld}
+  breadcrumbs={[
+    { nombre: 'Inicio', path: '/' },
+    { nombre: 'Guías', path: '/guias/' },
+    { nombre: 'Cuánto cuesta una pared de block', path: '/guias/cuanto-cuesta-una-pared-de-block/' },
+  ]}
+>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Pared de block
+  </nav>
+
+  <p class="eyebrow">Guía · República Dominicana</p>
+  <h1>¿Cuánto cuesta una pared de block en RD?</h1>
+  <p class="lead">Saber el precio de un block no te dice cuánto sale tu pared. Acá está la cuenta completa del material: cuántos blocks lleva cada metro cuadrado, cuánto cuesta según el espesor que uses y qué falta sumarle.</p>
+
+  <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
+
+  {respuesta && (
+    <section class="directa">
+      <h2>La respuesta corta</h2>
+      <p>{respuesta}</p>
+    </section>
+  )}
+
+  {ref && (
+    <CalculadoraInline
+      rendimiento={{
+        pregunta: 'Calculá tu pared: ¿cuántos m² vas a levantar?',
+        unidadEntrada: 'm²', porUnidad: g.blocksPorM2, nombreSalida: 'blocks', decimales: 0,
+        extra: g.extraRoturas,
+        nota: `Calculado con block de ${ref.pulgadas}" (el más usado) e incluye un 5% extra por roturas. No incluye mortero, refuerzos ni mano de obra.`,
+      }}
+      precio={ref.precio}
+    />
+  )}
+
+  <section>
+    <h2>Costo por m² según el espesor del block</h2>
+    <p class="sub">Cada espesor tiene su precio y su uso. Usar un block más grueso del que la pared necesita encarece la obra sin aportar nada.</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Espesor</th><th>Para qué se usa</th><th class="num">Precio por block</th><th class="num">Costo por m² de pared</th></tr>
+        </thead>
+        <tbody>
+          {g.espesores.map((e) => (
+            <tr class={e.pulgadas === ref?.pulgadas ? 'destacada' : ''}>
+              <td class="pn">Block de {e.pulgadas}"{e.pulgadas === ref?.pulgadas && <span class="tag">más usado</span>}</td>
+              <td class="uso">{e.uso || '—'}</td>
+              <td class="num tnum">RD$ {fmt(e.precio)}</td>
+              <td class="num price tnum">RD$ {fmt(e.costoM2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+    <p class="mini">El costo por m² incluye los {g.blocksPorM2} blocks por metro cuadrado más un 5% por roturas. Precio promedio de las tres zonas.</p>
+  </section>
+
+  {g.ejemplos.length > 0 && (
+    <section>
+      <h2>Ejemplos: cuánto sale cada tamaño de pared</h2>
+      <p class="sub">Con block de {ref.pulgadas}", que es el estándar para muros de carga y fachadas.</p>
+      <div class="ej-grid">
+        {g.ejemplos.map((e) => (
+          <div class="ej">
+            <div class="ej-m2">{e.m2} m²</div>
+            <div class="ej-b">{fmt(e.blocks)} blocks</div>
+            <div class="ej-c">RD$ {fmt(e.costo)}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section>
+    <h2>Qué NO incluye este cálculo</h2>
+    <p>Los blocks son la parte más visible del costo de una pared, pero no la única. Para llegar al costo real hay que sumar:</p>
+    <ul class="falta">
+      <li><strong>Mortero de pega</strong> — cemento y arena para asentar los blocks.</li>
+      <li><strong>Refuerzos</strong> — varilla vertical y horizontal, y el hormigón de las celdas rellenas, según lo que pida el cálculo estructural.</li>
+      <li><strong>Pañete y acabado</strong> — si la pared va revestida por una o ambas caras.</li>
+      <li><strong>Mano de obra</strong> — el albañil se cotiza aparte, normalmente por m² levantado.</li>
+      <li><strong>Flete</strong> — el block es voluminoso y pesado; traerlo de lejos encarece bastante.</li>
+    </ul>
+    <p>Por eso el número de arriba es el <strong>piso</strong> del costo, no el total. Para el costo completo de la obra conviene estimarlo con todas las partidas.</p>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <div class="fq">
+        <h3>¿Cuántos blocks lleva 1 m² de pared?</h3>
+        <p>Con block de cara <strong>8" x 16"</strong> —el estándar en RD— se necesitan <strong>{g.blocksPorM2} blocks por m²</strong>. Conviene pedir un <strong>5% extra</strong> por roturas y cortes, así que en la práctica se compran unos {Math.round(g.blocksPorM2 * g.extraRoturas)} por m².</p>
+      </div>
+      <div class="fq">
+        <h3>¿Qué espesor de block conviene?</h3>
+        <p>El de <strong>6"</strong> es el más usado para muros de carga y fachadas. El de <strong>4"</strong> para divisiones internas sin carga. Los de <strong>8" y 12"</strong> para muros de contención, linderos y cargas mayores.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Conviene comprar el block en la bloquera o en la ferretería?</h3>
+        <p>Depende del flete. El block es voluminoso, así que la bloquera más cercana a la obra suele salir más barato que una más económica pero lejana. Compará siempre el precio <strong>puesto en obra</strong>, no en fábrica.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Seguí con estos precios</h2>
+    <div class="chips">
+      <a class="chip" href="/precios/block/">🧱 Precio del block</a>
+      <a class="chip" href="/precios/cemento/">🧱 Precio del cemento</a>
+      <a class="chip" href="/precios/arena/">⛰️ Precio de la arena</a>
+      <a class="chip" href="/precios/varilla/">🔩 Precio de la varilla</a>
+      <a class="chip" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana/">🏠 Cuánto cuesta construir una casa</a>
+    </div>
+  </section>
+
+  <p class="disc">Estimación con precios aportados por la comunidad de Precios Obra. Referencial, no es una cotización. Los precios varían por proveedor, volumen, zona y fecha.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-deep); margin: 18px 0 0; font-family: 'DM Mono', monospace; }
+  h1 { font-size: clamp(29px, 5vw, 42px); line-height: 1.08; letter-spacing: -.03em; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 16.5px; color: var(--ink-2); margin: 14px 0 0; max-width: 62ch; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12.5px; color: var(--fresh); background: color-mix(in srgb, var(--fresh) 12%, transparent); border-radius: 999px; padding: 6px 14px; font-family: 'DM Mono', monospace; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .directa { margin-top: 30px; border-left: 3px solid var(--brand); padding-left: 18px; }
+  .directa h2 { font-size: 20px; margin: 0 0 8px; }
+  .directa p { font-size: 16px; line-height: 1.6; margin: 0; }
+
+  section { margin-top: 42px; }
+  h2 { font-size: 23px; letter-spacing: -.02em; margin: 0 0 10px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .mini { font-size: 12.5px; color: var(--muted); margin-top: 12px; }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 12px 16px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.destacada { background: color-mix(in srgb, var(--brand-soft) 30%, transparent); }
+  .pn { font-weight: 700; white-space: nowrap; }
+  .tag { margin-left: 8px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brand-deep); background: var(--brand-soft); padding: 2px 7px; border-radius: 6px; }
+  .uso { color: var(--muted); font-size: 13px; }
+  .price { font-weight: 700; }
+  .tnum { font-family: 'DM Mono', monospace; font-size: 13px; white-space: nowrap; }
+
+  .ej-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .ej { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--paper); }
+  .ej-m2 { font: 800 22px 'Archivo', sans-serif; letter-spacing: -.02em; }
+  .ej-b { font-size: 12.5px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .ej-c { font: 700 17px 'Archivo', sans-serif; color: var(--brand-deep); margin-top: 8px; }
+
+  .falta { margin: 14px 0 0; padding-left: 20px; line-height: 1.9; }
+  .falta li { font-size: 15px; }
+
+  .faq { display: flex; flex-direction: column; gap: 18px; }
+  .fq h3 { font-size: 16.5px; margin: 0 0 5px; }
+  .fq p { margin: 0; color: var(--ink-2); line-height: 1.6; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 15px; font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
+</style>

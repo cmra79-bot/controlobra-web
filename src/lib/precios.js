@@ -451,6 +451,61 @@ export async function getMaterial(slug) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// GUÍA "cuánto cuesta una pared de block" — la consulta con más volumen del
+// sitio es sobre block ("cuanto cuesta un block en rd", 209 impresiones), pero
+// nadie quiere saber el precio de UN block: quiere el de su pared. Esto lo
+// calcula por espesor con el precio real de cada medida, que es algo que
+// ningún competidor publica.
+// ---------------------------------------------------------------------------
+const BLOCKS_POR_M2 = 12.5   // block de cara 8"x16" — todos los del catálogo lo son
+const EXTRA_ROTURAS = 1.05
+
+export async function getParedBlock() {
+  const data = await getMaterial('block')
+  const prom = (zonas) => {
+    const v = Object.values(zonas || {}).filter((x) => Number.isFinite(x))
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null
+  }
+  // El espesor sale del nombre ('Bloques industriales de 6" x 8" x 16"').
+  const espesores = data.productos
+    .map((p) => {
+      const m = /(\d+)\s*"/.exec(p.nombre || '')
+      const precio = prom(p.zonas)
+      if (!m || !Number.isFinite(precio)) return null
+      const pulg = Number(m[1])
+      return {
+        pulgadas: pulg,
+        nombre: `Block de ${pulg}"`,
+        precio,
+        costoM2: precio * BLOCKS_POR_M2 * EXTRA_ROTURAS,
+        uso: { 4: 'Divisiones internas', 5: 'Divisiones y cerramientos livianos', 6: 'Muros de carga y fachadas',
+               8: 'Muros de carga, contención y linderos', 12: 'Muros de contención y grandes cargas' }[pulg] || null,
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.pulgadas - b.pulgadas)
+
+  // El de 6" es el de uso más común en RD, así que es el que ancla los ejemplos.
+  const ref = espesores.find((e) => e.pulgadas === 6) || espesores[0] || null
+  const ejemplos = ref
+    ? [10, 20, 40, 80].map((m2) => ({
+        m2,
+        blocks: Math.round(m2 * BLOCKS_POR_M2 * EXTRA_ROTURAS),
+        costo: m2 * ref.costoM2,
+      }))
+    : []
+
+  return {
+    blocksPorM2: BLOCKS_POR_M2,
+    extraRoturas: EXTRA_ROTURAS,
+    espesores,
+    referencia: ref,
+    ejemplos,
+    actualizado: fmtHoy(),
+  }
+}
+
 // Lista para el índice /precios y para getStaticPaths.
 export function listarMateriales() {
   return MATERIALES.map(({ slug, nombre, emoji, h1 }) => ({ slug, nombre, emoji, h1 }))

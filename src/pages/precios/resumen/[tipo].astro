@@ -20,7 +20,11 @@ const description = `${data.intro} ${data.mostrados} de ${data.total} ${data.nom
 const otros = Object.values(TIPO_RESUMEN).filter((v) => v.slug !== tipo)
 const APP = 'https://app.controlobra.ai/precios-obra'
 ---
-<PrecioLayout title={title} description={description} canonicalPath={`/precios/resumen/${tipo}/`}>
+<PrecioLayout title={title} description={description} canonicalPath={`/precios/resumen/${tipo}/`} breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Catálogo', path: '/precios/' },
+  { nombre: data.nombre, path: `/precios/resumen/${tipo}/` },
+]}>
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Catálogo</a> <span>›</span> {data.nombre}
   </nav>

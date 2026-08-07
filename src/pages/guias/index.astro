@@ -1,8 +1,9 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
-import { getCostoConstruccion } from '../../lib/precios.js'
+import { getCostoConstruccion, getParedBlock } from '../../lib/precios.js'
 
 const g = await getCostoConstruccion()
+const pared = await getParedBlock()
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
 const GUIAS = [
@@ -11,6 +12,14 @@ const GUIAS = [
     titulo: 'Cuánto cuesta construir una casa en RD',
     resumen: `Precio por m² según terminación y ejemplos por tamaño. Desde RD$ ${fmt(g.porTerminacion[0].total)}/m² todo incluido.`,
     emoji: '🏠',
+  },
+  {
+    slug: 'cuanto-cuesta-una-pared-de-block',
+    titulo: 'Cuánto cuesta una pared de block',
+    resumen: pared.referencia
+      ? `Costo por m² según el espesor y cuántos blocks lleva tu pared. Desde RD$ ${fmt(pared.referencia.costoM2)}/m² en material.`
+      : 'Costo por m² según el espesor y cuántos blocks lleva tu pared.',
+    emoji: '🧱',
   },
 ]
 

@@ -14,7 +14,10 @@ const zonasProv = ZONAS.map((z) => ({
   provs: provincias.filter((p) => p.zonaId === z.id).map((p) => p.nombre),
 }))
 ---
-<PrecioLayout title={title} description={description} canonicalPath="/metodologia/">
+<PrecioLayout title={title} description={description} canonicalPath="/metodologia/" breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Metodología', path: '/metodologia/' },
+]}>
   <nav class="crumb"><a href="/">Inicio</a> <span>›</span> Metodología</nav>
 
   <p class="eyebrow">Sobre los datos</p>

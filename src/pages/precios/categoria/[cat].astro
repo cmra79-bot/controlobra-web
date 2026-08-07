@@ -22,7 +22,11 @@ const cats = await getCategorias()
 const relacionadas = cats.filter((c) => c.tipo === data.tipo && c.slug !== cat).slice(0, 8)
 const APP = 'https://app.controlobra.ai/precios-obra'
 ---
-<PrecioLayout title={title} description={description} canonicalPath={`/precios/categoria/${data.slug}/`}>
+<PrecioLayout title={title} description={description} canonicalPath={`/precios/categoria/${data.slug}/`} breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Catálogo', path: '/precios/' },
+  { nombre: data.nombre, path: `/precios/categoria/${data.slug}/` },
+]}>
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Catálogo</a> <span>›</span> {data.nombre}
   </nav>

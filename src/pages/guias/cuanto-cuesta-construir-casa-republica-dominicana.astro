@@ -36,7 +36,11 @@ const jsonld = {
 const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintura']
   .map((s) => MATERIALES.find((m) => m.slug === s)).filter(Boolean)
 ---
-<PrecioLayout title={title} description={description} canonicalPath="/guias/cuanto-cuesta-construir-casa-republica-dominicana/" jsonld={jsonld}>
+<PrecioLayout title={title} description={description} canonicalPath="/guias/cuanto-cuesta-construir-casa-republica-dominicana/" jsonld={jsonld} breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Guías', path: '/guias/' },
+  { nombre: 'Cuánto cuesta construir una casa', path: '/guias/cuanto-cuesta-construir-casa-republica-dominicana/' },
+]}>
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Cuánto cuesta construir una casa
   </nav>
