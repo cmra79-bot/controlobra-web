@@ -1,9 +1,10 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
-import { getCostoConstruccion, getParedBlock } from '../../lib/precios.js'
+import { getCostoConstruccion, getParedBlock, getPintura } from '../../lib/precios.js'
 
 const g = await getCostoConstruccion()
 const pared = await getParedBlock()
+const pint = await getPintura()
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
 const GUIAS = [
@@ -20,6 +21,14 @@ const GUIAS = [
       ? `Costo por m² según el espesor y cuántos blocks lleva tu pared. Desde RD$ ${fmt(pared.referencia.costoM2)}/m² en material.`
       : 'Costo por m² según el espesor y cuántos blocks lleva tu pared.',
     emoji: '🧱',
+  },
+  {
+    slug: 'cuanto-cuesta-pintar-una-casa',
+    titulo: 'Cuánto cuesta pintar una casa',
+    resumen: Number.isFinite(pint.costoM2)
+      ? `Precio del galón hoy, cuántos galones necesitás y cuánto pesa la mano de obra. Desde RD$ ${fmt(pint.costoM2)}/m² en pintura.`
+      : 'Precio del galón, cuántos galones necesitás y cuánto pesa la mano de obra.',
+    emoji: '🎨',
   },
 ]
 

@@ -506,6 +506,82 @@ export async function getParedBlock() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// GUÍA "cuánto cuesta pintar una casa"
+//
+// Ojo con la trampa del dato: el catálogo mezcla 1/4 de galón, galón y cubeta
+// de 5 galones en la misma familia, así que la mediana global (RD$ 1,953) no
+// es el precio de nada real. Acá se separa por presentación y se usa SOLO el
+// galón, que es la unidad con la que se cotiza pintar.
+//
+// Rendimiento: un galón cubre ~32 m² por mano. Lo estándar son dos manos, así
+// que rinde ~16 m² terminados. Es un promedio de fabricante; sobre pañete nuevo
+// (que chupa más) rinde menos.
+// ---------------------------------------------------------------------------
+const M2_POR_GALON_UNA_MANO = 32
+const MANOS = 2
+export const M2_POR_GALON = M2_POR_GALON_UNA_MANO / MANOS   // 16 m² terminados
+
+export async function getPintura() {
+  const data = await getMaterial('pintura')
+  const prom = (z) => {
+    const v = Object.values(z || {}).filter((x) => Number.isFinite(x))
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null
+  }
+  // Solo galón de ACRÍLICA: es la pintura de pared. El catálogo también trae
+  // esmalte y alkyd, que son para metal y madera — tienen otro rendimiento y
+  // otro uso, y colarlas hacía que el "económico" de la guía fuera un esmalte
+  // de óxido, inservible para pintar una casa.
+  const esGalonSuelto = (nombre) => {
+    const n = (nombre || '').toLowerCase()
+    if (/1\/4\s*gl|1\/4gl|cuarto|750\s*ml/.test(n)) return false   // cuartos y latas chicas
+    if (/5\s*gl|5gl|cubeta/.test(n)) return false                  // cubetas
+    if (!/acr[ií]lic/.test(n)) return false                        // esmalte, alkyd, anticorrosivo…
+    return /1\s*gl|1gl/.test(n)
+  }
+  const galones = data.productos
+    .map((p) => ({ nombre: p.nombre, precio: prom(p.zonas) }))
+    .filter((p) => Number.isFinite(p.precio) && esGalonSuelto(p.nombre))
+    .sort((a, b) => a.precio - b.precio)
+
+  const precioGalon = galones.length ? galones[Math.floor(galones.length / 2)].precio : null
+  const min = galones.length ? galones[0].precio : null
+  const max = galones.length ? galones[galones.length - 1].precio : null
+
+  const costoM2 = Number.isFinite(precioGalon) ? precioGalon / M2_POR_GALON : null
+
+  // Ojo: la acrílica de pared del catálogo varía poco entre sí (~20% del más
+  // barato al más caro), así que una tabla de "gamas" daba tres filas casi
+  // idénticas —RD$ 86 vs 87 el m²— que no le sirven a nadie. La variable que
+  // de verdad mueve el costo del material es CUÁNTAS MANOS se dan.
+  const escenarios = Number.isFinite(precioGalon)
+    ? [
+        { manos: 1, nombre: 'Una mano', detalle: 'Repintado del mismo color sobre pintura sana' },
+        { manos: 2, nombre: 'Dos manos', detalle: 'Lo estándar, y lo que asume esta guía' },
+        { manos: 3, nombre: 'Tres manos', detalle: 'Pared nueva, o de un color oscuro a uno claro' },
+      ].map((e) => ({
+        ...e,
+        m2PorGalon: M2_POR_GALON_UNA_MANO / e.manos,
+        costoM2: precioGalon / (M2_POR_GALON_UNA_MANO / e.manos),
+      }))
+    : []
+
+  const ejemplos = Number.isFinite(costoM2)
+    ? [
+        { nombre: 'Una habitación', m2: 45 },
+        { nombre: 'Un apartamento chico', m2: 120 },
+        { nombre: 'Una casa mediana', m2: 300 },
+        { nombre: 'Una casa grande', m2: 550 },
+      ].map((e) => ({ ...e, galones: e.m2 / M2_POR_GALON, costo: e.m2 * costoM2 }))
+    : []
+
+  return {
+    precioGalon, min, max, nGalones: galones.length,
+    m2PorGalon: M2_POR_GALON, m2PorGalonUnaMano: M2_POR_GALON_UNA_MANO, manos: MANOS,
+    costoM2, escenarios, ejemplos, actualizado: fmtHoy(),
+  }
+}
+
 // Lista para el índice /precios y para getStaticPaths.
 export function listarMateriales() {
   return MATERIALES.map(({ slug, nombre, emoji, h1 }) => ({ slug, nombre, emoji, h1 }))

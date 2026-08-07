@@ -1,0 +1,262 @@
+---
+/**
+ * Guía "¿Cuánto cuesta pintar una casa en RD?"
+ *
+ * Contexto de por qué así: la búsqueda tiene competencia real (incluido el blog
+ * de un fabricante de pintura), y todos publican rangos genéricos. La ventaja
+ * de esta página es dar el precio del galón de HOY del catálogo y calcular el
+ * trabajo concreto de quien la lee.
+ *
+ * Honestidad del dato: el material calculado da ~RD$ 85/m², mientras las
+ * fuentes del mercado citan RD$ 50-120/m² INCLUYENDO mano de obra. No se fuerza
+ * la coincidencia: se muestra el material por gama (que es lo que el catálogo
+ * respalda) y se dice explícitamente que la mano de obra va aparte y suele ser
+ * la mitad o más del total.
+ */
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CalculadoraInline from '../../components/CalculadoraInline.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import { getPintura, isoHoy, mesAno } from '../../lib/precios.js'
+
+const p = await getPintura()
+const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
+const fmt1 = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—'
+
+const title = `¿Cuánto cuesta pintar una casa en RD? Precio por m² · ${mesAno()}`
+const description = `Cuánto sale pintar una casa en República Dominicana: precio del galón de pintura hoy, cuántos galones necesitás según los m² y cuánto pesa la mano de obra. Con precios reales actualizados a diario.`
+
+const respuesta = Number.isFinite(p.costoM2)
+  ? `Pintar cuesta alrededor de RD$ ${fmt(p.costoM2)} por m² solo en pintura, contando dos manos y un galón de RD$ ${fmt(p.precioGalon)} que rinde unos ${p.m2PorGalon} m² terminados. La mano de obra va aparte y suele ser la mitad o más del costo total del trabajo.`
+  : null
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      ...(respuesta ? [{
+        '@type': 'Question',
+        name: '¿Cuánto cuesta pintar una casa en República Dominicana?',
+        acceptedAnswer: { '@type': 'Answer', text: respuesta },
+      }] : []),
+      {
+        '@type': 'Question',
+        name: '¿Cuántos m² rinde un galón de pintura?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Un galón de pintura acrílica rinde unos ${p.m2PorGalonUnaMano} m² por mano. Como lo estándar son dos manos, en la práctica cubre alrededor de ${p.m2PorGalon} m² terminados. Sobre pañete nuevo rinde menos porque la superficie absorbe más.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Cuántos galones de pintura necesito?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Dividí los m² que vas a pintar entre ${p.m2PorGalon}. Por ejemplo, 120 m² de pared necesitan unos ${fmt1(120 / p.m2PorGalon)} galones a dos manos. Ojo: se cuentan los m² de PARED, que no son los m² de la casa.`,
+        },
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: 'https://controlobra.ai/guias/cuanto-cuesta-pintar-una-casa/',
+    dateModified: isoHoy(),
+    inLanguage: 'es-DO',
+  },
+]
+---
+<PrecioLayout
+  title={title}
+  description={description}
+  canonicalPath="/guias/cuanto-cuesta-pintar-una-casa/"
+  jsonld={jsonld}
+  breadcrumbs={[
+    { nombre: 'Inicio', path: '/' },
+    { nombre: 'Guías', path: '/guias/' },
+    { nombre: 'Cuánto cuesta pintar una casa', path: '/guias/cuanto-cuesta-pintar-una-casa/' },
+  ]}
+>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Pintar una casa
+  </nav>
+
+  <p class="eyebrow">Guía · República Dominicana</p>
+  <h1>¿Cuánto cuesta pintar una casa en RD?</h1>
+  <p class="lead">La cuenta tiene dos partes que conviene no mezclar: la pintura, que podés calcular con precisión, y la mano de obra, que se cotiza aparte y suele pesar más. Acá está la primera con precios de hoy, y qué esperar de la segunda.</p>
+
+  <div class="badge"><span class="dot"></span> Actualizado {p.actualizado} · {p.nGalones} pinturas del catálogo</div>
+
+  {respuesta && (
+    <section class="directa">
+      <h2>La respuesta corta</h2>
+      <p>{respuesta}</p>
+    </section>
+  )}
+
+  {Number.isFinite(p.precioGalon) && (
+    <CalculadoraInline
+      rendimiento={{
+        pregunta: 'Calculá lo tuyo: ¿cuántos m² de pared vas a pintar?',
+        unidadEntrada: 'm²', porUnidad: 1 / p.m2PorGalon, nombreSalida: 'galones', decimales: 1,
+        nota: `Calculado a dos manos, con un galón que rinde ${p.m2PorGalon} m² terminados y cuesta RD$ ${fmt(p.precioGalon)}. Solo pintura: no incluye mano de obra, sellador ni masilla.`,
+      }}
+      precio={p.precioGalon}
+    />
+  )}
+
+  <section>
+    <h2>Lo que más mueve el costo: cuántas manos</h2>
+    <p class="sub">Un dato que sorprende: entre la acrílica más barata y la más cara del catálogo hay apenas RD$ {fmt(p.max - p.min)} de diferencia por galón. Elegir marca casi no mueve la aguja. Lo que sí la mueve es cuántas manos necesita tu pared.</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Manos</th><th>Cuándo aplica</th><th class="num">Rinde por galón</th><th class="num">Costo por m²</th></tr>
+        </thead>
+        <tbody>
+          {p.escenarios.map((e) => (
+            <tr class={e.manos === 2 ? 'destacada' : ''}>
+              <td class="pn">{e.nombre}{e.manos === 2 && <span class="tag">estándar</span>}</td>
+              <td class="uso">{e.detalle}</td>
+              <td class="num tnum">{fmt(e.m2PorGalon)} m²</td>
+              <td class="num price tnum">RD$ {fmt(e.costoM2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+    <p class="mini">Calculado con el galón típico de acrílica del catálogo (RD$ {fmt(p.precioGalon)}), que rinde {p.m2PorGalonUnaMano} m² por mano. El rango de la acrílica hoy va de RD$ {fmt(p.min)} a RD$ {fmt(p.max)} el galón.</p>
+  </section>
+
+  {p.ejemplos.length > 0 && (
+    <section>
+      <h2>Ejemplos por tamaño</h2>
+      <p class="sub">Con pintura estándar, a dos manos. Los m² son de <strong>pared</strong>, no de piso.</p>
+      <div class="ej-grid">
+        {p.ejemplos.map((e) => (
+          <div class="ej">
+            <div class="ej-t">{e.nombre}</div>
+            <div class="ej-m2">{e.m2} m²</div>
+            <div class="ej-b">{fmt1(e.galones)} galones</div>
+            <div class="ej-c">RD$ {fmt(e.costo)}</div>
+          </div>
+        ))}
+      </div>
+      <p class="mini">¿No sabés tus m² de pared? Una regla rápida: multiplicá los m² de piso por 2.5 a 3 para una casa de una planta con puntal normal.</p>
+    </section>
+  )}
+
+  <section>
+    <h2>La mano de obra: lo que falta en ese número</h2>
+    <p>Acá está la parte que casi ninguna calculadora te dice con claridad: <strong>en un trabajo de pintura, la mano de obra suele ser la mitad o más del costo total</strong>. Es decir, si la pintura te sale RD$ {fmt(p.costoM2)} por m², el trabajo terminado puede costarte el doble o más.</p>
+    <p>Además, el precio del pintor cambia mucho según el estado de la pared:</p>
+    <ul class="falta">
+      <li><strong>Pared nueva con pañete listo</strong> — el caso más simple y barato.</li>
+      <li><strong>Repintado sobre pintura sana</strong> — puede necesitar solo una mano, lo que baja el material a la mitad.</li>
+      <li><strong>Pared con grietas, humedad o pintura descascarada</strong> — hay que raspar, resanar y sellar, y eso encarece bastante el trabajo.</li>
+      <li><strong>Altura</strong> — más de un nivel o techos altos implica andamios y sube el precio.</li>
+    </ul>
+    <p>Por eso conviene pedir siempre <strong>dos o tres cotizaciones</strong> y que digan si incluyen material o solo mano de obra. Con el número de arriba ya sabés cuánto vale la pintura, así que podés detectar rápido una cotización inflada.</p>
+  </section>
+
+  <section>
+    <h2>Qué más vas a necesitar</h2>
+    <ul class="falta">
+      <li><strong>Sellador o primer</strong> — sobre pañete nuevo es obligatorio; sin él la pintura chupa más y rinde menos.</li>
+      <li><strong>Masilla</strong> — para tapar imperfecciones antes de pintar.</li>
+      <li><strong>Brochas, rodillos y bandejas</strong> — poco dinero, pero suma.</li>
+      <li><strong>Cinta y plástico</strong> — para proteger pisos, ventanas y muebles.</li>
+      <li><strong>Diluyente</strong> — si la pintura lo requiere; ojo que diluir de más baja el rendimiento real.</li>
+    </ul>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <div class="fq">
+        <h3>¿Cuántos m² rinde un galón de pintura?</h3>
+        <p>Un galón de acrílica rinde unos <strong>{p.m2PorGalonUnaMano} m² por mano</strong>. Como lo estándar son <strong>dos manos</strong>, en la práctica cubre cerca de <strong>{p.m2PorGalon} m² terminados</strong>. Sobre pañete nuevo rinde menos porque la superficie absorbe.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Cuántos galones necesito?</h3>
+        <p>Dividí los m² de pared entre <strong>{p.m2PorGalon}</strong>. Usá la calculadora de arriba y te da el número exacto junto con el costo.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Conviene comprar por cubeta de 5 galones?</h3>
+        <p>Depende, y no siempre sale más barato: en el catálogo las cubetas suelen ser de gamas superiores, así que el precio por galón puede terminar siendo mayor que el de un galón suelto económico. Compará siempre <strong>precio por galón</strong>, no precio del envase.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Cuántas manos de pintura hay que dar?</h3>
+        <p><strong>Dos manos</strong> es lo estándar y es lo que asume esta guía. Sobre pared nueva o al cambiar de un color oscuro a uno claro pueden hacer falta tres. En un repintado del mismo color a veces alcanza con una.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Seguí con estos precios</h2>
+    <div class="chips">
+      <a class="chip" href="/precios/pintura/">🎨 Precio de la pintura</a>
+      <a class="chip" href="/guias/cuanto-cuesta-una-pared-de-block/">🧱 Cuánto cuesta una pared de block</a>
+      <a class="chip" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana/">🏠 Cuánto cuesta construir una casa</a>
+      <a class="chip" href="/precios/">🗂️ Todo el catálogo</a>
+    </div>
+  </section>
+
+  <p class="disc">Estimación con precios aportados por la comunidad de Precios Obra. Referencial, no es una cotización. El rendimiento de la pintura es un promedio; varía por marca, color y estado de la superficie.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-deep); margin: 18px 0 0; font-family: 'DM Mono', monospace; }
+  h1 { font-size: clamp(29px, 5vw, 42px); line-height: 1.08; letter-spacing: -.03em; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 16.5px; color: var(--ink-2); margin: 14px 0 0; max-width: 62ch; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12.5px; color: var(--fresh); background: color-mix(in srgb, var(--fresh) 12%, transparent); border-radius: 999px; padding: 6px 14px; font-family: 'DM Mono', monospace; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .directa { margin-top: 30px; border-left: 3px solid var(--brand); padding-left: 18px; }
+  .directa h2 { font-size: 20px; margin: 0 0 8px; }
+  .directa p { font-size: 16px; line-height: 1.6; margin: 0; }
+
+  section { margin-top: 42px; }
+  h2 { font-size: 23px; letter-spacing: -.02em; margin: 0 0 10px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .mini { font-size: 12.5px; color: var(--muted); margin-top: 12px; }
+  section p { line-height: 1.65; }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 12px 16px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.destacada { background: color-mix(in srgb, var(--brand-soft) 30%, transparent); }
+  .pn { font-weight: 700; white-space: nowrap; }
+  .tag { margin-left: 8px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brand-deep); background: var(--brand-soft); padding: 2px 7px; border-radius: 6px; }
+  .uso { color: var(--muted); font-size: 13px; }
+  .price { font-weight: 700; }
+  .tnum { font-family: 'DM Mono', monospace; font-size: 13px; white-space: nowrap; }
+
+  .ej-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .ej { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--paper); }
+  .ej-t { font-size: 12.5px; color: var(--muted); }
+  .ej-m2 { font: 800 22px 'Archivo', sans-serif; letter-spacing: -.02em; margin-top: 2px; }
+  .ej-b { font-size: 12.5px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .ej-c { font: 700 17px 'Archivo', sans-serif; color: var(--brand-deep); margin-top: 8px; }
+
+  .falta { margin: 14px 0 0; padding-left: 20px; line-height: 1.9; }
+  .falta li { font-size: 15px; }
+
+  .faq { display: flex; flex-direction: column; gap: 18px; }
+  .fq h3 { font-size: 16.5px; margin: 0 0 5px; }
+  .fq p { margin: 0; color: var(--ink-2); line-height: 1.6; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 15px; font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
+</style>
