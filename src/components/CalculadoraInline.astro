@@ -1,0 +1,88 @@
+---
+/**
+ * Mini-calculadora dentro de la página de material.
+ *
+ * Por qué existe: quien busca "precio del block" no quiere el precio de UN
+ * block — quiere saber cuánto le sale su pared. El buscador ya le resume el
+ * precio unitario en la propia página de resultados (por eso el CTR se
+ * desploma), pero no puede responder "para mis 40 m² necesitás 525 blocks =
+ * RD$ 26.775". Eso solo se responde acá, y es lo que continúa la intención en
+ * vez de interrumpirla con un banner genérico.
+ *
+ * Es la antesala del puente a la app: primero resuelve lo inmediato gratis, y
+ * recién ahí ofrece la calculadora completa (que suma mano de obra e
+ * indirectos, lo que esta no hace).
+ */
+const { rendimiento, precio, unidad, nombre } = Astro.props
+const CALC = 'https://app.controlobra.ai/precios-obra/calculadora'
+---
+<section class="mc" data-por={rendimiento.porUnidad} data-precio={precio}
+         data-dec={rendimiento.decimales ?? 0} data-extra={rendimiento.extra ?? 1}>
+  <h2>{rendimiento.pregunta}</h2>
+  <div class="mc-row">
+    <label class="mc-in">
+      <input type="number" min="0" step="any" placeholder="0" inputmode="decimal" aria-label={rendimiento.pregunta} />
+      <span class="mc-u">{rendimiento.unidadEntrada}</span>
+    </label>
+    <div class="mc-out" aria-live="polite">
+      <div class="mc-cant"><span class="v">—</span> <span class="l">{rendimiento.nombreSalida}</span></div>
+      <div class="mc-tot">≈ <span class="v">—</span></div>
+    </div>
+  </div>
+  <p class="mc-nota">{rendimiento.nota}</p>
+  <a class="mc-cta" href={CALC}>
+    ¿Y el costo completo de la obra? Abrí la calculadora <span aria-hidden="true">→</span>
+  </a>
+</section>
+
+<script>
+  // Sin dependencias y sin build: la página es estática y esto son 12 líneas.
+  document.querySelectorAll('.mc').forEach((mc) => {
+    const por = Number(mc.dataset.por) || 0
+    const precio = Number(mc.dataset.precio) || 0
+    const dec = Number(mc.dataset.dec) || 0
+    const extra = Number(mc.dataset.extra) || 1
+    const input = mc.querySelector('input')
+    const cant = mc.querySelector('.mc-cant .v')
+    const tot = mc.querySelector('.mc-tot .v')
+    const fmt = (v, d) => v.toLocaleString('es-DO', { minimumFractionDigits: d, maximumFractionDigits: d })
+    input.addEventListener('input', () => {
+      const n = parseFloat(input.value)
+      if (!Number.isFinite(n) || n <= 0) { cant.textContent = '—'; tot.textContent = '—'; return }
+      const unidades = n * por * extra
+      cant.textContent = fmt(unidades, dec)
+      tot.textContent = 'RD$ ' + fmt(Math.round(unidades * precio), 0)
+    })
+  })
+</script>
+
+<style>
+  .mc {
+    margin-top: 34px; border: 1px solid var(--line); border-radius: 18px;
+    padding: 24px 24px 20px; background: color-mix(in srgb, var(--brand-soft) 35%, var(--paper));
+  }
+  .mc h2 { margin: 0 0 16px; font-size: 20px; letter-spacing: -.01em; }
+  .mc-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .mc-in {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--paper);
+    border: 1px solid var(--line-2); border-radius: 12px; padding: 10px 14px; min-width: 168px;
+  }
+  .mc-in:focus-within { border-color: var(--brand); }
+  .mc-in input {
+    width: 100%; border: none; outline: none; background: transparent; color: var(--ink);
+    font: 700 22px/1.2 'Archivo', sans-serif; min-width: 0;
+  }
+  .mc-u { color: var(--muted); font-size: 14px; white-space: nowrap; }
+  .mc-out { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .mc-cant { font-size: 15px; color: var(--ink-2); }
+  .mc-cant .v { font: 700 22px 'Archivo', sans-serif; color: var(--ink); }
+  .mc-tot { font: 800 24px 'Archivo', sans-serif; color: var(--brand-deep); }
+  .mc-nota { margin: 14px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .mc-cta {
+    display: inline-block; margin-top: 14px; font-weight: 700; font-size: 14.5px;
+    color: var(--brand-deep); text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--brand) 45%, transparent); padding-bottom: 1px;
+  }
+  .mc-cta:hover { border-bottom-color: var(--brand); }
+  @media (max-width: 520px) { .mc-row { gap: 12px; } .mc-in { width: 100%; } }
+</style>

@@ -2,6 +2,7 @@
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import { MATERIALES, getMaterial, isoHoy } from '../../lib/precios.js'
 
 // Genera una página por cada material del catálogo, en tiempo de build.
@@ -105,6 +106,15 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
           <h2>{data.preguntaClave}</h2>
           <p set:html={data.respuesta} />
         </section>
+      )}
+
+      {data.rendimiento && Number.isFinite(data.tipico) && (
+        <CalculadoraInline
+          rendimiento={data.rendimiento}
+          precio={data.tipico}
+          unidad={data.unidad}
+          nombre={data.nombre}
+        />
       )}
 
       <section>

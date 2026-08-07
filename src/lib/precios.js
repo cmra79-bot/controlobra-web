@@ -33,6 +33,11 @@ export const MATERIALES = [
     // "cuanto cuesta una funda de cemento en rd" — 26 impresiones, posición 10.9
     // (a un puesto de página 1).
     preguntaClave: '¿Cuánto cuesta una funda de cemento en RD?',
+    rendimiento: {
+      pregunta: '¿Cuántos m³ de concreto vas a vaciar?',
+      unidadEntrada: 'm³', porUnidad: 8, nombreSalida: 'fundas', decimales: 0,
+      nota: 'Estimado con 8 fundas por m³ de concreto estructural. No incluye arena, grava ni mano de obra.',
+    },
     respuesta: 'Una <strong>funda de cemento</strong> cuesta <strong>{tipico}</strong> en República Dominicana, en un rango de {min} a {max} según sea gris (94 lb) o blanco (40 kg), la zona y el volumen de compra. Comprando por <strong>palé</strong> el precio por funda baja entre un 5% y un 12%.',
     notaTitulo: 'Precio del cemento por funda y por palé',
     nota: 'El <strong>cemento</strong> es el material líder de toda obra en RD: representa más del <strong>90% del uso</strong> en construcción. Se vende por <strong>funda (saco)</strong>: el <strong>cemento gris</strong> viene en fundas de <strong>94 libras (~42.6 kg)</strong> y el <strong>cemento blanco</strong> en fundas de <strong>40 kg</strong>. Según la comunidad, la funda de <strong>cemento gris</strong> ronda los <strong>RD$ 535</strong> y la de <strong>cemento blanco</strong> los <strong>RD$ 1,495</strong>. Comprar por <strong>palé</strong> baja el precio por funda entre 5% y 12%.',
@@ -81,6 +86,11 @@ export const MATERIALES = [
     porque: 'El precio de la arena en RD lo define sobre todo el transporte: mientras más lejos esté la obra del banco de arena o del río, más sube el flete. También cambia por tipo (fina, gruesa, de río o lavada) y por el volumen del pedido.',
     // "precio del metro de arena en república dominicana" — 31 impr, pos 7.7, 0 clics.
     preguntaClave: '¿A cómo está el metro de arena en República Dominicana?',
+    rendimiento: {
+      pregunta: '¿Cuántos m³ de concreto vas a vaciar?',
+      unidadEntrada: 'm³', porUnidad: 0.5, nombreSalida: 'm³ de arena', decimales: 1,
+      nota: 'Estimado con 0.5 m³ de arena por m³ de concreto. No incluye cemento, grava ni flete.',
+    },
     respuesta: 'El <strong>metro cúbico (m³) de arena</strong> está en <strong>{tipico}</strong> puesto en obra en República Dominicana, entre {min} y {max} según el tipo (lavada, fina de pañete o gruesa), la zona y sobre todo el flete desde el banco de arena. Para <strong>1 m³ de concreto</strong> se usan unos <strong>0.5 m³ de arena</strong>.',
     notaTitulo: 'Precio de la arena lavada por m³ y cuánta lleva el concreto',
     nota: 'La <strong>arena</strong> es la base para preparar el <strong>concreto</strong> y los morteros en obra. Se vende por <strong>metro cúbico (m³)</strong> puesto en obra. Según la comunidad, la <strong>arena lavada</strong> ronda los <strong>RD$ 1,973 el m³</strong> y la <strong>arena fina de pañete</strong> unos <strong>RD$ 2,423</strong>. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.5 m³ de arena</strong>, más grava y cemento.',
@@ -104,6 +114,11 @@ export const MATERIALES = [
     // "precio del metro de grava en república dominicana" — 27 impr, pos 4.2,
     // y de las pocas que sí convierten (2 clics).
     preguntaClave: '¿A cómo está el metro de grava en República Dominicana?',
+    rendimiento: {
+      pregunta: '¿Cuántos m³ de concreto vas a vaciar?',
+      unidadEntrada: 'm³', porUnidad: 0.8, nombreSalida: 'm³ de grava', decimales: 1,
+      nota: 'Estimado con 0.8 m³ de grava por m³ de concreto. No incluye cemento, arena ni flete.',
+    },
     respuesta: 'El <strong>metro cúbico (m³) de grava</strong> está en <strong>{tipico}</strong> puesto en obra en República Dominicana, entre {min} y {max} según el tamaño del árido (3/8" para gravilla, 1/2" a 3/4" para grava), la zona y el flete desde la cantera. Para <strong>1 m³ de concreto</strong> se usan unos <strong>0.8 m³ de grava</strong>.',
     notaTitulo: 'Precio de la grava por m³ y cuánta lleva el concreto',
     nota: 'La <strong>grava y gravilla</strong> son el <strong>agregado grueso</strong> para el <strong>concreto</strong>. Se venden por <strong>metro cúbico (m³)</strong>. Según la comunidad, la grava triturada de 3/8" ronda los <strong>RD$ 1,846 el m³</strong> y la de 3/4" unos <strong>RD$ 1,904</strong>. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.8 m³ de grava</strong>, más arena y cemento.',
@@ -132,6 +147,14 @@ export const MATERIALES = [
     // "precio del block de 6 en rd" 185 · "de 4" 42 · "de 8" 32.
     preguntaClave: '¿Cuánto cuesta un block en República Dominicana?',
     factorM2: 12.5,   // blocks de 8"x16" por m² de pared
+    // Mini-calculadora de la página. Los rendimientos son los que el propio
+    // contenido ya afirma (no se inventa ninguno nuevo).
+    rendimiento: {
+      pregunta: '¿Cuántos m² de pared vas a levantar?',
+      unidadEntrada: 'm²', porUnidad: 12.5, nombreSalida: 'blocks', decimales: 0,
+      nota: 'Incluye un 5% extra por roturas. No incluye el mortero de pega ni la mano de obra.',
+      extra: 1.05,
+    },
     respuesta: 'Un <strong>block de hormigón</strong> cuesta <strong>{tipico} por unidad</strong> en República Dominicana, con precios que van de {min} a {max} según el espesor (4", 6" u 8"), la zona y la cantidad que compres. Para <strong>1 m² de pared</strong> se necesitan unos <strong>12.5 blocks</strong>, así que el metro cuadrado de pared en block sale alrededor de <strong>{m2}</strong> solo en material.',
     notaTitulo: 'Precio del block de 4", 6" y 8" y cuántos por m²',
     nota: 'El <strong>block de hormigón</strong> es el material principal para levantar <strong>muros y paredes</strong> en RD. Los espesores más usados son <strong>4", 6" y 8"</strong>. Según la comunidad, el block industrial va desde unos <strong>RD$ 45 (4")</strong>, <strong>RD$ 46 (5")</strong> y <strong>RD$ 51 (6")</strong> por unidad. Para levantar <strong>1 m² de pared</strong> se necesitan aproximadamente <strong>12.5 blocks</strong> de 8"x16", más el mortero de pega.',
