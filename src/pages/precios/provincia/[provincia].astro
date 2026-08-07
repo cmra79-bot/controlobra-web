@@ -1,7 +1,7 @@
 ---
 import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
-import { getProvincias, getProvincia } from '../../../lib/precios.js'
+import { getProvincias, getProvincia, isoHoy } from '../../../lib/precios.js'
 
 export async function getStaticPaths() {
   const provs = await getProvincias()
@@ -14,20 +14,33 @@ if (!data) return Astro.redirect('/precios/')
 
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 const enSantoDomingo = data.nombre !== data.ciudad
+// Antes esta página declaraba un `Product` llamado "Materiales de construcción
+// en <provincia>" con un AggregateOffer de 51 a 26.880 (527×). Eso no es un
+// producto sino una categoría, y un rango así no produce ningún resultado
+// enriquecido útil — además de ser un uso indebido del marcado de producto.
+// Lo correcto acá es un ItemList: una lista de materiales con su precio.
 const jsonld = data.productos.length
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: `Materiales de construcción en ${data.nombre}, República Dominicana`,
-      offers: {
-        '@type': 'AggregateOffer',
-        priceCurrency: 'DOP',
-        lowPrice: Math.round(Math.min(...data.productos.map((p) => p.precio))),
-        highPrice: Math.round(Math.max(...data.productos.map((p) => p.precio))),
-        offerCount: data.productos.length,
-        areaServed: `${data.nombre}, República Dominicana`,
+  ? [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: `Precios de materiales de construcción en ${data.nombre}`,
+        numberOfItems: data.productos.length,
+        itemListElement: data.productos.map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: `${p.nombre} (${p.unidad})`,
+          url: `https://controlobra.ai/precios/${p.slug}/`,
+        })),
       },
-    }
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        url: `https://controlobra.ai/precios/provincia/${data.slug}/`,
+        dateModified: isoHoy(),
+        inLanguage: 'es-DO',
+      },
+    ]
   : null
 
 const title = `Precios de materiales de construcción en ${data.nombre} 2026`
@@ -66,6 +79,23 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
     <p class="mini">Precios de la zona {data.zonaLabel}. Pueden variar por proveedor y volumen dentro de {data.nombre}.</p>
   </section>
 
+  {data.proveedores.length > 0 && (
+    <section>
+      <h2>Ferreterías y suplidores en {data.nombre}</h2>
+      <p class="sub">{data.proveedores.length} suplidores del directorio con presencia en {data.nombre}. Llamá para cotizar y confirmar disponibilidad.</p>
+      <div class="prov-grid">
+        {data.proveedores.map((p) => (
+          <div class="prov">
+            <div class="pn">{p.nombre}{p.verificado && <span class="ver" title="Verificado">✓</span>}</div>
+            {p.rubro && <div class="pr">{p.rubro}</div>}
+            {p.ciudad && <div class="pc">{p.ciudad}</div>}
+            {p.telefono && <a class="pt" href={`tel:${p.telefono.replace(/[^\d+]/g, '')}`}>{p.telefono}</a>}
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
   <CtaCalculadora />
 
   {data.hermanas.length > 0 && (
@@ -83,6 +113,15 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
 </PrecioLayout>
 
 <style>
+  /* Suplidores locales: lo único propio de cada provincia. */
+  .prov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 11px; }
+  .prov { border: 1px solid var(--line); border-radius: 13px; padding: 13px 15px; background: var(--paper); }
+  .pn { font-weight: 700; font-size: 14px; line-height: 1.3; }
+  .ver { color: var(--fresh); margin-left: 5px; font-size: 12px; }
+  .pr { font-size: 12px; color: var(--brand-deep); margin-top: 3px; }
+  .pc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pt { display: inline-block; margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 12.5px; text-decoration: none; }
+
   .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
   .crumb a { text-decoration: none; }
   .crumb a:hover { color: var(--brand-deep); }

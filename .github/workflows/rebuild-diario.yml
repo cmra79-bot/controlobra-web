@@ -1,0 +1,45 @@
+# Reconstruye el sitio todos los días para que los precios no se queden viejos.
+#
+# Por qué existe: las páginas son estáticas (Astro `output: 'static'`) y los
+# precios se "hornean" en el HTML durante el build, leyendo la API del ERP. Sin
+# esto, el sitio queda congelado en la fecha del último build manual — llegó a
+# tener 10 días de atraso, y para búsquedas tipo "precio del block en RD 2026"
+# la frescura del dato es señal de posicionamiento.
+#
+# Requiere el secret CF_DEPLOY_HOOK (ver README del workflow abajo).
+
+name: Rebuild diario
+
+on:
+  schedule:
+    # 10:00 UTC = 06:00 en RD (AST, UTC-4 todo el año). Temprano, para que el
+    # precio del día ya esté publicado cuando arranca la jornada de obra.
+    - cron: '0 10 * * *'
+  # Permite dispararlo a mano desde la pestaña Actions para probar.
+  workflow_dispatch:
+
+jobs:
+  disparar-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar que el secret esté configurado
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::Falta el secret CF_DEPLOY_HOOK."
+            echo "Crealo en Cloudflare Pages → proyecto → Settings → Builds & deployments"
+            echo "→ Deploy hooks → Add deploy hook (rama main). Copiá la URL que te da"
+            echo "y guardala en GitHub → Settings → Secrets and variables → Actions"
+            echo "→ New repository secret, con el nombre CF_DEPLOY_HOOK."
+            exit 1
+          fi
+
+      - name: Disparar build en Cloudflare Pages
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          # -f hace que un 4xx/5xx falle el job (si no, curl devuelve 0 igual y
+          # el rebuild se rompería en silencio durante semanas).
+          code=$(curl -fsS -X POST "$HOOK" -o /dev/null -w '%{http_code}')
+          echo "Cloudflare respondió HTTP $code — build encolado."

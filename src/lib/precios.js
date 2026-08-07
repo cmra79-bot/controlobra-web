@@ -26,10 +26,14 @@ export const MATERIALES = [
     emoji: '🧱',
     unidad: 'funda',
     h1: 'Precio del cemento en República Dominicana',
-    seoTitle: 'Precio del cemento en RD 2026 · funda de cemento gris y blanco por zona',
-    seoDesc: 'Precio de la funda de cemento gris y blanco en República Dominicana, por zona. Cemento gris de 94 lb desde RD$ 535 la funda. Datos de la comunidad de Precios Obra.',
+    seoTitle: '¿Cuánto cuesta una funda de cemento en RD? Precio hoy · gris y blanco',
+    seoDesc: 'Precio de la funda de cemento gris (94 lb) y blanco hoy en RD, por zona y por palé. Además: cuántas fundas lleva 1 m³ de concreto. Datos de la comunidad, actualizados a diario.',
     intro: 'Precio de la funda de cemento gris y blanco en República Dominicana, por zona (Cibao Norte, Sur y Este) y por presentación, según los reportes de la comunidad de Precios Obra. El cemento es el material líder de toda obra: representa más del 90% del uso en construcción.',
     porque: 'El precio de la funda de cemento en RD depende de la zona (el flete lo encarece lejos de las plantas del Cibao y el Gran Santo Domingo), la presentación (gris de 94 lb, blanco de 40 kg) y el volumen de compra: comprar por palé o camión baja el precio por funda entre 5% y 12%.',
+    // "cuanto cuesta una funda de cemento en rd" — 26 impresiones, posición 10.9
+    // (a un puesto de página 1).
+    preguntaClave: '¿Cuánto cuesta una funda de cemento en RD?',
+    respuesta: 'Una <strong>funda de cemento</strong> cuesta <strong>{tipico}</strong> en República Dominicana, en un rango de {min} a {max} según sea gris (94 lb) o blanco (40 kg), la zona y el volumen de compra. Comprando por <strong>palé</strong> el precio por funda baja entre un 5% y un 12%.',
     notaTitulo: 'Precio del cemento por funda y por palé',
     nota: 'El <strong>cemento</strong> es el material líder de toda obra en RD: representa más del <strong>90% del uso</strong> en construcción. Se vende por <strong>funda (saco)</strong>: el <strong>cemento gris</strong> viene en fundas de <strong>94 libras (~42.6 kg)</strong> y el <strong>cemento blanco</strong> en fundas de <strong>40 kg</strong>. Según la comunidad, la funda de <strong>cemento gris</strong> ronda los <strong>RD$ 535</strong> y la de <strong>cemento blanco</strong> los <strong>RD$ 1,495</strong>. Comprar por <strong>palé</strong> baja el precio por funda entre 5% y 12%.',
     faq: [
@@ -46,10 +50,14 @@ export const MATERIALES = [
     emoji: '🔩',
     unidad: 'quintal',
     h1: 'Precio de la varilla de acero en República Dominicana',
-    seoTitle: 'Precio de la varilla de acero en RD 2026 · por quintal (qq), libra y unidad',
-    seoDesc: 'Precio de la varilla de acero en República Dominicana: por quintal (qq), por libra y por unidad. Grado 40-60 y calibres 3/8", 1/2", 5/8". Datos de la comunidad de Precios Obra.',
+    seoTitle: '¿A cómo está el quintal de varilla en RD? Precio por qq y libra · {mes}',
+    seoDesc: 'Precio de la varilla de acero hoy en RD por quintal (qq), libra y unidad, en calibres 3/8", 1/2" y 5/8". Además: cuánto acero lleva tu obra. Datos de la comunidad, actualizados a diario.',
     intro: 'Precio de la varilla de acero de refuerzo en República Dominicana, por quintal (qq), por libra y por unidad, y por zona (Cibao Norte, Sur y Este). La varilla de acero es uno de los insumos que más pesa en el costo de una estructura, y en RD se cotiza sobre todo por quintal.',
     porque: 'El precio de la varilla de acero en RD sigue de cerca el acero internacional y el dólar, y varía por calibre (3/8", 1/2", 5/8"), por grado (40 o 60), por zona y por cantidad. La varilla se vende por quintal (peso) y por unidad (varillas de 20 pies), así que conviene comparar el precio por quintal y por libra antes de comprar. Además de la varilla, el acero incluye las mallas electrosoldadas (para losas de techo y pisos) y los perfiles metálicos.',
+    // "a cómo está el quintal de varilla" (31, pos 11.1) y "precio del quintal
+    // de varilla" (30, pos 11.4): ambas en página 2, a un empujón de la 1.
+    preguntaClave: '¿A cómo está el quintal de varilla en RD?',
+    respuesta: 'El <strong>quintal (qq) de varilla de acero</strong> está en <strong>{tipico}</strong> en República Dominicana, con un rango de {min} a {max} según el calibre (3/8", 1/2", 5/8"), el grado (40 o 60) y la zona. Como un <strong>quintal son 100 libras</strong>, la libra de acero sale a la centésima parte de ese precio.',
     notaTitulo: 'Precio de la varilla de acero por quintal (qq) y por libra',
     nota: 'En República Dominicana el <strong>acero</strong> y la <strong>varilla</strong> se cotizan sobre todo por <strong>quintal (qq)</strong> —una medida de peso— y también por <strong>unidad</strong> (varillas de 20 pies). Un <strong>quintal equivale a 100 libras (lb)</strong> y a unos <strong>45.4 kg</strong>. Con el precio reportado por la comunidad —alrededor de <strong>RD$ 3,300 por quintal</strong> para la varilla de acero grado 40-60— la <strong>libra de acero</strong> sale a unos <strong>RD$ 33</strong>. Los calibres más usados en RD son 3/8", 1/2" y 5/8", en grado 40 y 60.',
     faq: [
@@ -67,10 +75,13 @@ export const MATERIALES = [
     emoji: '⛰️',
     unidad: 'm³',
     h1: 'Precio de la arena en República Dominicana',
-    seoTitle: 'Precio de la arena en RD 2026 · arena lavada por m³ y zona',
-    seoDesc: 'Precio de la arena de construcción (lavada, fina, gruesa) en RD por metro cúbico (m³) y por zona. Desde RD$ 1,973 el m³ de arena lavada. Datos de Precios Obra.',
+    seoTitle: '¿A cómo está el metro de arena en RD? Precio por m³ y zona · {mes}',
+    seoDesc: 'Precio del m³ de arena hoy en RD (lavada, fina de pañete, gruesa) por zona. Además: cuánta arena lleva 1 m³ de concreto. Datos de la comunidad, actualizados a diario.',
     intro: 'Precio de la arena de construcción en RD por tipo (lavada, fina, gruesa) y por zona, según los reportes de la comunidad. La arena es la base para preparar el concreto y los morteros en obra; se cotiza por metro cúbico (m³) puesto en sitio.',
     porque: 'El precio de la arena en RD lo define sobre todo el transporte: mientras más lejos esté la obra del banco de arena o del río, más sube el flete. También cambia por tipo (fina, gruesa, de río o lavada) y por el volumen del pedido.',
+    // "precio del metro de arena en república dominicana" — 31 impr, pos 7.7, 0 clics.
+    preguntaClave: '¿A cómo está el metro de arena en República Dominicana?',
+    respuesta: 'El <strong>metro cúbico (m³) de arena</strong> está en <strong>{tipico}</strong> puesto en obra en República Dominicana, entre {min} y {max} según el tipo (lavada, fina de pañete o gruesa), la zona y sobre todo el flete desde el banco de arena. Para <strong>1 m³ de concreto</strong> se usan unos <strong>0.5 m³ de arena</strong>.',
     notaTitulo: 'Precio de la arena lavada por m³ y cuánta lleva el concreto',
     nota: 'La <strong>arena</strong> es la base para preparar el <strong>concreto</strong> y los morteros en obra. Se vende por <strong>metro cúbico (m³)</strong> puesto en obra. Según la comunidad, la <strong>arena lavada</strong> ronda los <strong>RD$ 1,973 el m³</strong> y la <strong>arena fina de pañete</strong> unos <strong>RD$ 2,423</strong>. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.5 m³ de arena</strong>, más grava y cemento.',
     faq: [
@@ -86,10 +97,14 @@ export const MATERIALES = [
     emoji: '🪨',
     unidad: 'm³',
     h1: 'Precio de la grava y gravilla en República Dominicana',
-    seoTitle: 'Precio de la grava y gravilla en RD 2026 · por m³ y zona',
-    seoDesc: 'Precio de la grava y gravilla en República Dominicana por metro cúbico (m³) y por zona. Grava triturada desde RD$ 1,846 el m³. Datos de la comunidad de Precios Obra.',
+    seoTitle: '¿A cómo está el metro de grava en RD? Precio de grava y gravilla · {mes}',
+    seoDesc: 'Precio del m³ de grava y gravilla hoy en RD (3/8", 1/2", 3/4") por zona. Además: cuánta grava lleva 1 m³ de concreto. Datos de la comunidad, actualizados a diario.',
     intro: 'Precio de la grava y gravilla para concreto en RD por tipo y por zona, según los reportes de la comunidad. Son el agregado grueso base del concreto; se cotizan por metro cúbico (m³) puesto en obra.',
     porque: 'Como todo agregado pétreo, el precio de la grava en RD depende del transporte desde la cantera, del tamaño del árido y del volumen del pedido. En zonas turísticas del Este suele ser algo más alto por la demanda.',
+    // "precio del metro de grava en república dominicana" — 27 impr, pos 4.2,
+    // y de las pocas que sí convierten (2 clics).
+    preguntaClave: '¿A cómo está el metro de grava en República Dominicana?',
+    respuesta: 'El <strong>metro cúbico (m³) de grava</strong> está en <strong>{tipico}</strong> puesto en obra en República Dominicana, entre {min} y {max} según el tamaño del árido (3/8" para gravilla, 1/2" a 3/4" para grava), la zona y el flete desde la cantera. Para <strong>1 m³ de concreto</strong> se usan unos <strong>0.8 m³ de grava</strong>.',
     notaTitulo: 'Precio de la grava por m³ y cuánta lleva el concreto',
     nota: 'La <strong>grava y gravilla</strong> son el <strong>agregado grueso</strong> para el <strong>concreto</strong>. Se venden por <strong>metro cúbico (m³)</strong>. Según la comunidad, la grava triturada de 3/8" ronda los <strong>RD$ 1,846 el m³</strong> y la de 3/4" unos <strong>RD$ 1,904</strong>. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.8 m³ de grava</strong>, más arena y cemento.',
     faq: [
@@ -105,14 +120,26 @@ export const MATERIALES = [
     emoji: '🧱',
     unidad: 'unidad',
     h1: 'Precio del block de hormigón en República Dominicana',
-    seoTitle: 'Precio del block en RD 2026 · block de 4", 6" y 8" por unidad y zona',
-    seoDesc: 'Precio del block de hormigón (4", 6", 8") en República Dominicana por unidad y por zona. Desde RD$ 45 el block industrial. Datos de la comunidad de Precios Obra.',
+    // El snippet viejo solo prometía el precio — y el buscador ya muestra el
+    // precio, así que no daba razón para entrar (pos 4-6 con CERO clics).
+    // Este promete lo que el resumen no puede resolver: cuántos lleva tu pared.
+    seoTitle: '¿A cómo está el block en RD? Precio de 4", 6" y 8" · {mes}',
+    seoDesc: 'Precio del block de hormigón hoy en RD, por espesor (4", 6", 8") y por zona. Además: cuántos blocks lleva tu pared y cuánto te sale el m². Datos de la comunidad, actualizados a diario.',
     intro: 'Precio del block de hormigón en RD por espesor (4", 6", 8") y por zona, según los reportes de la comunidad. El block es el material principal para levantar muros y paredes; se cotiza por unidad puesto en obra o en fábrica.',
     porque: 'El precio del block en RD varía por espesor (4", 6", 8"), por resistencia y por zona. El transporte pesa mucho porque es un material voluminoso; comprar en la bloquera más cercana suele salir más barato que traerlo de lejos.',
+    // Consultas reales que traen el volumen (Search Console, 3 meses):
+    // "cuanto cuesta un block en rd" 209 · "a como esta el block en rd" 125 ·
+    // "precio del block de 6 en rd" 185 · "de 4" 42 · "de 8" 32.
+    preguntaClave: '¿Cuánto cuesta un block en República Dominicana?',
+    factorM2: 12.5,   // blocks de 8"x16" por m² de pared
+    respuesta: 'Un <strong>block de hormigón</strong> cuesta <strong>{tipico} por unidad</strong> en República Dominicana, con precios que van de {min} a {max} según el espesor (4", 6" u 8"), la zona y la cantidad que compres. Para <strong>1 m² de pared</strong> se necesitan unos <strong>12.5 blocks</strong>, así que el metro cuadrado de pared en block sale alrededor de <strong>{m2}</strong> solo en material.',
     notaTitulo: 'Precio del block de 4", 6" y 8" y cuántos por m²',
     nota: 'El <strong>block de hormigón</strong> es el material principal para levantar <strong>muros y paredes</strong> en RD. Los espesores más usados son <strong>4", 6" y 8"</strong>. Según la comunidad, el block industrial va desde unos <strong>RD$ 45 (4")</strong>, <strong>RD$ 46 (5")</strong> y <strong>RD$ 51 (6")</strong> por unidad. Para levantar <strong>1 m² de pared</strong> se necesitan aproximadamente <strong>12.5 blocks</strong> de 8"x16", más el mortero de pega.',
     faq: [
+      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$ 45 y RD$ 65</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de arriba está el precio actualizado de cada medida por zona.' },
       { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda los <strong>RD$ 51</strong> por unidad en República Dominicana, según la comunidad. El de 4" está cerca de <strong>RD$ 45</strong> y el de 5", <strong>RD$ 46</strong>. Varía por zona, resistencia y cantidad.' },
+      { q: '¿A cómo está el block de 4" en RD?', a: 'El block de 4" x 8" x 16" es el más económico: ronda los <strong>RD$ 45</strong> por unidad. Se usa sobre todo para <strong>divisiones internas</strong>, no para muros de carga.' },
+      { q: '¿A cómo está el block de 8" en RD?', a: 'El block de 8" x 8" x 16" es el de mayor espesor de uso común y por eso el más caro de los tres. Se usa en <strong>muros de carga, contención y linderos</strong>. Mirá la tabla de arriba para el precio actualizado en tu zona.' },
       { q: '¿Cuántos blocks se necesitan por metro cuadrado de pared?', a: 'Para <strong>1 m² de pared</strong> con block de 8"x16" se necesitan aproximadamente <strong>12.5 blocks</strong>, más el mortero de pega. Conviene sumar un 5% extra por roturas.' },
       { q: '¿Qué espesor de block conviene usar?', a: 'El <strong>block de 6"</strong> es el más usado para muros de carga y fachadas; el de <strong>4"</strong> para divisiones internas; y el de <strong>8"</strong> para muros de mayor resistencia o de contención.' },
     ],
@@ -236,7 +263,11 @@ export const MATERIALES = [
 const FILTROS = {
   varilla:    { excluir: ['roscada'] },
   arena:      { excluir: ['acrílica', 'acrilica', 'pintura', 'spray'] },
-  block:      { excluir: ['mortero'] },
+  // "adoblock" (adoquín de piso) y el bloque decorativo de forma irregular no
+  // son block de pared: metían un precio de RD$ 681 que disparaba el rango a
+  // "RD$ 45 – 681" y viajaba al JSON-LD como highPrice. Un block no cuesta eso,
+  // y el rango absurdo le quitaba credibilidad a la página entera.
+  block:      { excluir: ['mortero', 'adoblock', 'forma irregular'] },
   pintura:    { excluir: ['spray', 'spary', 'brocha', 'rodillo', 'removedor', 'diluyente'] },
   madera:     { excluir: ['clip', 'pincel', 'formaleta', 'tornillo', 'brocha', 'sierra', 'lija', 'espátula', 'espatula', 'llana', 'regla', 'mango', 'nivel', 'flexómetro'] },
   zinc:       { excluir: ['rejilla', 'puntilla', 'desagüe', 'tornillo'] },
@@ -263,6 +294,23 @@ const fmtHoy = () => {
   const d = new Date()
   return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`
 }
+
+// "agosto 2026" — para el {mes} de títulos y descripciones. Escrito a mano
+// envejecería en el peor lugar posible (el resultado de búsqueda); con el
+// rebuild diario se mantiene solo.
+export const mesAno = () => {
+  const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+    'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+  const d = new Date()
+  return `${meses[d.getMonth()]} ${d.getFullYear()}`
+}
+
+// La misma fecha del build en ISO, para `dateModified` del JSON-LD. Es la señal
+// estructurada de frescura: en búsquedas de precio ("... en RD 2026") Google
+// favorece el dato reciente, y sin esto no tiene cómo saber que el nuestro lo es.
+// Depende del rebuild diario (.github/workflows/rebuild-diario.yml) — si el sitio
+// deja de reconstruirse, esta fecha envejece junto con los precios, como debe ser.
+export const isoHoy = () => new Date().toISOString().slice(0, 10)
 
 // Trae items del catálogo (solo MATERIAL) para un término de búsqueda.
 async function fetchItems(query) {
@@ -326,6 +374,23 @@ function statsPorZona(productos) {
   })
 }
 
+// Rellena {tipico}, {min} y {max} de una plantilla con los precios REALES del
+// build. Los números de `nota` y `faq` están escritos a mano y envejecen (hoy el
+// FAQ del block dice RD$ 51 mientras la tabla ya va en 58); la respuesta directa
+// se arma desde el dato vivo justamente para no contradecir a la tabla de arriba.
+const pesos = (v) => Number.isFinite(v)
+  ? `RD$ ${Math.round(v).toLocaleString('es-DO')}`
+  : '—'
+// {m2} = precio típico × unidades por m² (ej. 12.5 blocks por m² de pared).
+// Responder "cuánto sale el m²" es lo que un resumen del buscador no da y es
+// justo el paso siguiente que la persona necesita.
+const interpolar = (tpl, d, factorM2) => (tpl || '')
+  .replaceAll('{tipico}', pesos(d.tipico))
+  .replaceAll('{min}', pesos(d.minPrecio))
+  .replaceAll('{max}', pesos(d.maxPrecio))
+  .replaceAll('{m2}', factorM2 && Number.isFinite(d.tipico) ? pesos(d.tipico * factorM2) : '—')
+  .replaceAll('{mes}', mesAno())
+
 // Devuelve todos los datos agregados de un material por su slug.
 export async function getMaterial(slug) {
   const def = MATERIALES.find((m) => m.slug === slug)
@@ -346,15 +411,20 @@ export async function getMaterial(slug) {
   const minPrecio = todosLosPrecios.length ? Math.min(...todosLosPrecios) : null
   const maxPrecio = todosLosPrecios.length ? Math.max(...todosLosPrecios) : null
 
+  const base = { tipico, minPrecio, maxPrecio }
   return {
     ...def,
     productos,
     zonaStats: statsPorZona(productos),
-    tipico,
-    minPrecio,
-    maxPrecio,
+    ...base,
     nProductos: productos.length,
     actualizado: fmtHoy(),
+    // Respuesta directa con los precios de este build, lista para renderizar.
+    respuesta: def.respuesta ? interpolar(def.respuesta, base, def.factorM2) : null,
+    // El {mes} del título/descripción también se resuelve en cada build, para
+    // que el resultado de búsqueda nunca muestre un mes viejo.
+    seoTitle: interpolar(def.seoTitle, base, def.factorM2),
+    seoDesc: interpolar(def.seoDesc, base, def.factorM2),
   }
 }
 
@@ -587,6 +657,44 @@ const CIUDAD_PROV = {
   'Hermanas Mirabal': 'Salcedo', 'Valverde': 'Mao', 'María Trinidad Sánchez': 'Nagua',
 }
 
+// Suplidores reales del directorio, para dar a cada provincia contenido PROPIO.
+// Sin esto las 32 páginas eran calcadas: mismos precios (los datos son por zona,
+// no por provincia) y solo cambiaba el nombre — Azua y Barahona diferían en 18
+// palabras sobre 384, que es el patrón de contenido duplicado que Google castiga.
+// Las ferreterías de cada provincia sí son distintas, y de paso es justo lo que
+// busca alguien que quiere comprar cerca.
+const _norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+
+let _provsPromise = null
+function fetchProveedores() {
+  if (!_provsPromise) {
+    _provsPromise = (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/proveedores?limit=5000`)
+        if (!res.ok) return []
+        const d = await res.json()
+        return Array.isArray(d) ? d : (d.items || [])
+      } catch { return [] }
+    })()
+  }
+  return _provsPromise
+}
+
+// Suplidores cuya ciudad menciona la provincia (el campo es texto libre del
+// tipo "Bella Vista, Boca Chica SD", así que se busca por contención).
+async function proveedoresDe(nombreProvincia) {
+  const todos = await fetchProveedores()
+  const clave = _norm(nombreProvincia)
+  return todos
+    .filter((p) => p.activo !== false && _norm(p.ciudad).includes(clave))
+    .sort((a, b) => (b.verificado === true) - (a.verificado === true) || (a.nombre || '').localeCompare(b.nombre || '', 'es'))
+    .slice(0, 40)
+    .map((p) => ({
+      nombre: p.nombre, rubro: p.rubro || null, ciudad: p.ciudad || null,
+      telefono: p.telefono || null, whatsapp: p.whatsapp || null, verificado: p.verificado === true,
+    }))
+}
+
 let _zonasPromise = null
 function fetchZonas() {
   if (!_zonasPromise) {
@@ -649,7 +757,9 @@ export async function getProvincia(slug) {
     .filter((m) => Number.isFinite(m.zonas[def.zonaId]))
     .map((m) => ({ slug: m.slug, nombre: m.nombre, unidad: m.unidad, precio: m.zonas[def.zonaId] }))
   const hermanas = provincias.filter((p) => p.zonaId === def.zonaId && p.slug !== slug)
-  return { ...def, productos, hermanas, actualizado: fmtHoy() }
+  // Lo único realmente propio de esta provincia (los precios son de la zona).
+  const proveedores = await proveedoresDe(def.nombre)
+  return { ...def, productos, hermanas, proveedores, actualizado: fmtHoy() }
 }
 
 // Estadísticas del catálogo para la tarjeta "Estado del catálogo".

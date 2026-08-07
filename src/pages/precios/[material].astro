@@ -2,7 +2,7 @@
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
-import { MATERIALES, getMaterial } from '../../lib/precios.js'
+import { MATERIALES, getMaterial, isoHoy } from '../../lib/precios.js'
 
 // Genera una página por cada material del catálogo, en tiempo de build.
 export async function getStaticPaths() {
@@ -44,7 +44,21 @@ const faqLd = data.faq?.length
       })),
     }
   : null
-const jsonldArr = [productLd, faqLd].filter(Boolean)
+// Señal estructurada de frescura. Va en un nodo WebPage propio (y no dentro de
+// Product) porque `dateModified` describe la PÁGINA, que es lo que se actualiza
+// cada día con el rebuild; el producto en sí no cambia.
+const paginaLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  url: `https://controlobra.ai/precios/${data.slug}/`,
+  name: data.seoTitle,
+  description: data.seoDesc,
+  dateModified: isoHoy(),
+  inLanguage: 'es-DO',
+  isPartOf: { '@type': 'WebSite', name: 'PreciosObra', url: 'https://controlobra.ai/' },
+}
+
+const jsonldArr = [productLd, faqLd, paginaLd].filter(Boolean)
 const jsonld = jsonldArr.length === 1 ? jsonldArr[0] : (jsonldArr.length ? jsonldArr : null)
 
 // Otros materiales para enlaces internos.
@@ -85,6 +99,13 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
           ))}
         </div>
       </div>
+
+      {data.respuesta && (
+        <section class="directa">
+          <h2>{data.preguntaClave}</h2>
+          <p set:html={data.respuesta} />
+        </section>
+      )}
 
       <section>
         <h2>Precios por producto y zona</h2>
@@ -178,6 +199,12 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
   .fq h3 { font-size: 16px; font-weight: 700; margin: 0 0 4px; letter-spacing: -.01em; }
   .fq p { margin: 0; color: var(--ink-2); text-align: justify; text-align-last: left; hyphens: auto; }
   strong { font-weight: 700; }
+
+  /* Respuesta directa: la pregunta como encabezado y la respuesta en un párrafo
+     corto y autocontenido. Es el formato que Google levanta como fragmento
+     destacado, y de paso resuelve la duda del visitante sin hacerlo leer. */
+  .directa { border-left: 3px solid var(--brand); padding-left: 18px; }
+  .directa p { font-size: 16px; line-height: 1.6; margin: 0; }
 
   .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
 </style>
