@@ -53,6 +53,23 @@ const paginaLd = {
 const jsonldArr = [faqLd, paginaLd].filter(Boolean)
 const jsonld = jsonldArr.length === 1 ? jsonldArr[0] : (jsonldArr.length ? jsonldArr : null)
 
+// Guías relacionadas — interlinking en ambas direcciones: cada guía ya
+// enlaza a sus materiales (ver src/pages/guias/*.astro); esto cierra el
+// círculo enlazando de vuelta desde el material a toda guía que lo usa,
+// no solo a "su" guía principal.
+const GUIAS = [
+  { slugs: ['block'], href: '/guias/cuanto-cuesta-una-pared-de-block/', titulo: '¿Cuánto cuesta una pared de block?', emoji: '🧱' },
+  { slugs: ['pintura'], href: '/guias/cuanto-cuesta-pintar-una-casa/', titulo: '¿Cuánto cuesta pintar una casa?', emoji: '🎨' },
+  { slugs: ['varilla', 'cemento', 'gravilla'], href: '/guias/cuanto-cuesta-un-quintal-de-varilla/', titulo: '¿Cuánto cuesta un quintal de varilla?', emoji: '🔩' },
+  { slugs: ['cemento', 'varilla', 'gravilla'], href: '/guias/cuanto-cuesta-echar-el-plato/', titulo: '¿Cuánto cuesta echar el plato?', emoji: '🏗️' },
+  { slugs: ['cemento', 'arena'], href: '/guias/cuanto-cuesta-una-pared-de-block/', titulo: '¿Cuánto cuesta una pared de block?', emoji: '🧱' },
+]
+const GUIAS_DEL_MATERIAL = GUIAS
+  .filter((g) => g.slugs.includes(material))
+  // dedup por href: cemento y varilla aparecen en más de una entrada de arriba
+  // (una por cada ángulo desde el que las referencia otra guía).
+  .filter((g, i, arr) => arr.findIndex((x) => x.href === g.href) === i)
+
 // Otros materiales para enlaces internos.
 const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
 ---
@@ -171,13 +188,13 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
 
   <CtaCalculadora />
 
-  {(data.slug === 'block' || data.slug === 'pintura' || data.slug === 'varilla') && (
+  {GUIAS_DEL_MATERIAL.length > 0 && (
     <section>
       <h2>Seguí con la guía</h2>
       <div class="chips">
-        {data.slug === 'block' && <a class="chip" href="/guias/cuanto-cuesta-una-pared-de-block/">🧱 ¿Cuánto cuesta una pared de block?</a>}
-        {data.slug === 'pintura' && <a class="chip" href="/guias/cuanto-cuesta-pintar-una-casa/">🎨 ¿Cuánto cuesta pintar una casa?</a>}
-        {data.slug === 'varilla' && <a class="chip" href="/guias/cuanto-cuesta-un-quintal-de-varilla/">🔩 ¿Cuánto cuesta un quintal de varilla?</a>}
+        {GUIAS_DEL_MATERIAL.map((g) => (
+          <a class="chip" href={g.href}>{g.emoji} {g.titulo}</a>
+        ))}
       </div>
     </section>
   )}
