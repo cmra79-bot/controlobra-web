@@ -23,6 +23,10 @@ export const MATERIALES = [
     slug: 'cemento',
     nombre: 'Cemento',
     queries: ['cemento gris', 'cemento blanco'],
+    variantes: [
+      { key: 'gris', match: /gris/i, etiqueta: 'Cemento gris (94 lb)' },
+      { key: 'blanco', match: /blanco/i, etiqueta: 'Cemento blanco (40 kg)' },
+    ],
     emoji: '🧱',
     unidad: 'funda',
     h1: 'Precio del cemento en República Dominicana',
@@ -40,9 +44,10 @@ export const MATERIALES = [
     },
     respuesta: 'Una <strong>funda de cemento</strong> cuesta <strong>{tipico}</strong> en República Dominicana, en un rango de {min} a {max} según sea gris (94 lb) o blanco (40 kg), la zona y el volumen de compra. Comprando por <strong>palé</strong> el precio por funda baja entre un 5% y un 12%.',
     notaTitulo: 'Precio del cemento por funda y por palé',
-    nota: 'El <strong>cemento</strong> es el material líder de toda obra en RD: representa más del <strong>90% del uso</strong> en construcción. Se vende por <strong>funda (saco)</strong>: el <strong>cemento gris</strong> viene en fundas de <strong>94 libras (~42.6 kg)</strong> y el <strong>cemento blanco</strong> en fundas de <strong>40 kg</strong>. Según la comunidad, la funda de <strong>cemento gris</strong> ronda los <strong>RD$ 535</strong> y la de <strong>cemento blanco</strong> los <strong>RD$ 1,495</strong>. Comprar por <strong>palé</strong> baja el precio por funda entre 5% y 12%.',
+    // {v_gris}/{v_blanco} se interpolan con la mediana real del build.
+    nota: 'El <strong>cemento</strong> es el material líder de toda obra en RD: representa más del <strong>90% del uso</strong> en construcción. Se vende por <strong>funda (saco)</strong>: el <strong>cemento gris</strong> viene en fundas de <strong>94 libras (~42.6 kg)</strong> y el <strong>cemento blanco</strong> en fundas de <strong>40 kg</strong>. Según la comunidad, la funda de <strong>cemento gris</strong> ronda {v_gris} y la de <strong>cemento blanco</strong>, {v_blanco}. Comprar por <strong>palé</strong> baja el precio por funda entre 5% y 12%.',
     faq: [
-      { q: '¿A cómo está la funda de cemento gris en RD?', a: 'La funda de <strong>cemento gris de 94 lb</strong> ronda los <strong>RD$ 535</strong> en República Dominicana, según los reportes de la comunidad. El precio varía por zona, marca y volumen (por palé sale más barato).' },
+      { q: '¿A cómo está la funda de cemento gris en RD?', a: 'La funda de <strong>cemento gris de 94 lb</strong> ronda {v_gris} en República Dominicana, según los reportes de la comunidad. El precio varía por zona, marca y volumen (por palé sale más barato).' },
       { q: '¿Cuánto pesa una funda de cemento?', a: 'La funda de <strong>cemento gris</strong> pesa <strong>94 libras (~42.6 kg)</strong> y la de <strong>cemento blanco</strong>, <strong>40 kg</strong>. Es la presentación estándar en RD.' },
       { q: '¿Cuál es la diferencia entre cemento gris y blanco?', a: 'El <strong>cemento gris</strong> es el de uso estructural general (concreto, morteros) y el más económico. El <strong>cemento blanco</strong> se usa para acabados, juntas y decoración, y cuesta bastante más por funda.' },
       { q: '¿Cuántas fundas de cemento lleva 1 m³ de concreto?', a: 'Un m³ de concreto estructural lleva aproximadamente <strong>7 a 9 fundas</strong> de cemento gris, más arena y grava.' },
@@ -77,6 +82,13 @@ export const MATERIALES = [
     slug: 'arena',
     nombre: 'Arena',
     queries: ['arena'],
+    // "lavada" apunta específicamente a la arena de banco/río (Itabo, grano
+    // grueso) — no a "arena azul lavada triturada", que es otro producto y
+    // casi el doble de precio; mezclarlas inflaba la variante sin avisar.
+    variantes: [
+      { key: 'lavada', match: /itabo|grano grueso/i, etiqueta: 'Arena lavada (banco/río)' },
+      { key: 'fina', match: /pa[ñn]ete|fina/i, etiqueta: 'Arena fina de pañete' },
+    ],
     emoji: '⛰️',
     unidad: 'm³',
     h1: 'Precio de la arena en República Dominicana',
@@ -93,9 +105,10 @@ export const MATERIALES = [
     },
     respuesta: 'El <strong>metro cúbico (m³) de arena</strong> está en <strong>{tipico}</strong> puesto en obra en República Dominicana, entre {min} y {max} según el tipo (lavada, fina de pañete o gruesa), la zona y sobre todo el flete desde el banco de arena. Para <strong>1 m³ de concreto</strong> se usan unos <strong>0.5 m³ de arena</strong>.',
     notaTitulo: 'Precio de la arena lavada por m³ y cuánta lleva el concreto',
-    nota: 'La <strong>arena</strong> es la base para preparar el <strong>concreto</strong> y los morteros en obra. Se vende por <strong>metro cúbico (m³)</strong> puesto en obra. Según la comunidad, la <strong>arena lavada</strong> ronda los <strong>RD$ 1,973 el m³</strong> y la <strong>arena fina de pañete</strong> unos <strong>RD$ 2,423</strong>. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.5 m³ de arena</strong>, más grava y cemento.',
+    // {v_lavada}/{v_fina} se interpolan con la mediana real del build.
+    nota: 'La <strong>arena</strong> es la base para preparar el <strong>concreto</strong> y los morteros en obra. Se vende por <strong>metro cúbico (m³)</strong> puesto en obra. Según la comunidad, la <strong>arena lavada</strong> ronda {v_lavada} el m³ y la <strong>arena fina de pañete</strong>, {v_fina}. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.5 m³ de arena</strong>, más grava y cemento.',
     faq: [
-      { q: '¿A cómo está el metro cúbico de arena en RD?', a: 'El m³ de <strong>arena lavada</strong> ronda los <strong>RD$ 1,973</strong> en República Dominicana, según la comunidad. La arena fina de pañete cuesta un poco más (~RD$ 2,423/m³). Varía por zona y por el flete.' },
+      { q: '¿A cómo está el metro cúbico de arena en RD?', a: 'El m³ de <strong>arena lavada</strong> ronda {v_lavada} en República Dominicana, según la comunidad. La arena fina de pañete cuesta un poco más ({v_fina}/m³). Varía por zona y por el flete.' },
       { q: '¿Qué arena se usa para el concreto?', a: 'Para <strong>concreto</strong> se usa <strong>arena lavada o gruesa</strong>; para <strong>pañete y acabados</strong>, arena fina. La arena de río lavada da mejor resistencia al concreto.' },
       { q: '¿Cuánta arena lleva 1 m³ de concreto?', a: 'Un m³ de concreto estructural lleva aproximadamente <strong>0.5 m³ de arena</strong> y <strong>0.8 m³ de grava</strong>, más 7 a 9 fundas de cemento.' },
     ],
@@ -104,6 +117,10 @@ export const MATERIALES = [
     slug: 'gravilla',
     nombre: 'Grava y gravilla',
     queries: ['grava', 'gravilla'],
+    variantes: [
+      { key: 'g38', match: /3\/8/, etiqueta: 'Grava/gravilla de 3/8"' },
+      { key: 'g34', match: /3\/4/, etiqueta: 'Grava de 3/4"' },
+    ],
     emoji: '🪨',
     unidad: 'm³',
     h1: 'Precio de la grava y gravilla en República Dominicana',
@@ -121,9 +138,10 @@ export const MATERIALES = [
     },
     respuesta: 'El <strong>metro cúbico (m³) de grava</strong> está en <strong>{tipico}</strong> puesto en obra en República Dominicana, entre {min} y {max} según el tamaño del árido (3/8" para gravilla, 1/2" a 3/4" para grava), la zona y el flete desde la cantera. Para <strong>1 m³ de concreto</strong> se usan unos <strong>0.8 m³ de grava</strong>.',
     notaTitulo: 'Precio de la grava por m³ y cuánta lleva el concreto',
-    nota: 'La <strong>grava y gravilla</strong> son el <strong>agregado grueso</strong> para el <strong>concreto</strong>. Se venden por <strong>metro cúbico (m³)</strong>. Según la comunidad, la grava triturada de 3/8" ronda los <strong>RD$ 1,846 el m³</strong> y la de 3/4" unos <strong>RD$ 1,904</strong>. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.8 m³ de grava</strong>, más arena y cemento.',
+    // {v_g38}/{v_g34} se interpolan con la mediana real del build.
+    nota: 'La <strong>grava y gravilla</strong> son el <strong>agregado grueso</strong> para el <strong>concreto</strong>. Se venden por <strong>metro cúbico (m³)</strong>. Según la comunidad, la grava triturada de 3/8" ronda {v_g38} el m³ y la de 3/4", {v_g34}. Para <strong>1 m³ de concreto</strong> se usa aproximadamente <strong>0.8 m³ de grava</strong>, más arena y cemento.',
     faq: [
-      { q: '¿A cómo está el metro cúbico de grava en RD?', a: 'El m³ de <strong>grava triturada</strong> ronda los <strong>RD$ 1,846 (3/8")</strong> a <strong>RD$ 1,904 (3/4")</strong> en RD, según la comunidad. Varía por tamaño del árido, zona y flete.' },
+      { q: '¿A cómo está el metro cúbico de grava en RD?', a: 'El m³ de <strong>grava triturada</strong> ronda {v_g38} (3/8") a {v_g34} (3/4") en RD, según la comunidad. Varía por tamaño del árido, zona y flete.' },
       { q: '¿Qué diferencia hay entre grava y gravilla?', a: 'La <strong>gravilla</strong> es de menor tamaño (3/8"), ideal para concretos finos y losas; la <strong>grava</strong> (1/2" a 3/4") se usa en concreto estructural. Ambas son agregado grueso.' },
       { q: '¿Cuánta grava lleva 1 m³ de concreto?', a: 'Un m³ de concreto lleva aproximadamente <strong>0.8 m³ de grava</strong>, junto a 0.5 m³ de arena y 7 a 9 fundas de cemento.' },
     ],
@@ -179,13 +197,15 @@ export const MATERIALES = [
     unidad: 'galón',
     h1: 'Precio de la pintura en República Dominicana',
     seoTitle: 'Precio de la pintura en RD 2026 · galón de pintura acrílica por zona',
-    seoDesc: 'Precio de la pintura acrílica en República Dominicana por galón y por zona. Galón desde RD$ 1,700. Cuánto rinde y cuánta necesitás. Datos de Precios Obra.',
+    seoDesc: 'Precio de la pintura acrílica en República Dominicana por galón y por zona. Cuánto rinde y cuánta necesitás. Datos de Precios Obra.',
     intro: 'Precio de la pintura de construcción en RD por tipo (acrílica, esmalte, selladores) y por zona, según los reportes de la comunidad. La pintura es uno de los acabados más cotizados para paredes y fachadas; se cotiza por galón o cubeta.',
     porque: 'El precio de la pintura en RD depende del tipo (acrílica, esmalte, selladora), la calidad y el rendimiento por galón. Una pintura más cara suele rendir más metros cuadrados por galón, así que conviene comparar el costo por m² pintado, no solo el del envase.',
     notaTitulo: 'Precio del galón de pintura y cuánto rinde',
-    nota: 'La <strong>pintura</strong> es uno de los acabados más cotizados para <strong>paredes y fachadas</strong> en RD. Se vende por <strong>galón</strong> y por <strong>cubeta (5 galones)</strong>. Según la comunidad, el galón de <strong>pintura acrílica</strong> ronda los <strong>RD$ 1,700 a 1,900</strong>. Un galón rinde aproximadamente <strong>30 a 40 m² por mano</strong>; para dos manos (lo recomendado), calculá un galón cada 15 a 20 m².',
+    // {min}/{max} salen del rango real del build (todosLosPrecios de esta
+    // página), no de un rango fijo que envejece.
+    nota: 'La <strong>pintura</strong> es uno de los acabados más cotizados para <strong>paredes y fachadas</strong> en RD. Se vende por <strong>galón</strong> y por <strong>cubeta (5 galones)</strong>. Según la comunidad, el galón de <strong>pintura acrílica</strong> ronda entre {min} y {max}. Un galón rinde aproximadamente <strong>30 a 40 m² por mano</strong>; para dos manos (lo recomendado), calculá un galón cada 15 a 20 m².',
     faq: [
-      { q: '¿A cómo está el galón de pintura acrílica en RD?', a: 'El galón de <strong>pintura acrílica</strong> ronda los <strong>RD$ 1,700 a 1,900</strong> en RD, según la comunidad. Las líneas premium y las de fachada cuestan más.' },
+      { q: '¿A cómo está el galón de pintura acrílica en RD?', a: 'El galón de <strong>pintura acrílica</strong> ronda entre {min} y {max} en RD, según la comunidad. Las líneas premium y las de fachada cuestan más.' },
       { q: '¿Cuánto rinde un galón de pintura?', a: 'Un galón rinde aproximadamente <strong>30 a 40 m² por mano</strong>. Para dos manos (lo recomendado), un galón cubre unos <strong>15 a 20 m²</strong>.' },
       { q: '¿Cuánta pintura necesito para una casa?', a: 'Depende del área de pared. Como referencia, para dos manos calculá 1 galón cada 15 a 20 m² de pared, y sumá un 10% extra para retoques.' },
     ],
@@ -242,6 +262,13 @@ export const MATERIALES = [
     slug: 'piso',
     nombre: 'Piso y porcelanato',
     queries: ['piso', 'porcelanato', 'cerámica'],
+    // Por nombre de línea, no por dimensión: "60x60" solo también matchea
+    // "Instalación de porcelanato... 60x60cm" (mano de obra, no material),
+    // que contaminaría la mediana con un precio mucho más bajo.
+    variantes: [
+      { key: 'chico', match: /chino/i, etiqueta: 'Porcelanato chino de 50x50' },
+      { key: 'romano', match: /romano/i, etiqueta: 'Porcelanato romano de 60x60' },
+    ],
     emoji: '◻️',
     unidad: 'm²',
     h1: 'Precio del porcelanato y piso en República Dominicana',
@@ -250,9 +277,10 @@ export const MATERIALES = [
     intro: 'Precio del porcelanato y piso cerámico en RD por formato y calidad, y por zona, según los reportes de la comunidad de Precios Obra. El porcelanato y la cerámica son los acabados más cotizados para pisos y fachadas; se cotizan por metro cuadrado (m²).',
     porque: 'El precio del piso en RD depende del tipo (cerámica nacional, porcelanato importado), el formato de la pieza, el acabado (mate, pulido, rectificado) y la marca. El porcelanato de gran formato suele ser el más caro por m².',
     notaTitulo: 'Precio del porcelanato por m² para pisos y fachadas',
-    nota: 'El <strong>porcelanato</strong> y la <strong>cerámica</strong> son los acabados más cotizados para <strong>pisos y fachadas</strong> en RD. Se venden por <strong>metro cuadrado (m²)</strong>. Según la comunidad, el porcelanato chino de 50x50 ronda los <strong>RD$ 1,558 el m²</strong> y el romano de 60x60 unos <strong>RD$ 1,846</strong>. Conviene comprar un <strong>10% extra</strong> por cortes y roturas.',
+    // {v_chico}/{v_romano} se interpolan con la mediana real del build.
+    nota: 'El <strong>porcelanato</strong> y la <strong>cerámica</strong> son los acabados más cotizados para <strong>pisos y fachadas</strong> en RD. Se venden por <strong>metro cuadrado (m²)</strong>. Según la comunidad, el porcelanato chino de 50x50 ronda {v_chico} el m² y el romano de 60x60, {v_romano}. Conviene comprar un <strong>10% extra</strong> por cortes y roturas.',
     faq: [
-      { q: '¿A cómo está el metro cuadrado de porcelanato en RD?', a: 'El m² de <strong>porcelanato</strong> ronda los <strong>RD$ 1,558 (50x50)</strong> a <strong>RD$ 1,846 (60x60)</strong> en RD, según la comunidad. El formato grande y el importado cuestan más.' },
+      { q: '¿A cómo está el metro cuadrado de porcelanato en RD?', a: 'El m² de <strong>porcelanato</strong> ronda {v_chico} (50x50) a {v_romano} (60x60) en RD, según la comunidad. El formato grande y el importado cuestan más.' },
       { q: '¿Qué es mejor, cerámica o porcelanato?', a: 'El <strong>porcelanato</strong> es más resistente, menos poroso y dura más, ideal para pisos de alto tránsito y fachadas. La <strong>cerámica</strong> es más económica, buena para áreas de menor uso.' },
       { q: '¿Cuánto porcelanato comprar por m²?', a: 'Comprá siempre un <strong>10% extra</strong> sobre el área a cubrir, para cortes, roturas y reposición futura.' },
     ],
@@ -295,7 +323,7 @@ const FILTROS = {
   // "RD$ 45 – 681" y viajaba al JSON-LD como highPrice. Un block no cuesta eso,
   // y el rango absurdo le quitaba credibilidad a la página entera.
   block:      { excluir: ['mortero', 'adoblock', 'forma irregular'] },
-  pintura:    { excluir: ['spray', 'spary', 'brocha', 'rodillo', 'removedor', 'diluyente'] },
+  pintura:    { test: esGalonSuelto },
   madera:     { excluir: ['clip', 'pincel', 'formaleta', 'tornillo', 'brocha', 'sierra', 'lija', 'espátula', 'espatula', 'llana', 'regla', 'mango', 'nivel', 'flexómetro'] },
   zinc:       { excluir: ['rejilla', 'puntilla', 'desagüe', 'tornillo'] },
   tuberia:    { incluir: ['pvc'], excluir: ['destupidor'] },
@@ -312,7 +340,23 @@ function pasaFiltro(it, f) {
   if (f.soloUnidad && !f.soloUnidad.some((x) => x.toUpperCase() === u)) return false
   if (f.incluir && !f.incluir.some((t) => n.includes(t))) return false
   if (f.excluir && f.excluir.some((t) => n.includes(t))) return false
+  if (f.test && !f.test(it.nombre)) return false
   return true
+}
+
+// Solo galón SUELTO de pintura ACRÍLICA (la de pared). El catálogo mezcla
+// cuartos (1/4gl), cubetas (5gl) y otros acabados (esmalte, alkyd,
+// anticorrosivo — para metal y madera, no pared) bajo el mismo término
+// "pintura", y promediarlos todos daba un rango absurdo (RD$ 513 a 11,790,
+// cuarto de lata contra cubeta de 5 galones) tanto en /precios/pintura/
+// como en la guía de pintar una casa. Usada por ambas: FILTROS.pintura
+// (abajo) y getPintura().
+function esGalonSuelto(nombre) {
+  const n = (nombre || '').toLowerCase()
+  if (/1\/4\s*gl|1\/4gl|cuarto|750\s*ml/.test(n)) return false   // cuartos y latas chicas
+  if (/5\s*gl|5gl|cubeta/.test(n)) return false                    // cubetas
+  if (!/acr[ií]lic/.test(n)) return false                          // esmalte, alkyd, anticorrosivo…
+  return /1\s*gl|1gl/.test(n)
 }
 
 const fmtHoy = () => {
@@ -427,6 +471,16 @@ const interpolar = (tpl, d, factorM2) => (tpl || '')
   .replaceAll('{m2}', factorM2 && Number.isFinite(d.tipico) ? pesos(d.tipico * factorM2) : '—')
   .replaceAll('{mes}', mesAno())
 
+// Reemplaza {v_KEY} con la mediana real de esa variante (def.variantes),
+// o '—' si el catálogo no tiene esa variante todavía.
+const interpolarVariante = (tpl, porVariante) => {
+  if (!tpl || !porVariante) return tpl
+  let out = tpl
+  for (const key of Object.keys(porVariante))
+    out = out.replaceAll(`{v_${key}}`, pesos(porVariante[key].precio))
+  return out
+}
+
 // Reemplaza {espesor4}/{espesor5}/{espesor6}/{espesor8} con la mediana real
 // de ese espesor (o '—' si el catálogo no tiene ese espesor todavía).
 const interpolarEspesor = (tpl, porEspesor) => {
@@ -475,6 +529,21 @@ export async function getMaterial(slug) {
       .filter((e) => e.n > 0)
   }
 
+  // Desglose por variante (def.variantes): mediana real de cada variante,
+  // para no escribir a mano números que la tabla de arriba ya desmiente al
+  // rato (ver interpolarVariante()). Genérico: cualquier material puede
+  // declarar `variantes` con un regex sobre el nombre del producto.
+  let porVariante = null
+  if (def.variantes?.length) {
+    porVariante = {}
+    for (const v of def.variantes) {
+      const vals = productos
+        .filter((p) => v.match.test(p.nombre || ''))
+        .flatMap((p) => Object.values(p.zonas).filter(Number.isFinite))
+      porVariante[v.key] = { precio: vals.length ? mediana(vals) : null, n: vals.length, etiqueta: v.etiqueta }
+    }
+  }
+
   const base = { tipico, minPrecio, maxPrecio }
   return {
     ...def,
@@ -490,10 +559,14 @@ export async function getMaterial(slug) {
     // que el resultado de búsqueda nunca muestre un mes viejo.
     seoTitle: interpolar(def.seoTitle, base, def.factorM2),
     seoDesc: interpolar(def.seoDesc, base, def.factorM2),
-    // nota/faq pueden llevar {espesorN}: se resuelven con datos reales del
-    // build, nunca a mano (ver comentario de interpolarEspesor()).
-    nota: interpolarEspesor(def.nota, porEspesor),
-    faq: def.faq?.map((f) => ({ ...f, a: interpolarEspesor(f.a, porEspesor) })),
+    // nota/faq pueden llevar {min}/{max}/{tipico}, {espesorN} o {v_KEY}: se
+    // resuelven con datos reales del build, nunca a mano.
+    porVariante,
+    nota: interpolarVariante(interpolarEspesor(interpolar(def.nota, base, def.factorM2), porEspesor), porVariante),
+    faq: def.faq?.map((f) => ({
+      ...f,
+      a: interpolarVariante(interpolarEspesor(interpolar(f.a, base, def.factorM2), porEspesor), porVariante),
+    })),
   }
 }
 
@@ -574,20 +647,12 @@ export async function getPintura() {
     const v = Object.values(z || {}).filter((x) => Number.isFinite(x))
     return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null
   }
-  // Solo galón de ACRÍLICA: es la pintura de pared. El catálogo también trae
-  // esmalte y alkyd, que son para metal y madera — tienen otro rendimiento y
-  // otro uso, y colarlas hacía que el "económico" de la guía fuera un esmalte
-  // de óxido, inservible para pintar una casa.
-  const esGalonSuelto = (nombre) => {
-    const n = (nombre || '').toLowerCase()
-    if (/1\/4\s*gl|1\/4gl|cuarto|750\s*ml/.test(n)) return false   // cuartos y latas chicas
-    if (/5\s*gl|5gl|cubeta/.test(n)) return false                  // cubetas
-    if (!/acr[ií]lic/.test(n)) return false                        // esmalte, alkyd, anticorrosivo…
-    return /1\s*gl|1gl/.test(n)
-  }
+  // data.productos ya viene filtrado por esGalonSuelto (FILTROS.pintura en
+  // getMaterial), así que acá solo se ordena — un solo lugar define "qué
+  // cuenta como galón suelto de pintura acrílica".
   const galones = data.productos
     .map((p) => ({ nombre: p.nombre, precio: prom(p.zonas) }))
-    .filter((p) => Number.isFinite(p.precio) && esGalonSuelto(p.nombre))
+    .filter((p) => Number.isFinite(p.precio))
     .sort((a, b) => a.precio - b.precio)
 
   const precioGalon = galones.length ? galones[Math.floor(galones.length / 2)].precio : null
