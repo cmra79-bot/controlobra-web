@@ -17,23 +17,14 @@ if (!data) return Astro.redirect('/precios/')
 const fmt = (v) =>
   Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
-// Datos estructurados: Google puede mostrar el precio y las FAQ en el resultado.
-const productLd = data.tipico
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: `${data.nombre} (precio en República Dominicana)`,
-      description: data.seoDesc,
-      offers: {
-        '@type': 'AggregateOffer',
-        priceCurrency: 'DOP',
-        lowPrice: Math.round(data.minPrecio),
-        highPrice: Math.round(data.maxPrecio),
-        offerCount: data.nProductos,
-        areaServed: 'República Dominicana',
-      },
-    }
-  : null
+// Datos estructurados: FAQ en el resultado + señal de frescura de la página.
+// NO llevamos Product/AggregateOffer aquí a propósito: con ese marcado, Google
+// pinta el rango de precio directo en el resultado de búsqueda (fragmento de
+// producto) y la consulta se resuelve sin que el usuario entre al sitio. Con
+// datos reales del 19-ago-2026: las 13 páginas de material con ese schema
+// convertían al 0.60% de CTR contra 3.18% del resto del sitio, EN EL MISMO
+// PUESTO de Google — hasta con posición 2.5-5 y CERO clics. Ver memoria
+// precios_obra_rd_plan.md. Si en el futuro se reintroduce, medir de nuevo.
 const faqLd = data.faq?.length
   ? {
       '@context': 'https://schema.org',
@@ -59,7 +50,7 @@ const paginaLd = {
   isPartOf: { '@type': 'WebSite', name: 'PreciosObra', url: 'https://controlobra.ai/' },
 }
 
-const jsonldArr = [productLd, faqLd, paginaLd].filter(Boolean)
+const jsonldArr = [faqLd, paginaLd].filter(Boolean)
 const jsonld = jsonldArr.length === 1 ? jsonldArr[0] : (jsonldArr.length ? jsonldArr : null)
 
 // Otros materiales para enlaces internos.
@@ -120,6 +111,22 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
           unidad={data.unidad}
           nombre={data.nombre}
         />
+      )}
+
+      {data.porEspesor && data.porEspesor.length > 0 && (
+        <section id="por-espesor">
+          <h2>Precio del block por espesor</h2>
+          <p class="sub">Mediana de todos los reportes de la comunidad para cada espesor, en este build.</p>
+          <div class="espesores">
+            {data.porEspesor.map((e) => (
+              <div class="esp-card" id={`block-${e.espesor}`}>
+                <div class="esp-t">Block de {e.espesor}"</div>
+                <div class="esp-p tnum">RD$ {fmt(e.precio)}</div>
+                <div class="esp-n">{e.n} {e.n === 1 ? 'reporte' : 'reportes'}</div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       <section>
@@ -205,6 +212,11 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
   .hnote { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
   .zonas { display: flex; gap: 10px; }
   .zona { border: 1px solid var(--line); border-left: 3px solid var(--zc); border-radius: 10px; padding: 10px 14px; min-width: 92px; }
+  .espesores { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+  .esp-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; background: var(--paper); box-shadow: var(--shadow); min-width: 130px; }
+  .esp-t { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+  .esp-p { font-size: 22px; font-weight: 800; color: var(--ink); margin-top: 4px; }
+  .esp-n { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .zl { font-size: 12px; color: var(--muted); font-weight: 600; }
   .zp { font-size: 15px; font-weight: 700; font-family: 'DM Mono', monospace; margin-top: 3px; }
 

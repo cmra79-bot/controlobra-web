@@ -157,14 +157,18 @@ export const MATERIALES = [
     },
     respuesta: 'Un <strong>block de hormigón</strong> cuesta <strong>{tipico} por unidad</strong> en República Dominicana, con precios que van de {min} a {max} según el espesor (4", 6" u 8"), la zona y la cantidad que compres. Para <strong>1 m² de pared</strong> se necesitan unos <strong>12.5 blocks</strong>, así que el metro cuadrado de pared en block sale alrededor de <strong>{m2}</strong> solo en material.',
     notaTitulo: 'Precio del block de 4", 6" y 8" y cuántos por m²',
-    nota: 'El <strong>block de hormigón</strong> es el material principal para levantar <strong>muros y paredes</strong> en RD. Los espesores más usados son <strong>4", 6" y 8"</strong>. Según la comunidad, el block industrial va desde unos <strong>RD$ 45 (4")</strong>, <strong>RD$ 46 (5")</strong> y <strong>RD$ 51 (6")</strong> por unidad. Para levantar <strong>1 m² de pared</strong> se necesitan aproximadamente <strong>12.5 blocks</strong> de 8"x16", más el mortero de pega.',
+    // Sin números fijos: {espesor4}/{espesor5}/{espesor6}/{espesor8} se
+    // interpolan con la mediana real del build (ver interpolarEspesor()).
+    nota: 'El <strong>block de hormigón</strong> es el material principal para levantar <strong>muros y paredes</strong> en RD. Los espesores más usados son <strong>4", 6" y 8"</strong>. Según la comunidad, el block industrial ronda {espesor4} (4"), {espesor6} (6") y {espesor8} (8") por unidad — más abajo está el desglose completo. Para levantar <strong>1 m² de pared</strong> se necesitan aproximadamente <strong>12.5 blocks</strong> de 8"x16", más el mortero de pega.',
+    // {espesorN} se interpolan con la mediana real del build (interpolarEspesor()).
     faq: [
-      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$ 45 y RD$ 65</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de arriba está el precio actualizado de cada medida por zona.' },
-      { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda los <strong>RD$ 51</strong> por unidad en República Dominicana, según la comunidad. El de 4" está cerca de <strong>RD$ 45</strong> y el de 5", <strong>RD$ 46</strong>. Varía por zona, resistencia y cantidad.' },
-      { q: '¿A cómo está el block de 4" en RD?', a: 'El block de 4" x 8" x 16" es el más económico: ronda los <strong>RD$ 45</strong> por unidad. Se usa sobre todo para <strong>divisiones internas</strong>, no para muros de carga.' },
-      { q: '¿A cómo está el block de 8" en RD?', a: 'El block de 8" x 8" x 16" es el de mayor espesor de uso común y por eso el más caro de los tres. Se usa en <strong>muros de carga, contención y linderos</strong>. Mirá la tabla de arriba para el precio actualizado en tu zona.' },
+      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$ 45 y RD$ 65</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de abajo está el precio actualizado de cada medida por zona.' },
+      { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda {espesor6} por unidad en República Dominicana, según la comunidad. El de 4" ronda {espesor4} y el de 8", {espesor8}. Varía por zona, resistencia y cantidad.' },
+      { q: '¿A cómo está el block de 4" en RD?', a: 'El block de 4" x 8" x 16" es el más económico: ronda {espesor4} por unidad. Se usa sobre todo para <strong>divisiones internas</strong>, no para muros de carga.' },
+      { q: '¿A cómo está el block de 8" en RD?', a: 'El block de 8" x 8" x 16" es el de mayor espesor de uso común y por eso el más caro de los tres: ronda {espesor8} por unidad. Se usa en <strong>muros de carga, contención y linderos</strong>.' },
       { q: '¿Cuántos blocks se necesitan por metro cuadrado de pared?', a: 'Para <strong>1 m² de pared</strong> con block de 8"x16" se necesitan aproximadamente <strong>12.5 blocks</strong>, más el mortero de pega. Conviene sumar un 5% extra por roturas.' },
       { q: '¿Qué espesor de block conviene usar?', a: 'El <strong>block de 6"</strong> es el más usado para muros de carga y fachadas; el de <strong>4"</strong> para divisiones internas; y el de <strong>8"</strong> para muros de mayor resistencia o de contención.' },
+      { q: '¿Se escribe "block" o "blok"?', a: 'La forma correcta en español es <strong>block</strong> (del inglés "block"), aunque también se ve escrito "blok" o "bloc". Es el mismo material: el bloque de hormigón para levantar paredes.' },
     ],
   },
   {
@@ -382,6 +386,15 @@ function agrupar(filas) {
 
 // Mediana: valor típico robusto a extremos (mejor que el promedio cuando el
 // material mezcla sub-tipos de precio muy distinto, ej. cemento gris vs blanco).
+// Extrae el espesor (4", 5", 6", 8") del nombre de un producto de block, p.ej.
+// "Block 6\" x8\"x16\" industrial" -> "6". Se usa para armar el desglose por
+// espesor con datos REALES en vez de los números escritos a mano que se
+// desactualizaban (el FAQ decía RD$ 51 cuando la tabla ya iba en 58).
+function extraerEspesor(nombre) {
+  const m = (nombre || '').match(/\b([4568])\s*(?:"|''|pulg)/i)
+  return m ? m[1] : null
+}
+
 function mediana(vals) {
   const s = vals.filter(Number.isFinite).slice().sort((a, b) => a - b)
   if (!s.length) return null
@@ -414,6 +427,18 @@ const interpolar = (tpl, d, factorM2) => (tpl || '')
   .replaceAll('{m2}', factorM2 && Number.isFinite(d.tipico) ? pesos(d.tipico * factorM2) : '—')
   .replaceAll('{mes}', mesAno())
 
+// Reemplaza {espesor4}/{espesor5}/{espesor6}/{espesor8} con la mediana real
+// de ese espesor (o '—' si el catálogo no tiene ese espesor todavía).
+const interpolarEspesor = (tpl, porEspesor) => {
+  if (!tpl) return tpl
+  let out = tpl
+  for (const e of ['4', '5', '6', '8']) {
+    const item = porEspesor?.find((x) => x.espesor === e)
+    out = out.replaceAll(`{espesor${e}}`, pesos(item?.precio))
+  }
+  return out
+}
+
 // Devuelve todos los datos agregados de un material por su slug.
 export async function getMaterial(slug) {
   const def = MATERIALES.find((m) => m.slug === slug)
@@ -434,6 +459,22 @@ export async function getMaterial(slug) {
   const minPrecio = todosLosPrecios.length ? Math.min(...todosLosPrecios) : null
   const maxPrecio = todosLosPrecios.length ? Math.max(...todosLosPrecios) : null
 
+  // Desglose por espesor (solo aplica a block: 4", 5", 6", 8"). Mediana real
+  // de todos los precios (producto × zona) de cada espesor, no un número fijo.
+  let porEspesor = null
+  if (slug === 'block') {
+    const porE = new Map()
+    for (const p of productos) {
+      const e = extraerEspesor(p.nombre)
+      if (!e) continue
+      if (!porE.has(e)) porE.set(e, [])
+      porE.get(e).push(...Object.values(p.zonas).filter(Number.isFinite))
+    }
+    porEspesor = ['4', '5', '6', '8']
+      .map((e) => ({ espesor: e, precio: porE.has(e) ? mediana(porE.get(e)) : null, n: porE.get(e)?.length || 0 }))
+      .filter((e) => e.n > 0)
+  }
+
   const base = { tipico, minPrecio, maxPrecio }
   return {
     ...def,
@@ -441,6 +482,7 @@ export async function getMaterial(slug) {
     zonaStats: statsPorZona(productos),
     ...base,
     nProductos: productos.length,
+    porEspesor,
     actualizado: fmtHoy(),
     // Respuesta directa con los precios de este build, lista para renderizar.
     respuesta: def.respuesta ? interpolar(def.respuesta, base, def.factorM2) : null,
@@ -448,6 +490,10 @@ export async function getMaterial(slug) {
     // que el resultado de búsqueda nunca muestre un mes viejo.
     seoTitle: interpolar(def.seoTitle, base, def.factorM2),
     seoDesc: interpolar(def.seoDesc, base, def.factorM2),
+    // nota/faq pueden llevar {espesorN}: se resuelven con datos reales del
+    // build, nunca a mano (ver comentario de interpolarEspesor()).
+    nota: interpolarEspesor(def.nota, porEspesor),
+    faq: def.faq?.map((f) => ({ ...f, a: interpolarEspesor(f.a, porEspesor) })),
   }
 }
 
