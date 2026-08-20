@@ -1,10 +1,11 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
-import { getCostoConstruccion, getParedBlock, getPintura } from '../../lib/precios.js'
+import { getCostoConstruccion, getParedBlock, getPintura, getVarilla } from '../../lib/precios.js'
 
 const g = await getCostoConstruccion()
 const pared = await getParedBlock()
 const pint = await getPintura()
+const var_ = await getVarilla()
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
 const GUIAS = [
@@ -29,6 +30,14 @@ const GUIAS = [
       ? `Precio del galón hoy, cuántos galones necesitás y cuánto pesa la mano de obra. Desde RD$ ${fmt(pint.costoM2)}/m² en pintura.`
       : 'Precio del galón, cuántos galones necesitás y cuánto pesa la mano de obra.',
     emoji: '🎨',
+  },
+  {
+    slug: 'cuanto-cuesta-un-quintal-de-varilla',
+    titulo: 'Cuánto cuesta un quintal de varilla',
+    resumen: Number.isFinite(var_.precioQq)
+      ? `Precio del quintal hoy, cuánto sale la libra y cuánto pesa cada calibre. Desde RD$ ${fmt(var_.precioQq)}/qq.`
+      : 'Precio del quintal, cuánto sale la libra y cuánto pesa cada calibre.',
+    emoji: '🔩',
   },
 ]
 

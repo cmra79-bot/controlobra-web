@@ -69,7 +69,7 @@ export const MATERIALES = [
       { q: '¿A cómo está el quintal de varilla de acero en RD?', a: 'La varilla de acero grado 40-60 se cotiza alrededor de <strong>RD$ 3,300 por quintal (qq)</strong> en República Dominicana, según los reportes de la comunidad de Precios Obra. Como un quintal tiene 100 libras, la <strong>libra de acero</strong> sale a unos <strong>RD$ 33</strong>.' },
       { q: '¿Cuántas libras tiene un quintal de acero?', a: 'Un <strong>quintal (qq)</strong> equivale a <strong>100 libras (lb)</strong> y a aproximadamente <strong>45.36 kg</strong>. Es la unidad de peso más usada para vender el acero y la varilla en República Dominicana.' },
       { q: '¿Cómo se vende la varilla de acero en República Dominicana?', a: 'La varilla de acero en RD se vende por <strong>quintal</strong> (por peso) y por <strong>unidad</strong> (varillas de 20 pies). Los calibres más usados son <strong>3/8", 1/2" y 5/8"</strong>, en grado 40 y 60. El precio varía por calibre, grado, zona y cantidad.' },
-      { q: '¿Cuánto pesa una varilla de acero?', a: 'El peso depende del calibre: una varilla de 3/8" de 20 pies pesa alrededor de 5.6 libras; una de 1/2", unas 10 libras; y una de 5/8", cerca de 15.6 libras. Por eso el acero se compra por quintal (100 libras).' },
+      { q: '¿Cuánto pesa una varilla de acero?', a: 'El peso depende del calibre: una varilla de 3/8" de 20 pies pesa alrededor de <strong>7.5 libras</strong>; una de 1/2", unas <strong>13.4 libras</strong>; y una de 5/8", cerca de <strong>20.9 libras</strong>. Por eso el acero se compra por quintal (100 libras).' },
       { q: '¿A cómo está la malla electrosoldada en RD?', a: 'La <strong>malla electrosoldada de acero</strong> (para losas y contrapisos) va desde unos <strong>RD$ 17,000 hasta RD$ 30,000 por rollo</strong>, según el calibre (D2.90, D2.70…) y el tamaño del rollo. Se usa en la <strong>losa de techo</strong> y en pisos.' },
     ],
   },
@@ -1019,6 +1019,55 @@ function costoM2(cfg, { basePrecio, factorNivel, factorZona }) {
   const indirecto = directo * indPct
   const itbis = (directo + indirecto) * 0.1 * 0.18
   return { directo, indirecto, itbis, total: directo + indirecto + itbis }
+}
+
+// ---------------------------------------------------------------------------
+// GUÍA "cuánto cuesta un quintal de varilla" — el segundo tema en volumen del
+// sitio (542 imp) con conversión prácticamente nula (0.55% CTR). El patrón de
+// búsqueda no es "precio de la varilla" (ya cubierto en /precios/varilla/):
+// es la unidad — quintal, libra, calibre — que el fragmento de producto de
+// Google no explica.
+//
+// Peso por varilla (20 pies) por calibre: NO es un promedio de mercado, es
+// geometría pura (área de la sección × densidad del acero, 0.2836 lb/in³) —
+// el mismo cálculo de cualquier tabla de acero de refuerzo (ASTM A615).
+// ---------------------------------------------------------------------------
+const DENSIDAD_ACERO_LB_IN3 = 0.2836
+const LARGO_VARILLA_FT = 20
+const CALIBRES = [
+  { pulgadas: '3/8', decimal: 3 / 8, uso: 'Estribos, columnas y vigas pequeñas' },
+  { pulgadas: '1/2', decimal: 1 / 2, uso: 'El más usado: columnas, vigas y losas' },
+  { pulgadas: '5/8', decimal: 5 / 8, uso: 'Columnas y vigas de mayor carga' },
+]
+
+export async function getVarilla() {
+  const data = await getMaterial('varilla')
+  const precioQq = data.tipico
+
+  const calibres = CALIBRES.map((c) => {
+    const areaIn2 = Math.PI * (c.decimal / 2) ** 2
+    const lbPorPie = areaIn2 * 12 * DENSIDAD_ACERO_LB_IN3
+    const lbPorVarilla = lbPorPie * LARGO_VARILLA_FT
+    const qqPorVarilla = lbPorVarilla / 100
+    return {
+      ...c,
+      lbPorVarilla,
+      qqPorVarilla,
+      costoPorVarilla: Number.isFinite(precioQq) ? qqPorVarilla * precioQq : null,
+    }
+  })
+
+  // Calibre de referencia para el ejemplo de la calculadora: 1/2" es el de
+  // mayor uso general en estructuras residenciales de RD.
+  const ref = calibres.find((c) => c.pulgadas === '1/2') || calibres[0]
+
+  return {
+    precioQq,
+    precioLb: Number.isFinite(precioQq) ? precioQq / 100 : null,
+    calibres,
+    referencia: ref,
+    actualizado: fmtHoy(),
+  }
 }
 
 // Devuelve los datos de la guía: costo/m² por terminación (Casa 1 nivel, zona

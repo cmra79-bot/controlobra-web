@@ -1,0 +1,209 @@
+---
+/**
+ * Guía "¿Cuánto cuesta un quintal de varilla en RD?"
+ *
+ * Segundo tema en volumen del sitio (542 impresiones, ~0.55% CTR) — casi tan
+ * buscado como block, pero sin una sola conversión real. La consulta no es
+ * "precio de la varilla" (eso ya lo resuelve /precios/varilla/ y el propio
+ * fragmento de Google): es la UNIDAD. El dominicano pregunta por quintal,
+ * por libra, por calibre — y ahí es donde el buscador no puede resumir nada,
+ * porque hace falta la cuenta.
+ */
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CalculadoraInline from '../../components/CalculadoraInline.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import { getVarilla, isoHoy, mesAno } from '../../lib/precios.js'
+
+const g = await getVarilla()
+const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
+const fmt1 = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 1 }) : '—'
+const ref = g.referencia
+
+const title = `¿Cuánto cuesta un quintal de varilla en RD? Por qq, libra y calibre · ${mesAno()}`
+const description = `Precio del quintal de varilla de acero en República Dominicana hoy, cuánto pesa cada calibre (3/8", 1/2", 5/8") y cuánto sale una varilla completa. Con precios reales actualizados a diario.`
+
+const respuesta = Number.isFinite(g.precioQq)
+  ? `El <strong>quintal (qq) de varilla</strong> de acero grado 40-60 está en <strong>RD$ ${fmt(g.precioQq)}</strong> en República Dominicana. Como un quintal son 100 libras, la <strong>libra sale a RD$ ${fmt1(g.precioLb)}</strong>. Con ese precio, una varilla completa de 20 pies de calibre ${ref?.pulgadas}" —la más usada en estructuras residenciales— cuesta alrededor de <strong>RD$ ${fmt(ref?.costoPorVarilla)}</strong>.`
+  : null
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      ...(respuesta ? [{
+        '@type': 'Question',
+        name: '¿Cuánto cuesta un quintal de varilla en República Dominicana?',
+        acceptedAnswer: { '@type': 'Answer', text: respuesta },
+      }] : []),
+      {
+        '@type': 'Question',
+        name: '¿Cuántas libras tiene un quintal de varilla?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Un quintal (qq) equivale a 100 libras (lb) y a aproximadamente 45.36 kg. Es la unidad de peso con la que se vende la varilla de acero en República Dominicana.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Cuánto pesa una varilla de acero según el calibre?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `Por peso (área de la sección × densidad del acero), una varilla de 20 pies pesa: 3/8" ≈ ${fmt1(g.calibres[0]?.lbPorVarilla)} lb, 1/2" ≈ ${fmt1(g.calibres[1]?.lbPorVarilla)} lb, 5/8" ≈ ${fmt1(g.calibres[2]?.lbPorVarilla)} lb.`,
+        },
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: 'https://controlobra.ai/guias/cuanto-cuesta-un-quintal-de-varilla/',
+    dateModified: isoHoy(),
+    inLanguage: 'es-DO',
+  },
+]
+---
+<PrecioLayout
+  title={title}
+  description={description}
+  canonicalPath="/guias/cuanto-cuesta-un-quintal-de-varilla/"
+  jsonld={jsonld}
+  breadcrumbs={[
+    { nombre: 'Inicio', path: '/' },
+    { nombre: 'Guías', path: '/guias/' },
+    { nombre: 'Cuánto cuesta un quintal de varilla', path: '/guias/cuanto-cuesta-un-quintal-de-varilla/' },
+  ]}
+>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Quintal de varilla
+  </nav>
+
+  <p class="eyebrow">Guía · República Dominicana</p>
+  <h1>¿Cuánto cuesta un quintal de varilla en RD?</h1>
+  <p class="lead">La varilla se vende por peso, no por unidad — y ahí está la confusión. Acá está el precio del quintal, cuánto sale la libra, y cuánto pesa (y cuesta) una varilla completa según el calibre.</p>
+
+  <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
+
+  {respuesta && (
+    <section class="directa">
+      <h2>La respuesta corta</h2>
+      <p set:html={respuesta} />
+    </section>
+  )}
+
+  {ref && Number.isFinite(g.precioQq) && (
+    <CalculadoraInline
+      rendimiento={{
+        pregunta: `¿Cuántas varillas de ${ref.pulgadas}" necesitás?`,
+        unidadEntrada: 'varillas', porUnidad: ref.qqPorVarilla, nombreSalida: 'quintales', decimales: 2,
+        nota: `Calculado con varilla de ${ref.pulgadas}" (20 pies), la de mayor uso general. Para otro calibre, mirá la tabla de abajo y ajustá con el precio por libra.`,
+      }}
+      precio={g.precioQq}
+    />
+  )}
+
+  <section>
+    <h2>Peso y costo por calibre</h2>
+    <p class="sub">Peso real de una varilla de 20 pies según su sección — no un promedio, es geometría. El costo sale de multiplicar por el precio del quintal de hoy.</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Calibre</th><th>Para qué se usa</th><th class="num">Peso (20 pies)</th><th class="num">Costo por varilla</th></tr>
+        </thead>
+        <tbody>
+          {g.calibres.map((c) => (
+            <tr class={c.pulgadas === ref?.pulgadas ? 'destacada' : ''}>
+              <td class="pn">Varilla de {c.pulgadas}"{c.pulgadas === ref?.pulgadas && <span class="tag">más usada</span>}</td>
+              <td class="uso">{c.uso}</td>
+              <td class="num tnum">{fmt1(c.lbPorVarilla)} lb</td>
+              <td class="num price tnum">{Number.isFinite(c.costoPorVarilla) ? `RD$ ${fmt(c.costoPorVarilla)}` : '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+    <p class="mini">Peso calculado por área de la sección (calibre) × densidad del acero — el mismo cálculo de cualquier tabla de acero de refuerzo. Costo con el precio del quintal actualizado a hoy.</p>
+  </section>
+
+  <section>
+    <h2>Cómo se vende la varilla en RD</h2>
+    <p>En República Dominicana la varilla de acero se cotiza sobre todo por <strong>quintal (qq)</strong> —una medida de peso, no de cantidad— y también se consigue por <strong>unidad</strong> (varillas de 20 pies). Un quintal son <strong>100 libras</strong>, así que para saber cuánto sale tu varilla alcanza con multiplicar su peso (según el calibre, en la tabla de arriba) por el precio de la libra.</p>
+    <p>El precio también varía por <strong>grado</strong> (40 o 60 — el grado 60 es más resistente y algo más caro) y por <strong>zona</strong>, porque es un material pesado y el flete pesa en el precio final.</p>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <div class="fq">
+        <h3>¿Cuántas libras tiene un quintal de varilla?</h3>
+        <p>Un <strong>quintal (qq)</strong> equivale a <strong>100 libras (lb)</strong> y a aproximadamente <strong>45.36 kg</strong>. Es la unidad de peso con la que se vende la varilla de acero en RD.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Qué calibre de varilla conviene usar?</h3>
+        <p>El de <strong>1/2"</strong> es el más usado en general, para columnas, vigas y losas de estructuras residenciales. El de <strong>3/8"</strong> se usa en estribos y elementos menores; el de <strong>5/8"</strong>, en columnas y vigas de mayor carga. El cálculo estructural define exactamente cuál usar en cada elemento.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Qué diferencia hay entre acero grado 40 y grado 60?</h3>
+        <p>El <strong>grado</strong> indica la resistencia a la fluencia del acero. El <strong>grado 60</strong> resiste más antes de deformarse que el grado 40, y es el más usado hoy en estructuras de concreto armado en RD. Suele costar algo más que el grado 40.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Seguí con estos precios</h2>
+    <div class="chips">
+      <a class="chip" href="/precios/varilla/">🔩 Precio de la varilla</a>
+      <a class="chip" href="/precios/cemento/">🧱 Precio del cemento</a>
+      <a class="chip" href="/precios/gravilla/">⛰️ Precio de la gravilla</a>
+      <a class="chip" href="/guias/cuanto-cuesta-una-pared-de-block/">🧱 Cuánto cuesta una pared de block</a>
+      <a class="chip" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana/">🏠 Cuánto cuesta construir una casa</a>
+    </div>
+  </section>
+
+  <p class="disc">Precio del quintal con datos aportados por la comunidad de Precios Obra. Pesos calculados por geometría estándar del acero de refuerzo. Referencial, no es una cotización.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-deep); margin: 18px 0 0; font-family: 'DM Mono', monospace; }
+  h1 { font-size: clamp(29px, 5vw, 42px); line-height: 1.08; letter-spacing: -.03em; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 16.5px; color: var(--ink-2); margin: 14px 0 0; max-width: 62ch; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12.5px; color: var(--fresh); background: color-mix(in srgb, var(--fresh) 12%, transparent); border-radius: 999px; padding: 6px 14px; font-family: 'DM Mono', monospace; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .directa { margin-top: 30px; border-left: 3px solid var(--brand); padding-left: 18px; }
+  .directa h2 { font-size: 20px; margin: 0 0 8px; }
+  .directa p { font-size: 16px; line-height: 1.6; margin: 0; }
+
+  section { margin-top: 42px; }
+  h2 { font-size: 23px; letter-spacing: -.02em; margin: 0 0 10px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .mini { font-size: 12.5px; color: var(--muted); margin-top: 12px; }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 12px 16px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.destacada { background: color-mix(in srgb, var(--brand-soft) 30%, transparent); }
+  .pn { font-weight: 700; white-space: nowrap; }
+  .tag { margin-left: 8px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brand-deep); background: var(--brand-soft); padding: 2px 7px; border-radius: 6px; }
+  .uso { color: var(--muted); font-size: 13px; }
+  .price { font-weight: 700; }
+  .tnum { font-family: 'DM Mono', monospace; font-size: 13px; white-space: nowrap; }
+
+  .faq { display: flex; flex-direction: column; gap: 18px; }
+  .fq h3 { font-size: 16.5px; margin: 0 0 5px; }
+  .fq p { margin: 0; color: var(--ink-2); line-height: 1.6; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 15px; font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
+</style>

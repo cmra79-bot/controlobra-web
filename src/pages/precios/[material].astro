@@ -171,12 +171,13 @@ const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
 
   <CtaCalculadora />
 
-  {(data.slug === 'block' || data.slug === 'pintura') && (
+  {(data.slug === 'block' || data.slug === 'pintura' || data.slug === 'varilla') && (
     <section>
       <h2>Seguí con la guía</h2>
       <div class="chips">
         {data.slug === 'block' && <a class="chip" href="/guias/cuanto-cuesta-una-pared-de-block/">🧱 ¿Cuánto cuesta una pared de block?</a>}
         {data.slug === 'pintura' && <a class="chip" href="/guias/cuanto-cuesta-pintar-una-casa/">🎨 ¿Cuánto cuesta pintar una casa?</a>}
+        {data.slug === 'varilla' && <a class="chip" href="/guias/cuanto-cuesta-un-quintal-de-varilla/">🔩 ¿Cuánto cuesta un quintal de varilla?</a>}
       </div>
     </section>
   )}
