@@ -1,11 +1,12 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
-import { getCostoConstruccion, getParedBlock, getPintura, getVarilla } from '../../lib/precios.js'
+import { getCostoConstruccion, getParedBlock, getPintura, getVarilla, getLosaTecho } from '../../lib/precios.js'
 
 const g = await getCostoConstruccion()
 const pared = await getParedBlock()
 const pint = await getPintura()
 const var_ = await getVarilla()
+const plato = await getLosaTecho()
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
 const GUIAS = [
@@ -38,6 +39,14 @@ const GUIAS = [
       ? `Precio del quintal hoy, cuánto sale la libra y cuánto pesa cada calibre. Desde RD$ ${fmt(var_.precioQq)}/qq.`
       : 'Precio del quintal, cuánto sale la libra y cuánto pesa cada calibre.',
     emoji: '🔩',
+  },
+  {
+    slug: 'cuanto-cuesta-echar-el-plato',
+    titulo: 'Cuánto cuesta echar el plato',
+    resumen: plato.referencia
+      ? `Precio real del subcontrato de losa de techo, por m² y según altura. Desde RD$ ${fmt(plato.referencia.precio)}/m².`
+      : 'Precio real del subcontrato de losa de techo, por m² y según altura.',
+    emoji: '🏗️',
   },
 ]
 

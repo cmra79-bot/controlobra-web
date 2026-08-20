@@ -1070,6 +1070,48 @@ export async function getVarilla() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// GUÍA "cuánto cuesta echar el plato" (losa de techo) — así llama la
+// comunidad dominicana a vaciar la losa. Sin competencia real en RD y con
+// CTR altísimo en las pocas búsquedas que ya llegan (11-18%), pero volumen
+// bajo: hay que verlo como cobertura de intención, no como el próximo block.
+//
+// A diferencia de block/pintura/varilla, ACÁ NO SE INVENTA NINGÚN
+// RENDIMIENTO (kg de acero por m², espesor de losa…) porque esos varían por
+// diseño estructural y publicar un número fijo sería fabricar un dato. En
+// cambio, el catálogo YA tiene el precio real: "Losas planas…" es
+// tipo_recurso TODO_COSTO —subcontrato llave en mano que incluye
+// formaleta, desencofrado, malla y colocación— así que el precio por m² es
+// un dato real de mercado, no una estimación armada acá.
+// ---------------------------------------------------------------------------
+export async function getLosaTecho() {
+  const items = await fetchAll()
+  const planas = items.filter((it) =>
+    it.tipo_recurso === 'TODO_COSTO' &&
+    /^losas planas/i.test(it.nombre || '') &&
+    (it.unidad === 'M²' || it.unidad === 'M2'))
+
+  const productos = agrupar(planas)
+  const prom = (zonas) => {
+    const v = Object.values(zonas || {}).filter(Number.isFinite)
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null
+  }
+  const alturas = productos
+    .map((p) => ({ nombre: p.nombre, precio: prom(p.zonas) }))
+    .filter((a) => Number.isFinite(a.precio))
+    // Orden por altura: "hasta 3.00m" primero (el caso más común, 1 nivel).
+    .sort((a, b) => {
+      const orden = ['hasta 3.00m', 'menor de 2.60m', 'mayor de 3.00m', 'mayor de 3.50m']
+      const ia = orden.findIndex((o) => a.nombre.toLowerCase().includes(o))
+      const ib = orden.findIndex((o) => b.nombre.toLowerCase().includes(o))
+      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
+    })
+
+  const ref = alturas.find((a) => /hasta 3\.00m/i.test(a.nombre)) || alturas[0] || null
+
+  return { alturas, referencia: ref, actualizado: fmtHoy() }
+}
+
 // Devuelve los datos de la guía: costo/m² por terminación (Casa 1 nivel, zona
 // Norte de referencia) + totales de ejemplo para tamaños de casa comunes.
 export async function getCostoConstruccion() {

@@ -1,0 +1,216 @@
+---
+/**
+ * Guía "¿Cuánto cuesta echar el plato?" (losa de techo)
+ *
+ * Así le dice la comunidad dominicana a vaciar la losa de concreto del
+ * techo — "cuanto cuesta echar un plato en republica dominicana" ya trae
+ * impresiones sin que exista contenido para esa consulta. Sin competencia
+ * real en RD.
+ *
+ * A propósito NO se calcula el costo desde cero (espesor × hormigón + kg de
+ * acero por m²): esos valores dependen del cálculo estructural de cada obra,
+ * y publicar un número fijo sería inventar un dato. El precio de acá es
+ * real: "Losas planas…" del catálogo es un subcontrato llave en mano
+ * (formaleta + desencofrado + malla + colocación) cotizado por la
+ * comunidad, no una estimación armada en esta página.
+ */
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import { getLosaTecho, isoHoy, mesAno } from '../../lib/precios.js'
+
+const g = await getLosaTecho()
+const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
+const ref = g.referencia
+
+const title = `¿Cuánto cuesta echar el plato (losa de techo) en RD? · ${mesAno()}`
+const description = `Cuánto cuesta vaciar la losa de techo en República Dominicana, por m², según la altura de la obra. Precio real de subcontrato llave en mano: formaleta, desencofrado, malla y colocación. Actualizado a diario.`
+
+const respuesta = ref
+  ? `Echar el plato —vaciar la losa de techo— cuesta alrededor de <strong>RD$ ${fmt(ref.precio)} por m²</strong> en República Dominicana, para una obra de hasta 3 metros de altura (la más común, de 1 nivel). Es el precio de un <strong>subcontrato llave en mano</strong>: incluye la formaleta, el desencofrado, la malla y la colocación. Una losa de 80 m² sale alrededor de <strong>RD$ ${fmt(80 * ref.precio)}</strong>.`
+  : null
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      ...(respuesta ? [{
+        '@type': 'Question',
+        name: '¿Cuánto cuesta echar el plato en República Dominicana?',
+        acceptedAnswer: { '@type': 'Answer', text: respuesta },
+      }] : []),
+      {
+        '@type': 'Question',
+        name: '¿Qué es "echar el plato"?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'En República Dominicana, "echar el plato" es la forma coloquial de decir que se va a vaciar la losa de concreto del techo (también llamada losa plana o placa). Es una de las etapas más críticas y costosas de la estructura.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Qué incluye el precio de echar el plato?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'El precio por m² de un subcontrato de losa incluye normalmente la formaleta (encofrado), el desencofrado, la malla y la mano de obra de colocación. El hormigón y el acero de refuerzo adicional según el diseño estructural se cotizan aparte.',
+        },
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: 'https://controlobra.ai/guias/cuanto-cuesta-echar-el-plato/',
+    dateModified: isoHoy(),
+    inLanguage: 'es-DO',
+  },
+]
+---
+<PrecioLayout
+  title={title}
+  description={description}
+  canonicalPath="/guias/cuanto-cuesta-echar-el-plato/"
+  jsonld={jsonld}
+  breadcrumbs={[
+    { nombre: 'Inicio', path: '/' },
+    { nombre: 'Guías', path: '/guias/' },
+    { nombre: 'Cuánto cuesta echar el plato', path: '/guias/cuanto-cuesta-echar-el-plato/' },
+  ]}
+>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Echar el plato
+  </nav>
+
+  <p class="eyebrow">Guía · República Dominicana</p>
+  <h1>¿Cuánto cuesta echar el plato en RD?</h1>
+  <p class="lead">"Echar el plato" es vaciar la losa de techo — una de las partidas más caras y críticas de la obra. Acá está el precio real del subcontrato llave en mano, por m² y según la altura de la construcción.</p>
+
+  <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
+
+  {respuesta && (
+    <section class="directa">
+      <h2>La respuesta corta</h2>
+      <p set:html={respuesta} />
+    </section>
+  )}
+
+  {g.alturas.length > 0 && (
+    <section>
+      <h2>Precio por m² según la altura de la obra</h2>
+      <p class="sub">Mientras más alto hay que levantar la formaleta, más sube el precio: el andamiaje y el trabajo en altura pesan en el costo.</p>
+      <div class="table-card"><div class="tscroll">
+        <table>
+          <thead>
+            <tr><th>Altura de la obra</th><th class="num">Precio por m²</th></tr>
+          </thead>
+          <tbody>
+            {g.alturas.map((a) => (
+              <tr class={a.nombre === ref?.nombre ? 'destacada' : ''}>
+                <td class="pn">{a.nombre}{a.nombre === ref?.nombre && <span class="tag">1 nivel, el más común</span>}</td>
+                <td class="num price tnum">RD$ {fmt(a.precio)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div></div>
+      <p class="mini">Precio de subcontrato llave en mano (formaleta, desencofrado, malla y colocación), promedio de las tres zonas.</p>
+    </section>
+  )}
+
+  <section>
+    <h2>Qué incluye y qué NO incluye este precio</h2>
+    <p>Es un <strong>subcontrato llave en mano</strong>, así que ya trae resuelto:</p>
+    <ul class="incluye">
+      <li><strong>Formaleta</strong> — el encofrado que sostiene el concreto mientras fragua.</li>
+      <li><strong>Desencofrado</strong> — el retiro de la formaleta una vez la losa endurece.</li>
+      <li><strong>Malla</strong> — la malla electrosoldada estándar de la losa.</li>
+      <li><strong>Colocación</strong> — la mano de obra de vaciar y nivelar el concreto.</li>
+    </ul>
+    <p>Lo que <strong>no incluye</strong>, porque depende del diseño estructural de cada obra y lo define el cálculo del ingeniero:</p>
+    <ul class="falta">
+      <li><strong>Acero de refuerzo adicional</strong> — bastones, refuerzos en volados y zonas de mayor carga, más allá de la malla estándar. Mirá el <a href="/guias/cuanto-cuesta-un-quintal-de-varilla/">precio del quintal de varilla</a>.</li>
+      <li><strong>Concreto premezclado</strong>, si la obra lo trae aparte en vez de incluido en el subcontrato.</li>
+      <li><strong>Impermeabilización</strong> de la losa terminada.</li>
+    </ul>
+    <p>Por eso conviene confirmar con el subcontratista exactamente qué trae su cotización antes de comparar precios.</p>
+  </section>
+
+  <CtaCalculadora />
+
+  <section>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <div class="fq">
+        <h3>¿Qué es "echar el plato"?</h3>
+        <p>Es la forma coloquial en RD de decir que se va a <strong>vaciar la losa de concreto del techo</strong> (también llamada losa plana o placa). Es una de las etapas más críticas y costosas de la estructura.</p>
+      </div>
+      <div class="fq">
+        <h3>¿Por qué sube el precio según la altura?</h3>
+        <p>Porque hay que levantar y sostener la formaleta más alto, lo que exige más andamiaje, más material de apuntalamiento y trabajo más lento y riesgoso. Una losa de 1 nivel (hasta 3 m) es la más económica; a más altura, más sube el m².</p>
+      </div>
+      <div class="fq">
+        <h3>¿El precio incluye el acero de refuerzo?</h3>
+        <p>Incluye la <strong>malla electrosoldada estándar</strong>, pero no necesariamente los refuerzos adicionales (bastones, zonas de mayor carga) que pida el cálculo estructural. Esos se cotizan aparte, normalmente por quintal de varilla.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Seguí con estos precios</h2>
+    <div class="chips">
+      <a class="chip" href="/precios/cemento/">🧱 Precio del cemento</a>
+      <a class="chip" href="/precios/varilla/">🔩 Precio de la varilla</a>
+      <a class="chip" href="/precios/gravilla/">⛰️ Precio de la gravilla</a>
+      <a class="chip" href="/guias/cuanto-cuesta-un-quintal-de-varilla/">🔩 Cuánto cuesta un quintal de varilla</a>
+      <a class="chip" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana/">🏠 Cuánto cuesta construir una casa</a>
+    </div>
+  </section>
+
+  <p class="disc">Precio de subcontrato con datos aportados por la comunidad de Precios Obra. Referencial, no es una cotización. Varía según diseño estructural, proveedor y zona.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; font-family: 'DM Mono', monospace; }
+  .crumb a { text-decoration: none; }
+  .eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-deep); margin: 18px 0 0; font-family: 'DM Mono', monospace; }
+  h1 { font-size: clamp(29px, 5vw, 42px); line-height: 1.08; letter-spacing: -.03em; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 16.5px; color: var(--ink-2); margin: 14px 0 0; max-width: 62ch; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12.5px; color: var(--fresh); background: color-mix(in srgb, var(--fresh) 12%, transparent); border-radius: 999px; padding: 6px 14px; font-family: 'DM Mono', monospace; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .directa { margin-top: 30px; border-left: 3px solid var(--brand); padding-left: 18px; }
+  .directa h2 { font-size: 20px; margin: 0 0 8px; }
+  .directa p { font-size: 16px; line-height: 1.6; margin: 0; }
+
+  section { margin-top: 42px; }
+  h2 { font-size: 23px; letter-spacing: -.02em; margin: 0 0 10px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .mini { font-size: 12.5px; color: var(--muted); margin-top: 12px; }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 420px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 12px 16px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.destacada { background: color-mix(in srgb, var(--brand-soft) 30%, transparent); }
+  .pn { font-weight: 700; }
+  .tag { margin-left: 8px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brand-deep); background: var(--brand-soft); padding: 2px 7px; border-radius: 6px; }
+  .price { font-weight: 700; }
+  .tnum { font-family: 'DM Mono', monospace; font-size: 13px; white-space: nowrap; }
+
+  .incluye, .falta { margin: 14px 0 0; padding-left: 20px; line-height: 1.9; }
+  .incluye li, .falta li { font-size: 15px; }
+  .falta a { color: var(--brand-deep); font-weight: 600; }
+
+  .faq { display: flex; flex-direction: column; gap: 18px; }
+  .fq h3 { font-size: 16.5px; margin: 0 0 5px; }
+  .fq p { margin: 0; color: var(--ink-2); line-height: 1.6; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-2); border-radius: 999px; padding: 9px 15px; font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 30px; }
+</style>
