@@ -513,8 +513,8 @@
   .b-3{grid-column: span 3}                       /* Cubicaciones · rectángulo abajo derecha */
   .b-4{grid-column: span 2}                       /* Gestión obra · ancho 2 */
   .b-5{grid-column: span 1}                       /* Compras · CUADRADO */
-  .b-6{grid-column: span 1}                       /* Proyectos · CUADRADO */
-  .b-7{grid-column: span 1}                       /* Contabilidad · CUADRADO */
+  .b-6{grid-column: span 1}                       /* Cronograma · CUADRADO */
+  .b-7{grid-column: span 1}                       /* Ventas · CUADRADO */
   .b-8{grid-column: span 1}                       /* RH · CUADRADO */
   .bento .card .ic{
     width:48px; height:48px; border-radius:13px;
@@ -595,32 +595,32 @@
   .prob .ill{height:90px; display:flex; justify-content:center; align-items:center}
   .prob .ill svg{height:100%; width:auto; max-width:100%; display:block}
 
-  /* ── BEFORE/AFTER SLIDER ── */
+  /* ── BEFORE/AFTER SPLIT ── */
   .ba-wrap{
-    position:relative; height: 320px; border-radius: 22px; overflow:hidden;
+    position:relative; display:grid; grid-template-columns: 1fr 1fr;
+    border-radius: 22px; overflow:hidden;
     border:1px solid var(--line);
     background: var(--paper);
-    user-select:none; cursor: ew-resize;
     box-shadow: 0 24px 48px -22px rgba(15,17,22,.18);
   }
-  .ba-before, .ba-after{position:absolute; inset:0; padding:24px}
+  .ba-before, .ba-after{position:relative; padding:24px}
   .ba-before{background: var(--cream-3); color: var(--muted)}
   .ba-after{
     background:
       radial-gradient(ellipse 500px 300px at 50% 100%, rgba(242,107,31,.10), transparent 60%),
       linear-gradient(160deg, #1B2029, #0A0D12);
     color:#fff;
-    clip-path: inset(0 0 0 50%);
   }
   .ba-label{position:absolute; top: 14px; padding: 4px 10px; background: rgba(0,0,0,.7); color:#fff; border-radius:99px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase}
   .ba-before .ba-label{background: rgba(255,255,255,.9); color: var(--ink); left:14px}
   .ba-after .ba-label{background: var(--orange); right: 14px; color:#fff}
   .ba-handle{
     position:absolute; left:50%; top:0; bottom:0; width:2px; background: var(--orange); z-index:3;
-    transform: translateX(-50%);
+    transform: translateX(-50%); pointer-events:none;
   }
   .ba-handle::after{content:''; position:absolute; left:50%; top:50%; width: 40px; height:40px; border-radius:99px; background: var(--orange); transform: translate(-50%, -50%); box-shadow: 0 0 0 6px rgba(242,107,31,.18), 0 12px 28px -8px rgba(242,107,31,.5); display:grid; place-items:center}
   .ba-handle::before{content:'◄ ►'; position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); color:#fff; font-size:11px; font-weight:800; z-index:1}
+  @media(max-width:760px){ .ba-wrap{ grid-template-columns:1fr } .ba-handle{ display:none } }
 
   .ba-content{display:flex; flex-direction:column; gap: 10px; height:100%}
   .ba-content h4{margin:0; font-size: 18px; font-weight:800; letter-spacing:-.01em}
@@ -651,6 +651,19 @@
   .step .ill .ph .dot{width:8px; height:8px; border-radius:99px; background: var(--success)}
   .step .ill .ph .dot.wn{background: var(--warn)} .step .ill .ph .dot.al{background: var(--danger)}
   .step .ill .ph .num{font-family:'JetBrains Mono', monospace; margin-left:auto; font-weight:800; font-size:11px}
+
+  /* variante de 5 pasos — más compacta */
+  .steps.steps-5{grid-template-columns: repeat(5, 1fr); gap:14px}
+  .steps-5 .step{padding:26px 16px 18px; border-radius:18px}
+  .steps-5 .step .n-badge{left:14px; font-size:9.5px; padding:4px 9px; letter-spacing:.06em}
+  .steps-5 .step::after{top:48px; right:-12px; width:20px}
+  .steps-5 .step h3{margin-top:10px !important; font-size:17px}
+  .steps-5 .step p{font-size:12.5px; margin-bottom:14px; line-height:1.5}
+  .steps-5 .step .ill{padding:11px}
+  .steps-5 .step .ill .ph{font-size:10.5px; padding:5px 0; gap:5px}
+  .steps-5 .step .ill .ph .num{font-size:10px}
+  @media (max-width: 1100px){ .steps.steps-5{grid-template-columns: repeat(2, 1fr); gap:20px} .steps-5 .step::after{display:none} }
+  @media (max-width: 640px){ .steps.steps-5{grid-template-columns: 1fr} }
 
   /* ── DAY IN THE LIFE timeline ── */
   .day{background: var(--bg-page); padding: 100px 0}
@@ -932,7 +945,7 @@
     .bento .b-5, .bento .b-6, .bento .b-7, .bento .b-8,
     .reports-grid .rep-card:nth-child(n+3),    /* Solo 2 informes */
     .problem-grid .prob:nth-child(n+3),        /* Solo 2 problem cards */
-    .steps .step:nth-child(n+4),               /* Solo 3 pasos */
+    .steps:not(.steps-5) .step:nth-child(n+4), /* Solo 3 pasos */
     .prob .ill,                                /* Ilustraciones SVG de problem cards */
     .b-1 .feat-list,                           /* Lista de checks dentro del bento negro */
     .scroll-hint,
@@ -1275,6 +1288,8 @@ const I = {
   buy: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 4h2.5l1 3M6.5 7l2 9h10l2-8H6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="9.5" cy="20" r="1.5" stroke="currentColor" stroke-width="1.5"/><circle cx="17" cy="20" r="1.5" stroke="currentColor" stroke-width="1.5"/></svg>',
   conta: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="6" width="10" height="3" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="12" width="3" height="6" fill="currentColor" opacity=".5"/><rect x="11" y="14" width="3" height="4" fill="currentColor" opacity=".5"/><rect x="15" y="11" width="2" height="7" fill="currentColor"/></svg>',
   rh: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 20c.5-3 3-5 6-5s5.5 2 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.5" opacity=".7"/></svg>',
+  crono: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9.5h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="6" y="12.4" width="7" height="2.4" rx="1.2" fill="currentColor" opacity=".55"/><rect x="10" y="16.6" width="8" height="2.4" rx="1.2" fill="currentColor"/></svg>',
+  venta: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12.6 3H20a1 1 0 0 1 1 1v7.4a2 2 0 0 1-.6 1.4l-7.6 7.6a1.4 1.4 0 0 1-2 0l-6.6-6.6a1.4 1.4 0 0 1 0-2l7.6-7.6a2 2 0 0 1 1.4-.6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16.6" cy="7.4" r="1.7" stroke="currentColor" stroke-width="1.5"/></svg>',
   spark: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v4M3 12h4M12 17v4M17 12h4M6.5 6.5l2.5 2.5M15 15l2.5 2.5M6.5 17.5l2.5-2.5M15 9l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3.5" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.4"/></svg>',
   bita: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 4h11l3 3v13H5V4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M16 4v3h3M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
   arr: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -1703,16 +1718,16 @@ const html = `
       </div>
 
       <div class="card b-6 acc-teal tilt">
-        <div class="ic">${I.proj}</div>
-        <h3>Proyectos</h3>
-        <p>Cartera de viviendas, etapas y entregas.</p>
+        <div class="ic">${I.crono}</div>
+        <h3>Cronograma</h3>
+        <p>Ruta crítica, hitos y avance vs. plan.</p>
         <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
       </div>
 
       <div class="card b-7 acc-info tilt">
-        <div class="ic">${I.conta}</div>
-        <h3>Contabilidad</h3>
-        <p>Pólizas, CFDI, conciliación bancaria.</p>
+        <div class="ic">${I.venta}</div>
+        <h3>Ventas</h3>
+        <p>Cotizaciones, cartera de clientes y cierres.</p>
         <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
       </div>
 
@@ -1735,31 +1750,51 @@ const html = `
       <p>Un dato se captura una sola vez y viaja por toda la plataforma — del presupuesto a la cubicación, del corte al acta, del acta a la factura.</p>
     </div>
 
-    <div class="steps reveal-stagger reveal">
+    <div class="steps steps-5 reveal-stagger reveal">
       <div class="step">
-        <div class="n-badge">PASO 01 · IA</div>
-        <h3 style="margin-top: 14px">La IA cotiza por ti</h3>
-        <p>Sube el brief del cliente. La IA arma el presupuesto base, sugiere partidas faltantes y aplica precios vigentes — tú solo revisas y apruebas.</p>
+        <div class="n-badge">01 · VENTAS</div>
+        <h3>Cierras la venta</h3>
+        <p>Cotizas desde el brief del cliente con la IA, negocias y conviertes la oferta aprobada en proyecto — sin recapturar nada.</p>
         <div class="ill">
-          <div class="ph"><span class="dot"></span>Capítulos sugeridos por IA<span class="num">19/19</span></div>
-          <div class="ph"><span class="dot"></span>Partidas con APU automático<span class="num">312</span></div>
-          <div class="ph"><span class="dot wn"></span>Vencimiento de oferta<span class="num">31 may</span></div>
+          <div class="ph"><span class="dot"></span>Oferta enviada<span class="num">$5.4 M</span></div>
+          <div class="ph"><span class="dot wn"></span>Vence en<span class="num">12 d</span></div>
+          <div class="ph"><span class="dot"></span>Cierre firmado<span class="num">OK</span></div>
         </div>
       </div>
       <div class="step">
-        <div class="n-badge">PASO 02 · IA</div>
-        <h3 style="margin-top: 14px">La IA vigila tu obra</h3>
-        <p>Tu residente sube avance y fotos desde el móvil. La IA detecta desviaciones, anomalías y te alerta antes de que sean problemas.</p>
+        <div class="n-badge">02 · CRONOGRAMA</div>
+        <h3>Planificas el tiempo</h3>
+        <p>Armas la ruta crítica con hitos, cuadrillas y entregables. Cada partida ya sabe cuándo le toca entrar a obra.</p>
         <div class="ill">
-          <div class="ph"><span class="dot"></span>Avance MG.04<span class="num">70%</span></div>
+          <div class="ph"><span class="dot"></span>Hitos definidos<span class="num">14</span></div>
+          <div class="ph"><span class="dot"></span>Duración<span class="num">9 mes</span></div>
+          <div class="ph"><span class="dot wn"></span>Holgura crítica<span class="num">6 d</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n-badge">03 · PRESUPUESTO</div>
+        <h3>Fijas el costo meta</h3>
+        <p>La IA completa capítulos, aplica APU vivo y precios vigentes. Ese presupuesto queda como la línea base que todos miden.</p>
+        <div class="ill">
+          <div class="ph"><span class="dot"></span>Partidas con APU<span class="num">312</span></div>
+          <div class="ph"><span class="dot"></span>Costo meta<span class="num">$4.1 M</span></div>
+          <div class="ph"><span class="dot"></span>Margen base<span class="num">24%</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n-badge">04 · OBRA</div>
+        <h3>Ejecutas y controlas</h3>
+        <p>Compras, almacén, pedidos y bitácora móvil en un flujo. La IA detecta la desviación antes de que se convierta en pérdida.</p>
+        <div class="ill">
+          <div class="ph"><span class="dot"></span>Avance real<span class="num">70%</span></div>
           <div class="ph"><span class="dot wn"></span>Alerta IA · acero<span class="num">+4.6%</span></div>
           <div class="ph"><span class="dot"></span>Fotos analizadas<span class="num">12</span></div>
         </div>
       </div>
       <div class="step">
-        <div class="n-badge">PASO 03 · IA</div>
-        <h3 style="margin-top: 14px">La IA redacta tu acta</h3>
-        <p>Pides cerrar la cubicación y la IA genera el acta lista para firma con retención y anticipo aplicados. Mandas link al cliente.</p>
+        <div class="n-badge">05 · ENTREGA</div>
+        <h3>Cierras y cobras</h3>
+        <p>Cubicas, la IA redacta el acta con retención y anticipo, y el cliente firma por link. Entrega documentada y factura emitida.</p>
         <div class="ill">
           <div class="ph"><span class="dot"></span>Cubicación C-08<span class="num">$5.04 M</span></div>
           <div class="ph"><span class="dot"></span>Retención 5%<span class="num">−$252 K</span></div>
@@ -2501,7 +2536,7 @@ const html = `
       <div class="ft-brand">
         <div class="brand">
           <div class="lg"><img src="/assets/logo-icon-hd.png" alt="Manestro"/></div>
-          <div class="nm" style="color:#fff">CONTROL MANAGEMENT<small>P · R · O</small></div>
+          <div class="nm" style="color:#fff">MANESTRO<small>P · R · O</small></div>
         </div>
         <p>El ERP profesional con IA para constructoras LATAM. Diseñado en República Dominicana por constructores que vivieron el problema.</p>
         <p style="margin-top:10px; font-size:12px"><a href="mailto:soporte@controlobra.ai" style="color:#C8CFD7">soporte@controlobra.ai</a></p>
@@ -2744,23 +2779,6 @@ if(previewWrap){
       el.style.transform = '';
     });
   });
-}
-
-/* ───── 8. BEFORE/AFTER SLIDER ───── */
-const ba = document.getElementById('baSlider');
-if(ba){
-  let dragging = false;
-  const move = (clientX)=>{
-    const r = ba.getBoundingClientRect();
-    let p = (clientX - r.left) / r.width;
-    p = Math.max(0, Math.min(1, p));
-    ba.querySelector('.ba-after').style.clipPath = `inset(0 0 0 ${p*100}%)`;
-    ba.querySelector('.ba-handle').style.left = (p*100)+'%';
-  };
-  ba.addEventListener('mousedown', ()=>{dragging=true});
-  window.addEventListener('mouseup', ()=>{dragging=false});
-  window.addEventListener('mousemove', (e)=>{if(dragging) move(e.clientX)});
-  ba.addEventListener('touchmove', (e)=>{move(e.touches[0].clientX)});
 }
 
 /* ───── 9. ROI CALCULATOR ───── */
