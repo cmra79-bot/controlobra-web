@@ -945,13 +945,82 @@ function fetchProveedores() {
   return _provsPromise
 }
 
-// Suplidores cuya ciudad menciona la provincia (el campo es texto libre del
-// tipo "Bella Vista, Boca Chica SD", así que se busca por contención).
+// El campo ciudad es texto libre, pero sigue un formato estable:
+// "barrio, municipio PROVINCIA CÓDIGO" — "Bella Vista, Boca Chica SD".
+// Buscar el nombre de la provincia por contención (lo que se hacía antes)
+// dejaba sin ubicar a 1.093 de 2.945 suplidores: los que se escriben con la
+// localidad y el código pero sin la provincia ("Punta Cana, Higüey LA").
+// Estas dos tablas recuperan esos casos.
+const COD_PROVINCIA = {
+  SD: 'Santo Domingo', DN: 'Distrito Nacional', LA: 'La Altagracia', LV: 'La Vega',
+  SP: 'San Pedro de Macorís', SC: 'San Cristóbal', DU: 'Duarte', LR: 'La Romana',
+  SJ: 'San Juan', AZ: 'Azua', PV: 'Peravia', ET: 'Espaillat', BR: 'Barahona',
+  SA: 'Samaná', MN: 'Monseñor Nouel', MT: 'María Trinidad Sánchez',
+}
+// Localidades que la gente escribe sin provincia ni código.
+const LOCALIDAD_PROVINCIA = {
+  'punta cana': 'La Altagracia', 'bavaro': 'La Altagracia', 'veron': 'La Altagracia',
+  'higuey': 'La Altagracia', 'bayahibe': 'La Altagracia',
+  'boca chica': 'Santo Domingo', 'los alcarrizos': 'Santo Domingo',
+  'las terrenas': 'Samaná', 'sosua': 'Puerto Plata', 'cabarete': 'Puerto Plata',
+  'jarabacoa': 'La Vega', 'constanza': 'La Vega', 'bonao': 'Monseñor Nouel',
+  'nagua': 'María Trinidad Sánchez', 'moca': 'Espaillat', 'bani': 'Peravia',
+  'san francisco de macoris': 'Duarte',
+}
+
+// Cada suplidor va a UNA sola provincia, resuelto una vez para todo el build.
+let _mapaProvPromise = null
+function suplidoresPorProvincia() {
+  if (!_mapaProvPromise) {
+    _mapaProvPromise = (async () => {
+      const [todos, provincias] = await Promise.all([fetchProveedores(), getProvincias()])
+      const nombres = provincias.map((p) => ({ nombre: p.nombre, clave: _norm(p.nombre) }))
+      const mapa = new Map()
+      for (const p of todos) {
+        if (p.activo === false) continue
+        const bruto = (p.ciudad || '').trim()
+        const c = _norm(bruto)
+        let elegido = null
+
+        // 1) Nombre de provincia dentro del texto. Gana la coincidencia MÁS A
+        //    LA DERECHA, porque la provincia va al final: "Ensanche
+        //    Independencia, Distrito Nacional SD" es del Distrito Nacional, no
+        //    de la provincia Independencia (que queda en el suroeste).
+        let mejorPos = -1
+        let mejorLargo = 0
+        for (const n of nombres) {
+          const i = c.lastIndexOf(n.clave)
+          if (i < 0) continue
+          if (i > mejorPos || (i === mejorPos && n.clave.length > mejorLargo)) {
+            mejorPos = i
+            mejorLargo = n.clave.length
+            elegido = n.nombre
+          }
+        }
+        // 2) Código de dos letras al final.
+        if (!elegido) {
+          const m = bruto.match(/\b([A-Z]{2})$/)
+          if (m && COD_PROVINCIA[m[1]]) elegido = COD_PROVINCIA[m[1]]
+        }
+        // 3) Localidad conocida.
+        if (!elegido) {
+          for (const [loc, prov] of Object.entries(LOCALIDAD_PROVINCIA)) {
+            if (c.includes(loc)) { elegido = prov; break }
+          }
+        }
+        if (!elegido) continue
+        if (!mapa.has(elegido)) mapa.set(elegido, [])
+        mapa.get(elegido).push(p)
+      }
+      return mapa
+    })()
+  }
+  return _mapaProvPromise
+}
+
 async function proveedoresDe(nombreProvincia) {
-  const todos = await fetchProveedores()
-  const clave = _norm(nombreProvincia)
-  return todos
-    .filter((p) => p.activo !== false && _norm(p.ciudad).includes(clave))
+  const mapa = await suplidoresPorProvincia()
+  return [...(mapa.get(nombreProvincia) || [])]
     .sort((a, b) => (b.verificado === true) - (a.verificado === true) || (a.nombre || '').localeCompare(b.nombre || '', 'es'))
     .slice(0, 40)
     .map((p) => ({
