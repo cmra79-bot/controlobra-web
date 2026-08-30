@@ -12,6 +12,10 @@ const {
   // al clic. Las migas ya existían visualmente pero sin marcado, así que Google
   // no las entendía como estructura.
   breadcrumbs = null,
+  // Páginas que existen y se navegan, pero que no aportan nada que Google no
+  // tenga ya en otra URL. Van `noindex, follow`: no compiten por rastreo, pero
+  // siguen pasando sus enlaces.
+  noindex = false,
 } = Astro.props
 
 const site = 'https://controlobra.ai'
@@ -51,7 +55,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
   <link rel="alternate" hreflang="es-do" href={canonical} />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
   <meta name="theme-color" content="#F0691E" />
 
   <meta property="og:type" content="website" />

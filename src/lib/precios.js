@@ -1027,6 +1027,31 @@ export async function getProvincia(slug) {
   return { ...def, productos, hermanas, proveedores, actualizado: fmtHoy() }
 }
 
+// Mínimo de suplidores propios para que una provincia valga como página
+// indexable. Los precios son POR ZONA (3 zonas para 32 provincias), así que lo
+// único que distingue una provincia de otra es su directorio de ferreterías.
+// Por debajo de este umbral la página es, en la práctica, la de su zona con
+// otro nombre: Google la descubre y no la indexa ("Descubierta: actualmente sin
+// indexar"), y de paso se lleva rastreo que necesitan las páginas que sí valen.
+// Esas provincias siguen navegables, pero van con noindex y fuera del sitemap.
+export const MIN_PROVEEDORES_INDEXABLE = 10
+
+// Slugs de las provincias que superan el umbral. Se recalcula en cada build, así
+// que una provincia entra sola al índice cuando su directorio crece.
+let _indexablesPromise = null
+export function provinciasIndexables() {
+  if (!_indexablesPromise) {
+    _indexablesPromise = (async () => {
+      const provincias = await getProvincias()
+      const pares = await Promise.all(
+        provincias.map(async (p) => [p.slug, (await proveedoresDe(p.nombre)).length]),
+      )
+      return new Set(pares.filter(([, n]) => n >= MIN_PROVEEDORES_INDEXABLE).map(([s]) => s))
+    })()
+  }
+  return _indexablesPromise
+}
+
 // Estadísticas del catálogo para la tarjeta "Estado del catálogo".
 export async function getStats() {
   try {

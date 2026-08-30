@@ -1,7 +1,7 @@
 ---
 import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
-import { getProvincias, getProvincia, isoHoy } from '../../../lib/precios.js'
+import { getProvincias, getProvincia, isoHoy, MIN_PROVEEDORES_INDEXABLE } from '../../../lib/precios.js'
 
 export async function getStaticPaths() {
   const provs = await getProvincias()
@@ -14,6 +14,12 @@ if (!data) return Astro.redirect('/precios/')
 
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 const enSantoDomingo = data.nombre !== data.ciudad
+// Los precios son por ZONA: tres juegos de precios para 32 provincias. Lo único
+// propio de cada página es su directorio de ferreterías, así que una provincia
+// sin suplidores es la página de su zona con otro nombre. Esas van con noindex
+// (y fuera del sitemap, ver astro.config.mjs) para no gastar el rastreo que
+// necesitan las provincias con contenido real.
+const indexable = data.proveedores.length >= MIN_PROVEEDORES_INDEXABLE
 // Antes esta página declaraba un `Product` llamado "Materiales de construcción
 // en <provincia>" con un AggregateOffer de 51 a 26.880 (527×). Eso no es un
 // producto sino una categoría, y un rango así no produce ningún resultado
@@ -46,7 +52,7 @@ const jsonld = data.productos.length
 const title = `Precios de materiales de construcción en ${data.nombre} 2026`
 const description = `Precios de materiales de construcción en ${data.nombre}${enSantoDomingo ? ` (${data.ciudad})` : ''}, República Dominicana. Cemento, varilla, block, arena y más, actualizados por la comunidad.`
 ---
-<PrecioLayout title={title} description={description} canonicalPath={`/precios/provincia/${data.slug}/`} jsonld={jsonld} breadcrumbs={[
+<PrecioLayout title={title} description={description} canonicalPath={`/precios/provincia/${data.slug}/`} jsonld={jsonld} noindex={!indexable} breadcrumbs={[
   { nombre: 'Inicio', path: '/' },
   { nombre: 'Catálogo', path: '/precios/' },
   { nombre: data.nombre, path: `/precios/provincia/${data.slug}/` },
@@ -59,10 +65,27 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
     <span class="zona" style={`--zc:${data.zonaColor}`}>Zona {data.zonaLabel}</span>
     <h1>Precios de materiales de construcción en {data.nombre}</h1>
     <p class="lead">
-      Precios de referencia de los materiales de construcción más usados en {data.nombre}{enSantoDomingo ? ` (${data.ciudad})` : ''}, República Dominicana. {data.nombre} pertenece a la zona {data.zonaLabel}; estos son los precios reportados por la comunidad de Precios Obra para esa zona.
+      Precios de referencia de los materiales de construcción más usados en {data.nombre}{enSantoDomingo ? ` (${data.ciudad})` : ''}, República Dominicana{data.proveedores.length > 0 ? `, y ${data.proveedores.length} ferreterías y suplidores con presencia en la provincia` : ''}. {data.nombre} pertenece a la zona {data.zonaLabel}; estos son los precios reportados por la comunidad de Precios Obra para esa zona.
     </p>
     <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.productos.length} materiales</div>
   </div>
+
+  {data.proveedores.length > 0 && (
+    <section>
+      <h2>Ferreterías y suplidores en {data.nombre}</h2>
+      <p class="sub">{data.proveedores.length} suplidores del directorio con presencia en {data.nombre}. Llamá para cotizar y confirmar disponibilidad.</p>
+      <div class="prov-grid">
+        {data.proveedores.map((p) => (
+          <div class="prov">
+            <div class="pn">{p.nombre}{p.verificado && <span class="ver" title="Verificado">✓</span>}</div>
+            {p.rubro && <div class="pr">{p.rubro}</div>}
+            {p.ciudad && <div class="pc">{p.ciudad}</div>}
+            {p.telefono && <a class="pt" href={`tel:${p.telefono.replace(/[^\d+]/g, '')}`}>{p.telefono}</a>}
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
 
   <section>
     <h2>Precio de materiales en {data.nombre}</h2>
@@ -82,23 +105,6 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
     </div></div>
     <p class="mini">Precios de la zona {data.zonaLabel}. Pueden variar por proveedor y volumen dentro de {data.nombre}.</p>
   </section>
-
-  {data.proveedores.length > 0 && (
-    <section>
-      <h2>Ferreterías y suplidores en {data.nombre}</h2>
-      <p class="sub">{data.proveedores.length} suplidores del directorio con presencia en {data.nombre}. Llamá para cotizar y confirmar disponibilidad.</p>
-      <div class="prov-grid">
-        {data.proveedores.map((p) => (
-          <div class="prov">
-            <div class="pn">{p.nombre}{p.verificado && <span class="ver" title="Verificado">✓</span>}</div>
-            {p.rubro && <div class="pr">{p.rubro}</div>}
-            {p.ciudad && <div class="pc">{p.ciudad}</div>}
-            {p.telefono && <a class="pt" href={`tel:${p.telefono.replace(/[^\d+]/g, '')}`}>{p.telefono}</a>}
-          </div>
-        ))}
-      </div>
-    </section>
-  )}
 
   <CtaCalculadora />
 
