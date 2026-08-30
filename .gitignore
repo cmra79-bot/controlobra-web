@@ -28,3 +28,7 @@ pnpm-debug.log*
 .claude/
 *.mjs.tmp
 _*.mjs
+
+# Planillas de trabajo con datos de contacto de terceros (teléfonos de
+# suplidores reales). Se generan desde la API; no van al repo público.
+*.xlsx
