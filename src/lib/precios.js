@@ -1027,6 +1027,43 @@ export async function getProvincia(slug) {
   return { ...def, productos, hermanas, proveedores, actualizado: fmtHoy() }
 }
 
+// Categoría real a la que pertenece un material, derivada de los datos: se
+// cuenta la familia de la BD de sus propios productos y gana la mayoritaria.
+// No es un mapa escrito a mano porque el catálogo cambia y un mapa fijo se
+// desactualiza en silencio; así, si mañana el block se reclasifica, el enlace
+// sigue apuntando a donde corresponde.
+//
+// Para qué: las páginas de material concentran el 84% de las impresiones del
+// sitio y convierten al 0,63% (Search Console, 45 días a ago-2026), mientras
+// que las de categoría y las de resumen convierten al 3,06% y 4,40%. Hoy una
+// página de material solo enlaza a otras páginas de material, así que todo el
+// tráfico circula por el tipo de página que peor convierte. Esto abre la
+// puerta al que sí convierte.
+const _catMatCache = new Map()
+export async function categoriaDeMaterial(slug) {
+  if (_catMatCache.has(slug)) return _catMatCache.get(slug)
+  const promesa = (async () => {
+    const def = MATERIALES.find((m) => m.slug === slug)
+    if (!def) return null
+    const listas = await Promise.all(def.queries.map(fetchItems))
+    const filtro = FILTROS[slug]
+    const conteo = new Map()
+    const vistos = new Set()
+    for (const lista of listas)
+      for (const it of lista) {
+        if (vistos.has(it.id) || !pasaFiltro(it, filtro) || !it.familia_id) continue
+        vistos.add(it.id)
+        conteo.set(it.familia_id, (conteo.get(it.familia_id) || 0) + 1)
+      }
+    if (!conteo.size) return null
+    const [famId] = [...conteo.entries()].sort((a, b) => b[1] - a[1])[0]
+    const cats = await getCategorias()
+    return cats.find((c) => c.famId === famId) || null
+  })()
+  _catMatCache.set(slug, promesa)
+  return promesa
+}
+
 // Mínimo de suplidores propios para que una provincia valga como página
 // indexable. Los precios son POR ZONA (3 zonas para 32 provincias), así que lo
 // único que distingue una provincia de otra es su directorio de ferreterías.
