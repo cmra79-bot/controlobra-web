@@ -1,0 +1,32 @@
+---
+// Google mostraba "USD 51.00" debajo del resultado de la página de block: leía
+// "RD$ 51" del texto, se quedaba con el símbolo $ y asumía dólares. El block
+// cuesta RD$ 51, o sea unos US$ 0.85 — el error hacía ver los precios ~60 veces
+// más caros de lo que son.
+//
+// La causa era que la palabra "peso" y el código "DOP" no aparecían NI UNA VEZ
+// en ninguna página: solo "RD$", que para un parser es un dólar con dos letras
+// delante. Este componente nombra la moneda de forma explícita —en palabras y
+// en código ISO— cerca de los precios, que es donde el buscador la busca.
+//
+// Va en todas las páginas que muestran precios. No se resuelve en el marcado
+// de datos estructurados a propósito: el `Product`/`Offer` se quitó el 19-ago
+// porque el resultado enriquecido respondía el precio en el buscador y la gente
+// no entraba.
+---
+
+<p class="moneda">
+  Todos los precios están en <strong>pesos dominicanos</strong>
+  (<abbr title="Peso dominicano">RD$</abbr> · <abbr title="Código ISO 4217 del peso dominicano">DOP</abbr>),
+  no en dólares estadounidenses.
+</p>
+
+<style>
+  .moneda {
+    margin: 14px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .moneda strong { color: var(--ink-2); font-weight: 600; }
+  .moneda abbr { text-decoration: none; border-bottom: 1px dotted var(--line-2); cursor: help; }
+</style>

@@ -1,6 +1,7 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import { getCostoConstruccion, getParedBlock, getPintura, getVarilla, getLosaTecho } from '../../lib/precios.js'
+import NotaMoneda from '../../components/NotaMoneda.astro'
 
 const g = await getCostoConstruccion()
 const pared = await getParedBlock()
@@ -58,6 +59,7 @@ const description = 'Guías prácticas sobre costos de construcción en RD: cuá
   <h1>Guías de costos de construcción</h1>
   <p class="lead">Respuestas prácticas a las preguntas más comunes sobre cuánto cuesta construir en República Dominicana, con estimaciones basadas en precios reales aportados por la comunidad.</p>
 
+  <NotaMoneda />
   <div class="list">
     {GUIAS.map((gu) => (
       <a class="card" href={`/guias/${gu.slug}/`}>

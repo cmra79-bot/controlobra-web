@@ -2,6 +2,7 @@
 import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
 import { getProvincias, getProvincia, isoHoy, MIN_PROVEEDORES_INDEXABLE } from '../../../lib/precios.js'
+import NotaMoneda from '../../../components/NotaMoneda.astro'
 
 export async function getStaticPaths() {
   const provs = await getProvincias()
@@ -67,6 +68,7 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
     <p class="lead">
       Precios de referencia de los materiales de construcción más usados en {data.nombre}{enSantoDomingo ? ` (${data.ciudad})` : ''}, República Dominicana{data.proveedores.length > 0 ? `, y ${data.proveedores.length} ferreterías y suplidores con presencia en la provincia` : ''}. {data.nombre} pertenece a la zona {data.zonaLabel}; estos son los precios reportados por la comunidad de Precios Obra para esa zona.
     </p>
+    <NotaMoneda />
     <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.productos.length} materiales</div>
   </div>
 

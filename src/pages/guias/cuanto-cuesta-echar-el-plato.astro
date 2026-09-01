@@ -17,6 +17,7 @@
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import { getLosaTecho, isoHoy, mesAno } from '../../lib/precios.js'
+import NotaMoneda from '../../components/NotaMoneda.astro'
 
 const g = await getLosaTecho()
 const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
@@ -85,6 +86,7 @@ const jsonld = [
   <h1>¿Cuánto cuesta echar el plato en RD?</h1>
   <p class="lead">"Echar el plato" es vaciar la losa de techo — una de las partidas más caras y críticas de la obra. Acá está el precio real del subcontrato llave en mano, por m² y según la altura de la construcción.</p>
 
+  <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
 
   {respuesta && (

@@ -11,6 +11,7 @@ import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import { getParedBlock, isoHoy, mesAno } from '../../lib/precios.js'
+import NotaMoneda from '../../components/NotaMoneda.astro'
 
 const g = await getParedBlock()
 const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
@@ -79,6 +80,7 @@ const jsonld = [
   <h1>¿Cuánto cuesta una pared de block en RD?</h1>
   <p class="lead">Saber el precio de un block no te dice cuánto sale tu pared. Acá está la cuenta completa del material: cuántos blocks lleva cada metro cuadrado, cuánto cuesta según el espesor que uses y qué falta sumarle.</p>
 
+  <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
 
   {respuesta && (

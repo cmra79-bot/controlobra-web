@@ -17,6 +17,7 @@ import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import { getPintura, isoHoy, mesAno } from '../../lib/precios.js'
+import NotaMoneda from '../../components/NotaMoneda.astro'
 
 const p = await getPintura()
 const fmt = (v) => Number.isFinite(v) ? Math.round(v).toLocaleString('es-DO') : '—'
@@ -85,6 +86,7 @@ const jsonld = [
   <h1>¿Cuánto cuesta pintar una casa en RD?</h1>
   <p class="lead">La cuenta tiene dos partes que conviene no mezclar: la pintura, que podés calcular con precisión, y la mano de obra, que se cotiza aparte y suele pesar más. Acá está la primera con precios de hoy, y qué esperar de la segunda.</p>
 
+  <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {p.actualizado} · {p.nGalones} pinturas del catálogo</div>
 
   {respuesta && (

@@ -1,6 +1,7 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import { MATERIALES, getMaterial, getCategorias, getStats, getProvincias, TIPOS, ORDEN_TIPOS, TIPO_RESUMEN, ZONAS } from '../../lib/precios.js'
+import NotaMoneda from '../../components/NotaMoneda.astro'
 
 const [cats, stats, provincias, destacadosRaw] = await Promise.all([
   getCategorias(),
@@ -31,6 +32,7 @@ const description =
       <span class="pill">Datos abiertos · Construcción RD</span>
       <h1>¿Cuánto cuesta hoy construir en <span class="or">Dominicana</span>?</h1>
       <p class="lead">El catálogo de referencia de precios de construcción en pesos dominicanos, verificado por la comunidad técnica del país. Materiales, mano de obra y equipos por zona.</p>
+      <NotaMoneda />
     </div>
     {stats && (
       <aside class="estado">

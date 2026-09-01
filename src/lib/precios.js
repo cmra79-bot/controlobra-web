@@ -157,7 +157,7 @@ export const MATERIALES = [
     // precio, así que no daba razón para entrar (pos 4-6 con CERO clics).
     // Este promete lo que el resumen no puede resolver: cuántos lleva tu pared.
     seoTitle: '¿A cómo está el block en RD? Precio de 4", 6" y 8" · {mes}',
-    seoDesc: 'Precio del block de hormigón hoy en RD, por espesor (4", 6", 8") y por zona. Además: cuántos blocks lleva tu pared y cuánto te sale el m². Datos de la comunidad, actualizados a diario.',
+    seoDesc: 'Precio del block de hormigón hoy en RD en pesos dominicanos (RD$), por espesor (4", 6", 8") y por zona. Además: cuántos blocks lleva tu pared y cuánto te sale el m². Datos de la comunidad, actualizados a diario.',
     intro: 'Precio del block de hormigón en RD por espesor (4", 6", 8") y por zona, según los reportes de la comunidad. El block es el material principal para levantar muros y paredes; se cotiza por unidad puesto en obra o en fábrica.',
     porque: 'El precio del block en RD varía por espesor (4", 6", 8"), por resistencia y por zona. El transporte pesa mucho porque es un material voluminoso; comprar en la bloquera más cercana suele salir más barato que traerlo de lejos.',
     // Consultas reales que traen el volumen (Search Console, 3 meses):
@@ -180,8 +180,8 @@ export const MATERIALES = [
     nota: 'El <strong>block de hormigón</strong> es el material principal para levantar <strong>muros y paredes</strong> en RD. Los espesores más usados son <strong>4", 6" y 8"</strong>. Según la comunidad, el block industrial ronda {espesor4} (4"), {espesor6} (6") y {espesor8} (8") por unidad — más abajo está el desglose completo. Para levantar <strong>1 m² de pared</strong> se necesitan aproximadamente <strong>12.5 blocks</strong> de 8"x16", más el mortero de pega.',
     // {espesorN} se interpolan con la mediana real del build (interpolarEspesor()).
     faq: [
-      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$ 45 y RD$ 65</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de abajo está el precio actualizado de cada medida por zona.' },
-      { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda {espesor6} por unidad en República Dominicana, según la comunidad. El de 4" ronda {espesor4} y el de 8", {espesor8}. Varía por zona, resistencia y cantidad.' },
+      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$ 45 y RD$ 65 pesos dominicanos</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de abajo está el precio actualizado de cada medida por zona.' },
+      { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda {espesor6} <strong>pesos dominicanos</strong> por unidad en República Dominicana, según la comunidad. El de 4" ronda {espesor4} y el de 8", {espesor8}. Varía por zona, resistencia y cantidad.' },
       { q: '¿A cómo está el block de 4" en RD?', a: 'El block de 4" x 8" x 16" es el más económico: ronda {espesor4} por unidad. Se usa sobre todo para <strong>divisiones internas</strong>, no para muros de carga.' },
       { q: '¿A cómo está el block de 8" en RD?', a: 'El block de 8" x 8" x 16" es el de mayor espesor de uso común y por eso el más caro de los tres: ronda {espesor8} por unidad. Se usa en <strong>muros de carga, contención y linderos</strong>.' },
       { q: '¿Cuántos blocks se necesitan por metro cuadrado de pared?', a: 'Para <strong>1 m² de pared</strong> con block de 8"x16" se necesitan aproximadamente <strong>12.5 blocks</strong>, más el mortero de pega. Conviene sumar un 5% extra por roturas.' },

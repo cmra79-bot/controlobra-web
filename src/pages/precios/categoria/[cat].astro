@@ -3,6 +3,7 @@ import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
 import { getCategorias, getCategoria, TIPOS } from '../../../lib/precios.js'
+import NotaMoneda from '../../../components/NotaMoneda.astro'
 
 export async function getStaticPaths() {
   const cats = await getCategorias()
@@ -35,6 +36,7 @@ const APP = 'https://app.controlobra.ai/precios-obra'
     <span class="tipo" style={`--tc:${tipo.color};--tb:${tipo.bg}`}>{tipo.label}</span>
     <h1>Precios de {data.nombre.toLowerCase()} en República Dominicana</h1>
     <p class="lead">Precios de {data.nombre.toLowerCase()} en RD por zona (Cibao Norte, Sur y Este), según los reportes de la comunidad técnica de Precios Obra.</p>
+    <NotaMoneda />
     <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.total} productos con precio</div>
   </div>
 

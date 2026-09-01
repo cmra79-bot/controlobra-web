@@ -4,6 +4,7 @@ import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import { MATERIALES, getMaterial, isoHoy, categoriaDeMaterial, TIPO_RESUMEN } from '../../lib/precios.js'
+import NotaMoneda from '../../components/NotaMoneda.astro'
 
 // Genera una página por cada material del catálogo, en tiempo de build.
 export async function getStaticPaths() {
@@ -110,6 +111,7 @@ const CATALOGO = [
   <h1>{data.h1}</h1>
   <p class="lead">{data.intro}</p>
 
+  <NotaMoneda />
   {data.nProductos > 0 ? (
     <>
       <div class="badge">
