@@ -187,6 +187,18 @@ export const MATERIALES = [
       { q: '¿Cuántos blocks se necesitan por metro cuadrado de pared?', a: 'Para <strong>1 m² de pared</strong> con block de 8"x16" se necesitan aproximadamente <strong>12.5 blocks</strong>, más el mortero de pega. Conviene sumar un 5% extra por roturas.' },
       { q: '¿Qué espesor de block conviene usar?', a: 'El <strong>block de 6"</strong> es el más usado para muros de carga y fachadas; el de <strong>4"</strong> para divisiones internas; y el de <strong>8"</strong> para muros de mayor resistencia o de contención.' },
       { q: '¿Se escribe "block" o "blok"?', a: 'La forma correcta en español es <strong>block</strong> (del inglés "block"), aunque también se ve escrito "blok" o "bloc". Es el mismo material: el bloque de hormigón para levantar paredes.' },
+      // Estas tres van con la frase EXACTA que la gente escribe. Search Console
+      // (10-sep-2026): "cuánto cuesta/vale block" son 1.269 impresiones y "a
+      // cómo está block" 1.146 —2.415 en total— en posición ~8 con casi cero
+      // clics, y el FAQ solo tenía la variante "a cómo está". Un buscador real
+      // mostró una caja "¿Qué precio tiene un bloque?" para esta familia que
+      // hoy gana OTRA página, no la nuestra: la pregunta no estaba escrita acá
+      // con esas palabras. El FAQ no baja el CTR como Product/Offer —solo
+      // Product reveló el precio en el resultado—, así que no hay riesgo en
+      // sumar cobertura.
+      { q: '¿Cuánto cuesta un block en RD?', a: 'Un block de hormigón cuesta <strong>{tipico} por unidad</strong> en República Dominicana, en un rango de {min} a {max} según el espesor (4", 6" u 8"), la zona y la cantidad. En la tabla de abajo está el precio actualizado de cada medida.' },
+      { q: '¿Cuánto vale un block?', a: 'Un block de hormigón vale <strong>{tipico}</strong> en República Dominicana, según la comunidad de Precios Obra. El precio va de {min} (4") a {max} (8") según el espesor, la zona y si comprás por unidad o al por mayor.' },
+      { q: '¿Qué precio tiene un block?', a: 'El precio de un block de hormigón en RD ronda <strong>{tipico}</strong> por unidad, entre {min} y {max} según el espesor (4", 6" u 8"), la zona y la cantidad que compres.' },
     ],
   },
   {
