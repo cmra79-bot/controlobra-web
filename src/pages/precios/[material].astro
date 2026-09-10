@@ -26,6 +26,35 @@ const fmt = (v) =>
 // convertían al 0.60% de CTR contra 3.18% del resto del sitio, EN EL MISMO
 // PUESTO de Google — hasta con posición 2.5-5 y CERO clics. Ver memoria
 // precios_obra_rd_plan.md. Si en el futuro se reintroduce, medir de nuevo.
+//
+// EXPERIMENTO 10-sep-2026, solo en 'block': sin Product/Offer, Google arma su
+// propia insignia de precio en el resultado a partir del número "51" del
+// texto y, al no encontrar moneda en un dato estructurado, asume USD — el
+// block se mostraba como si costara US$ 51 en vez de RD$ 51 (~60x). Decir
+// "pesos dominicanos" en prosa no lo corrige: esa insignia no lee el texto,
+// lee datos de Offer. La única forma de que diga la moneda correcta es
+// dándosela en un formato que reconozca. Se prueba SOLO en block —63% de la
+// demanda del sitio, la razón por la que vale la pena medir de nuevo— con
+// `priceCurrency: 'DOP'` explícito para que, si Google arma la insignia, sea
+// con el número y la moneda correctos. Ver bug-google-precios-como-usd.md.
+// Medir CTR de block en 2 semanas: si cae contra el resto del sitio como en
+// ago-2026, revertir; si se sostiene, evaluar extender a las otras 12.
+const productLd = material === 'block' && data.tipico
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: `${data.nombre} (precio en República Dominicana)`,
+      description: data.seoDesc,
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'DOP',
+        lowPrice: Math.round(data.minPrecio),
+        highPrice: Math.round(data.maxPrecio),
+        offerCount: data.nProductos,
+        areaServed: 'República Dominicana',
+      },
+    }
+  : null
 const faqLd = data.faq?.length
   ? {
       '@context': 'https://schema.org',
@@ -51,7 +80,7 @@ const paginaLd = {
   isPartOf: { '@type': 'WebSite', name: 'PreciosObra', url: 'https://controlobra.ai/' },
 }
 
-const jsonldArr = [faqLd, paginaLd].filter(Boolean)
+const jsonldArr = [productLd, faqLd, paginaLd].filter(Boolean)
 const jsonld = jsonldArr.length === 1 ? jsonldArr[0] : (jsonldArr.length ? jsonldArr : null)
 
 // Guías relacionadas — interlinking en ambas direcciones: cada guía ya
