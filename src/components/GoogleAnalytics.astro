@@ -1,0 +1,17 @@
+---
+// Google Analytics 4 — instalado el 10-sep-2026 para medir si el tráfico
+// orgánico de /precios/* se convierte en algo (clic a "Abrir la calculadora"
+// o a "Precios Obra"), antes de decidir si vale la pena pagar por Google Ads.
+// "Enhanced measurement" (activado por defecto en la propiedad GA4) rastrea
+// solo los clics salientes AUTOMÁTICAMENTE — a app.controlobra.ai, que es
+// justo lo que hace falta medir — sin agregar código de eventos a mano.
+const GA_ID = 'G-ZH0W9FS496'
+---
+
+<script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+<script define:vars={{ GA_ID }}>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', GA_ID)
+</script>

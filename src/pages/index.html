@@ -1228,6 +1228,16 @@
   }, 20);
   setTimeout(function(){ clearInterval(__cmpInt); }, 1200);
 </script>
+
+<!-- Google Analytics 4 — instalado el 10-sep-2026. Ver src/components/GoogleAnalytics.astro
+     para el porqué; este archivo es HTML estático (no Astro), así que va inline. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZH0W9FS496"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-ZH0W9FS496');
+</script>
 </head>
 <body>
 <div id="root"></div>

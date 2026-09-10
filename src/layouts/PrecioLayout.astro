@@ -1,4 +1,6 @@
 ---
+import GoogleAnalytics from '../components/GoogleAnalytics.astro'
+
 // Layout de las páginas de precios (SEO), con el look de la app pública de
 // Precios Obra: fondo de cuadrícula, tipografía Archivo/Hanken/DM Mono, header
 // con el logo esfera. Renderiza el <head> completo con SEO + JSON-LD opcional.
@@ -78,6 +80,8 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   {jsonldFinal && <script type="application/ld+json" set:html={JSON.stringify(jsonldFinal)} />}
+
+  <GoogleAnalytics />
 </head>
 <body>
   <header class="topbar">
