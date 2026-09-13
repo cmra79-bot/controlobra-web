@@ -583,6 +583,79 @@ export async function getMaterial(slug) {
 }
 
 // ---------------------------------------------------------------------------
+// PÁGINAS POR ESPESOR — /precios/block-de-4/, -6/, -8/
+//
+// El 13-sep-2026 se confirmó que "precio del block de 6 en RD" (1.958
+// impresiones/45 días, posición ~9.5) NO le gana ni a ferreterías individuales
+// (Ferretería Gigante, Sumer) ni aparece controlobra.ai en el top 10 — pese a
+// que la página de block ya tiene una SECCIÓN "por espesor" desde el 19-ago.
+// Una sección dentro de una página general no es lo mismo que una URL propia
+// con su propio título exacto: Google prioriza la coincidencia de intención
+// con una página dedicada, y acá los que ganan son fichas sueltas de una sola
+// ferretería, no gigantes de autoridad — a diferencia de "precio del block"
+// a secas, donde compite MercadoLibre y SIDIP.gob.do.
+//
+// Reusa getMaterial('block') en vez de volver a pegarle a la API: el filtro
+// de calidad (excluye adoblock, mortero...) y la deduplicación ya están
+// resueltos ahí.
+export async function getBlockPorEspesor(espesor) {
+  const base = await getMaterial('block')
+  if (!base) return null
+
+  const productos = base.productos.filter((p) => extraerEspesor(p.nombre) === espesor)
+  if (!productos.length) return null
+
+  const todosLosPrecios = productos.flatMap((p) => Object.values(p.zonas)).filter(Number.isFinite)
+  const tipico = mediana(todosLosPrecios)
+  const minPrecio = todosLosPrecios.length ? Math.min(...todosLosPrecios) : null
+  const maxPrecio = todosLosPrecios.length ? Math.max(...todosLosPrecios) : null
+  const zonaStats = statsPorZona(productos)
+
+  const USOS = {
+    '4': 'divisiones internas, tabiques y paredes que no cargan peso',
+    '6': 'muros de carga y fachadas — es el espesor más usado en RD',
+    '8': 'muros de carga pesada, contención y linderos',
+  }
+  const uso = USOS[espesor] || 'muros y paredes'
+  const mes = mesAno()
+
+  const base_ = { tipico, minPrecio, maxPrecio }
+  const respuesta = interpolar(
+    `El block de {espesor}" ronda {tipico} por unidad en República Dominicana, entre {min} y {max} según la zona, la resistencia y la cantidad que compres. Se usa sobre todo en ${uso}.`.replace('{espesor}', espesor),
+    base_,
+  )
+
+  return {
+    slug: `block-de-${espesor}`,
+    espesor,
+    nombre: `Block de ${espesor}"`,
+    unidad: 'unidad',
+    h1: `Precio del block de ${espesor}" en República Dominicana`,
+    seoTitle: `¿A cómo está el block de ${espesor}" en RD? Precio actualizado · ${mes}`,
+    seoDesc: `Precio del block de ${espesor}" hoy en RD, en pesos dominicanos (RD$), por zona. Se usa para ${uso}. Datos de la comunidad, actualizados a diario.`,
+    intro: `Precio del block de ${espesor}" en República Dominicana por zona, según los reportes de la comunidad de Precios Obra. Se usa principalmente en ${uso}.`,
+    porque: `El precio del block de ${espesor}" en RD varía por resistencia, por zona y por cantidad — comprar al por mayor o en la bloquera más cercana suele salir más barato que traerlo de lejos.`,
+    tipico, minPrecio, maxPrecio, nProductos: productos.length,
+    productos, zonaStats,
+    actualizado: fmtHoy(),
+    respuesta,
+    preguntaClave: `¿Cuánto cuesta un block de ${espesor}" en RD?`,
+    rendimiento: {
+      pregunta: '¿Cuántos m² de pared vas a levantar?',
+      unidadEntrada: 'm²', porUnidad: 12.5, nombreSalida: 'blocks', decimales: 0,
+      extra: 1.05,
+    },
+    faq: [
+      { q: `¿A cómo está el block de ${espesor}" en RD?`, a: interpolar(`El block industrial de ${espesor}" ronda {tipico} <strong>pesos dominicanos</strong> por unidad en República Dominicana, según la comunidad. Varía por zona, resistencia y cantidad.`, base_) },
+      { q: `¿Cuánto cuesta un block de ${espesor}" en RD?`, a: interpolar(`Un block de ${espesor}" cuesta {tipico} por unidad en República Dominicana, en un rango de {min} a {max} según la zona.`, base_) },
+      { q: `¿Cuánto vale un block de ${espesor}"?`, a: interpolar(`Un block de ${espesor}" vale {tipico} en República Dominicana, según la comunidad de Precios Obra.`, base_) },
+      { q: `¿Para qué se usa el block de ${espesor}"?`, a: `El block de ${espesor}" se usa en ${uso}.` },
+      { q: '¿Cuántos blocks se necesitan por metro cuadrado de pared?', a: 'Para <strong>1 m² de pared</strong> con block de 8"x16" se necesitan aproximadamente <strong>12.5 blocks</strong>, más el mortero de pega. Conviene sumar un 5% extra por roturas.' },
+    ],
+  }
+}
+
+// ---------------------------------------------------------------------------
 // GUÍA "cuánto cuesta una pared de block" — la consulta con más volumen del
 // sitio es sobre block ("cuanto cuesta un block en rd", 209 impresiones), pero
 // nadie quiere saber el precio de UN block: quiere el de su pared. Esto lo

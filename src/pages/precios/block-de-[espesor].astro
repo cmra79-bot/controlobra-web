@@ -3,43 +3,35 @@ import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
-import { MATERIALES, getMaterial, isoHoy, categoriaDeMaterial, TIPO_RESUMEN } from '../../lib/precios.js'
+import { MATERIALES, getBlockPorEspesor, isoHoy, categoriaDeMaterial, TIPO_RESUMEN } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
-// Genera una página por cada material del catálogo, en tiempo de build.
+// Página propia por espesor de block: /precios/block-de-4/, -6/, -8/.
+//
+// El 13-sep-2026 se confirmó que "precio del block de 6 en RD" (1.958
+// impresiones/45 días, posición ~9.5) no le gana ni a ferreterías
+// individuales (Ferretería Gigante, Sumer) ni aparece controlobra.ai en el
+// top 10 — a pesar de que /precios/block/ ya tiene una SECCIÓN "por espesor"
+// desde el 19-ago. Una sección no es lo mismo que una URL propia con su
+// propio título exacto: acá los que ganan son fichas sueltas de una sola
+// ferretería, no gigantes de autoridad como en "precio del block" a secas
+// (MercadoLibre, SIDIP.gob.do) — batalla mucho más ganable.
 export async function getStaticPaths() {
-  return MATERIALES.map((m) => ({ params: { material: m.slug } }))
+  return ['4', '6', '8'].map((espesor) => ({ params: { espesor } }))
 }
 
-const { material } = Astro.params
-const data = await getMaterial(material)
-if (!data) return Astro.redirect('/precios/')
+const { espesor } = Astro.params
+const data = await getBlockPorEspesor(espesor)
+if (!data) return Astro.redirect('/precios/block/')
 
 const fmt = (v) =>
   Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
-// Datos estructurados: FAQ en el resultado + señal de frescura de la página.
-// Historia: el 19-ago-2026 se sacó Product/AggregateOffer de las 13 páginas
-// porque convertían al 0.60% de CTR contra 3.18% del resto del sitio, EN EL
-// MISMO PUESTO de Google — el fragmento de producto resuelve la búsqueda en
-// el resultado mismo. El 10-sep-2026 se repuso SOLO en 'block', con
-// priceCurrency: 'DOP' explícito, porque sin ningún Product/Offer en el sitio
-// Google arma su PROPIA insignia de precio igual —leyendo el número del
-// texto— y al no encontrar moneda en un dato estructurado asume USD: block se
-// mostraba como si costara US$ 51 en vez de RD$ 51 (~60x). Decir "pesos
-// dominicanos" en prosa no alcanza; esa insignia no lee prosa, lee Offer.
-//
-// El 13-sep-2026 se confirmó el mismo bug en las otras 12 páginas (gravilla,
-// cemento, varilla…) — todas mostrando el precio en USD en el resultado de
-// Google. Se extiende el mismo priceCurrency: 'DOP' a las 12: un precio
-// dominicano anunciado como si fuera 60 veces más caro es un problema de
-// confianza más grave que el riesgo de CTR conocido del schema de Producto.
-// Ver bug-google-precios-como-usd.md.
-//
-// Pendiente ~24-sep-2026: revisar el CTR real de block desde el 10-sep. Si
-// cayó fuerte como en ago-2026, revertir en las 13 y buscar otra forma de
-// corregir la moneda (o aceptar que Google la muestre mal). Si se sostuvo,
-// esta extensión ya estaba bien hecha.
+// Mismo marcado que las 13 páginas de material (ver [material].astro):
+// Product+AggregateOffer con priceCurrency DOP explícito, para que si Google
+// arma su insignia de precio en el resultado, sea con la moneda correcta —
+// sin este dato estructurado, arma la insignia igual leyendo el número del
+// texto y asume USD (ver bug-google-precios-como-usd.md).
 const productLd = data.tipico
   ? {
       '@context': 'https://schema.org',
@@ -67,9 +59,6 @@ const faqLd = data.faq?.length
       })),
     }
   : null
-// Señal estructurada de frescura. Va en un nodo WebPage propio (y no dentro de
-// Product) porque `dateModified` describe la PÁGINA, que es lo que se actualiza
-// cada día con el rebuild; el producto en sí no cambia.
 const paginaLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
@@ -84,37 +73,24 @@ const paginaLd = {
 const jsonldArr = [productLd, faqLd, paginaLd].filter(Boolean)
 const jsonld = jsonldArr.length === 1 ? jsonldArr[0] : (jsonldArr.length ? jsonldArr : null)
 
-// Guías relacionadas — interlinking en ambas direcciones: cada guía ya
-// enlaza a sus materiales (ver src/pages/guias/*.astro); esto cierra el
-// círculo enlazando de vuelta desde el material a toda guía que lo usa,
-// no solo a "su" guía principal.
-const GUIAS = [
-  { slugs: ['block'], href: '/guias/cuanto-cuesta-una-pared-de-block/', titulo: '¿Cuánto cuesta una pared de block?', emoji: '🧱' },
-  { slugs: ['pintura'], href: '/guias/cuanto-cuesta-pintar-una-casa/', titulo: '¿Cuánto cuesta pintar una casa?', emoji: '🎨' },
-  { slugs: ['varilla', 'cemento', 'gravilla'], href: '/guias/cuanto-cuesta-un-quintal-de-varilla/', titulo: '¿Cuánto cuesta un quintal de varilla?', emoji: '🔩' },
-  { slugs: ['cemento', 'varilla', 'gravilla'], href: '/guias/cuanto-cuesta-echar-el-plato/', titulo: '¿Cuánto cuesta echar el plato?', emoji: '🏗️' },
-  { slugs: ['cemento', 'arena'], href: '/guias/cuanto-cuesta-una-pared-de-block/', titulo: '¿Cuánto cuesta una pared de block?', emoji: '🧱' },
+// Guía relacionada — mismo criterio que [material].astro.
+const GUIAS_DEL_MATERIAL = [
+  { href: '/guias/cuanto-cuesta-una-pared-de-block/', titulo: '¿Cuánto cuesta una pared de block?', emoji: '🧱' },
 ]
-const GUIAS_DEL_MATERIAL = GUIAS
-  .filter((g) => g.slugs.includes(material))
-  // dedup por href: cemento y varilla aparecen en más de una entrada de arriba
-  // (una por cada ángulo desde el que las referencia otra guía).
-  .filter((g, i, arr) => arr.findIndex((x) => x.href === g.href) === i)
 
-// Otros materiales para enlaces internos.
-const otros = MATERIALES.filter((m) => m.slug !== material).slice(0, 6)
+// Enlaces cruzados: primero a las OTRAS dos páginas de espesor y a la
+// general de block (mismo material, distinta intención), después al resto
+// del catálogo — igual que hace [material].astro con "otros materiales".
+const otrosEspesores = ['4', '6', '8']
+  .filter((e) => e !== espesor)
+  .map((e) => ({ slug: `block-de-${e}`, nombre: `Block de ${e}"`, emoji: '🧱' }))
+const otros = [
+  { slug: 'block', nombre: 'Block (todos los espesores)', emoji: '🧱' },
+  ...otrosEspesores,
+  ...MATERIALES.filter((m) => m.slug !== 'block').slice(0, 4),
+]
 
-// Salidas hacia las páginas de CATÁLOGO. Hasta ahora una página de material
-// solo enlazaba a otras páginas de material, y ese es justo el tipo de página
-// que peor convierte (0,63% de CTR contra 3,06% de las categorías y 4,40% de
-// los resúmenes, Search Console 45 días a ago-2026). Como las de material se
-// llevan el 84% de las impresiones, toda la fuerza del sitio circulaba entre
-// páginas que no convierten y nunca llegaba a las que sí.
-//
-// Además responde a otra intención: quien busca "lista de precios de
-// construcción 2026" no quiere UN precio, quiere la tabla — y esa intención
-// convierte al 10,77% porque el buscador no la puede resolver con un número.
-const categoria = await categoriaDeMaterial(material)
+const categoria = await categoriaDeMaterial('block')
 const CATALOGO = [
   { href: '/precios/resumen/materiales/', titulo: 'Lista completa de precios 2026', emoji: '📋' },
   ...(categoria ? [{ href: `/precios/categoria/${categoria.slug}/`, titulo: `Todos los precios de ${categoria.nombre.toLowerCase()}`, emoji: '🗂️', extra: `${categoria.nProductos} productos` }] : []),
@@ -130,11 +106,12 @@ const CATALOGO = [
   breadcrumbs={[
     { nombre: 'Inicio', path: '/' },
     { nombre: 'Precios', path: '/precios/' },
+    { nombre: 'Block', path: '/precios/block/' },
     { nombre: data.nombre, path: `/precios/${data.slug}/` },
   ]}
 >
   <nav class="crumb">
-    <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Precios</a> <span>›</span> {data.nombre}
+    <a href="/">Inicio</a> <span>›</span> <a href="/precios/">Precios</a> <span>›</span> <a href="/precios/block/">Block</a> <span>›</span> {data.nombre}
   </nav>
 
   <p class="eyebrow">Precios de construcción · República Dominicana</p>
@@ -180,30 +157,6 @@ const CATALOGO = [
         />
       )}
 
-      {data.porEspesor && data.porEspesor.length > 0 && (
-        <section id="por-espesor">
-          <h2>Precio del block por espesor</h2>
-          <p class="sub">Mediana de todos los reportes de la comunidad para cada espesor, en este build.</p>
-          <div class="espesores">
-            {data.porEspesor.map((e) => (
-              ['4', '6', '8'].includes(e.espesor) ? (
-                <a class="esp-card" id={`block-${e.espesor}`} href={`/precios/block-de-${e.espesor}/`}>
-                  <div class="esp-t">Block de {e.espesor}"</div>
-                  <div class="esp-p tnum">RD$ {fmt(e.precio)}</div>
-                  <div class="esp-n">{e.n} {e.n === 1 ? 'reporte' : 'reportes'} · ver detalle →</div>
-                </a>
-              ) : (
-                <div class="esp-card" id={`block-${e.espesor}`}>
-                  <div class="esp-t">Block de {e.espesor}"</div>
-                  <div class="esp-p tnum">RD$ {fmt(e.precio)}</div>
-                  <div class="esp-n">{e.n} {e.n === 1 ? 'reporte' : 'reportes'}</div>
-                </div>
-              )
-            ))}
-          </div>
-        </section>
-      )}
-
       <section>
         <h2>Precios por producto y zona</h2>
         <p class="sub">Cada precio es el más reciente reportado por la comunidad para ese producto en cada zona.</p>
@@ -222,13 +175,6 @@ const CATALOGO = [
     <p>{data.porque}</p>
     <p>Para una obra completa, un solo material no define el costo total. Antes de comprar conviene estimar el presupuesto completo —materiales, mano de obra e indirectos— con precios de tu zona.</p>
   </section>
-
-  {data.nota && (
-    <section>
-      <h2>{data.notaTitulo || 'Cómo se cotiza'}</h2>
-      <p set:html={data.nota} />
-    </section>
-  )}
 
   {data.faq && data.faq.length > 0 && (
     <section>
@@ -272,7 +218,7 @@ const CATALOGO = [
   </section>
 
   <section>
-    <h2>Otros precios de construcción en RD</h2>
+    <h2>Otros precios de block y construcción en RD</h2>
     <div class="chips">
       {otros.map((m) => (
         <a class="chip" href={`/precios/${m.slug}/`}>{m.emoji} {m.nombre}</a>
@@ -310,12 +256,6 @@ const CATALOGO = [
   .hnote { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
   .zonas { display: flex; gap: 10px; }
   .zona { border: 1px solid var(--line); border-left: 3px solid var(--zc); border-radius: 10px; padding: 10px 14px; min-width: 92px; }
-  .espesores { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
-  .esp-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; background: var(--paper); box-shadow: var(--shadow); min-width: 130px; text-decoration: none; color: inherit; display: block; transition: border-color .15s, box-shadow .15s; }
-  a.esp-card:hover { border-color: var(--brand); box-shadow: var(--shadow); }
-  .esp-t { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
-  .esp-p { font-size: 22px; font-weight: 800; color: var(--ink); margin-top: 4px; }
-  .esp-n { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .zl { font-size: 12px; color: var(--muted); font-weight: 600; }
   .zp { font-size: 15px; font-weight: 700; font-family: 'DM Mono', monospace; margin-top: 3px; }
 
@@ -336,9 +276,6 @@ const CATALOGO = [
   .fq p { margin: 0; color: var(--ink-2); text-align: justify; text-align-last: left; hyphens: auto; }
   strong { font-weight: 700; }
 
-  /* Respuesta directa: la pregunta como encabezado y la respuesta en un párrafo
-     corto y autocontenido. Es el formato que Google levanta como fragmento
-     destacado, y de paso resuelve la duda del visitante sin hacerlo leer. */
   .directa { border-left: 3px solid var(--brand); padding-left: 18px; }
   .directa p { font-size: 16px; line-height: 1.6; margin: 0; }
 
