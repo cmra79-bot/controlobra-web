@@ -447,7 +447,16 @@ function agrupar(filas) {
 // espesor con datos REALES en vez de los números escritos a mano que se
 // desactualizaban (el FAQ decía RD$ 51 cuando la tabla ya iba en 58).
 function extraerEspesor(nombre) {
-  const m = (nombre || '').match(/\b([4568])\s*(?:"|''|pulg)/i)
+  // Ancla a "de N<comillas>": el nombre siempre es "Bloques ... de {espesor}"
+  // x 8" x 16"" — la cara (8"x16") es FIJA en todo el catálogo, así que un
+  // regex sin ancla encuentra ese "8" de la cara en vez del espesor real.
+  // Bug real, en producción desde ago-2026: "Bloques industriales de 12" x
+  // 8" x 16"" no matcheaba el "12" (no está en [4568]) y seguía buscando,
+  // encontraba el "8" de la cara y clasificaba el block de 12" como si fuera
+  // de 8" — mezclando dos productos distintos en la misma mediana. Con la
+  // ancla, "de 12"" no matchea nada (12 no es un espesor que manejamos) y
+  // "de 8"" sigue matcheando bien.
+  const m = (nombre || '').match(/\bde\s+([4568])\s*(?:"|''|pulg)/i)
   return m ? m[1] : null
 }
 
