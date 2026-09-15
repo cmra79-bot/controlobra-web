@@ -48,6 +48,13 @@ export const MATERIALES = [
     nota: 'El <strong>cemento</strong> es el material líder de toda obra en RD: representa más del <strong>90% del uso</strong> en construcción. Se vende por <strong>funda (saco)</strong>: el <strong>cemento gris</strong> viene en fundas de <strong>94 libras (~42.6 kg)</strong> y el <strong>cemento blanco</strong> en fundas de <strong>40 kg</strong>. Según la comunidad, la funda de <strong>cemento gris</strong> ronda {v_gris} y la de <strong>cemento blanco</strong>, {v_blanco}. Comprar por <strong>palé</strong> baja el precio por funda entre 5% y 12%.',
     faq: [
       { q: '¿A cómo está la funda de cemento gris en RD?', a: 'La funda de <strong>cemento gris de 94 lb</strong> ronda {v_gris} en República Dominicana, según los reportes de la comunidad. El precio varía por zona, marca y volumen (por palé sale más barato).' },
+      // Estas tres van con la frase EXACTA que la gente busca. Search
+      // Console (14-sep-2026): "cuánto cuesta una funda de cemento" 248+145
+      // impresiones y "precio del cemento en RD" 242, ambas en posición
+      // 9-10, sin la frase literal en el FAQ (solo teníamos "a cómo está").
+      { q: '¿Cuánto cuesta una funda de cemento en RD?', a: 'Una funda de cemento cuesta {tipico} en República Dominicana, entre {min} y {max} según sea gris (94 lb) o blanco (40 kg), la zona y el volumen de compra.' },
+      { q: '¿Cuál es el precio del cemento en RD?', a: 'El precio de la funda de cemento en RD ronda {tipico}, entre {min} (gris) y {max} (blanco), según la zona y si comprás por unidad o por palé.' },
+      { q: '¿Cuántas libras tiene una funda de cemento?', a: 'La funda de <strong>cemento gris</strong> tiene <strong>94 libras</strong> (~42.6 kg), y la de <strong>cemento blanco</strong>, <strong>40 kg</strong> (unas 88 libras). Es la presentación estándar en RD.' },
       { q: '¿Cuánto pesa una funda de cemento?', a: 'La funda de <strong>cemento gris</strong> pesa <strong>94 libras (~42.6 kg)</strong> y la de <strong>cemento blanco</strong>, <strong>40 kg</strong>. Es la presentación estándar en RD.' },
       { q: '¿Cuál es la diferencia entre cemento gris y blanco?', a: 'El <strong>cemento gris</strong> es el de uso estructural general (concreto, morteros) y el más económico. El <strong>cemento blanco</strong> se usa para acabados, juntas y decoración, y cuesta bastante más por funda.' },
       { q: '¿Cuántas fundas de cemento lleva 1 m³ de concreto?', a: 'Un m³ de concreto estructural lleva aproximadamente <strong>7 a 9 fundas</strong> de cemento gris, más arena y grava.' },
@@ -184,6 +191,10 @@ export const MATERIALES = [
       { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda {espesor6} <strong>pesos dominicanos</strong> por unidad en República Dominicana, según la comunidad. El de 4" ronda {espesor4} y el de 8", {espesor8}. Varía por zona, resistencia y cantidad.' },
       { q: '¿A cómo está el block de 4" en RD?', a: 'El block de 4" x 8" x 16" es el más económico: ronda {espesor4} por unidad. Se usa sobre todo para <strong>divisiones internas</strong>, no para muros de carga.' },
       { q: '¿A cómo está el block de 8" en RD?', a: 'El block de 8" x 8" x 16" es el de mayor espesor de uso común y por eso el más caro de los tres: ronda {espesor8} por unidad. Se usa en <strong>muros de carga, contención y linderos</strong>.' },
+      // "cuánto cuesta un ciento de block" 132 impresiones (Search Console
+      // 14-sep-2026, 9 variantes), sin cubrir — la gente cotiza por ciento
+      // (así vende la bloquera), no solo por unidad.
+      { q: '¿Cuánto cuesta un ciento de block en RD?', a: 'Un ciento (100 unidades) de block cuesta aproximadamente {ciento} en República Dominicana, según el espesor y la zona — es el precio por unidad ({tipico}) multiplicado por 100. Comprando al por mayor en la bloquera suele salir más barato.' },
       { q: '¿Cuántos blocks se necesitan por metro cuadrado de pared?', a: 'Para <strong>1 m² de pared</strong> con block de 8"x16" se necesitan aproximadamente <strong>12.5 blocks</strong>, más el mortero de pega. Conviene sumar un 5% extra por roturas.' },
       { q: '¿Qué espesor de block conviene usar?', a: 'El <strong>block de 6"</strong> es el más usado para muros de carga y fachadas; el de <strong>4"</strong> para divisiones internas; y el de <strong>8"</strong> para muros de mayor resistencia o de contención.' },
       { q: '¿Se escribe "block" o "blok"?', a: 'La forma correcta en español es <strong>block</strong> (del inglés "block"), aunque también se ve escrito "blok" o "bloc". Es el mismo material: el bloque de hormigón para levantar paredes.' },
@@ -284,8 +295,8 @@ export const MATERIALES = [
     emoji: '◻️',
     unidad: 'm²',
     h1: 'Precio del porcelanato y piso en República Dominicana',
-    seoTitle: 'Precio del porcelanato y piso en RD 2026 · por m² y zona',
-    seoDesc: 'Precio del porcelanato y piso cerámico en República Dominicana por metro cuadrado (m²) y por zona. Porcelanato desde RD$ 1,558 el m². Datos de Precios Obra.',
+    seoTitle: '¿A cómo está el porcelanato y la cerámica en RD? Precio por m² · {mes}',
+    seoDesc: 'Precio del porcelanato y la cerámica para piso hoy en RD, en pesos dominicanos (RD$), por m² y por zona. Formatos 50x50 y 60x60. Datos de la comunidad, actualizados a diario.',
     intro: 'Precio del porcelanato y piso cerámico en RD por formato y calidad, y por zona, según los reportes de la comunidad de Precios Obra. El porcelanato y la cerámica son los acabados más cotizados para pisos y fachadas; se cotizan por metro cuadrado (m²).',
     porque: 'El precio del piso en RD depende del tipo (cerámica nacional, porcelanato importado), el formato de la pieza, el acabado (mate, pulido, rectificado) y la marca. El porcelanato de gran formato suele ser el más caro por m².',
     notaTitulo: 'Precio del porcelanato por m² para pisos y fachadas',
@@ -293,6 +304,13 @@ export const MATERIALES = [
     nota: 'El <strong>porcelanato</strong> y la <strong>cerámica</strong> son los acabados más cotizados para <strong>pisos y fachadas</strong> en RD. Se venden por <strong>metro cuadrado (m²)</strong>. Según la comunidad, el porcelanato chino de 50x50 ronda {v_chico} el m² y el romano de 60x60, {v_romano}. Conviene comprar un <strong>10% extra</strong> por cortes y roturas.',
     faq: [
       { q: '¿A cómo está el metro cuadrado de porcelanato en RD?', a: 'El m² de <strong>porcelanato</strong> ronda {v_chico} (50x50) a {v_romano} (60x60) en RD, según la comunidad. El formato grande y el importado cuestan más.' },
+      // Estas tres van con la frase EXACTA que la gente busca. Search Console
+      // (14-sep-2026): "porcelanato 60x60" 180 impresiones, "cerámica para
+      // piso" 72, "metro de cerámica" ~100 entre variantes — todas en
+      // posición 8-11 con el FAQ solo hablando de "porcelanato" genérico.
+      { q: '¿Cuánto cuesta el porcelanato 60x60 en RD?', a: 'El porcelanato de <strong>60x60</strong> ronda {v_romano} el m² en República Dominicana, según la comunidad. Varía por marca, si es importado y la zona.' },
+      { q: '¿A cómo está el metro de cerámica en RD?', a: 'El metro cuadrado de <strong>cerámica para piso</strong> ronda {v_chico} en República Dominicana, según la comunidad. El porcelanato de mayor formato cuesta más, {v_romano} el m².' },
+      { q: '¿Cuánto cuesta la cerámica para piso en República Dominicana?', a: 'La cerámica para piso cuesta desde {v_chico} el m² en República Dominicana, y el porcelanato de mayor formato (60x60) desde {v_romano}. Varía por marca y zona.' },
       { q: '¿Qué es mejor, cerámica o porcelanato?', a: 'El <strong>porcelanato</strong> es más resistente, menos poroso y dura más, ideal para pisos de alto tránsito y fachadas. La <strong>cerámica</strong> es más económica, buena para áreas de menor uso.' },
       { q: '¿Cuánto porcelanato comprar por m²?', a: 'Comprá siempre un <strong>10% extra</strong> sobre el área a cubrir, para cortes, roturas y reposición futura.' },
     ],
@@ -321,6 +339,77 @@ export const MATERIALES = [
     intro: 'Precio de las puertas en RD por material (madera, metálica, PVC) y tipo (principal, interior, de baño), y por zona, según los reportes de la comunidad de Precios Obra.',
     porque: 'El precio de una puerta en RD depende del material (madera maciza, MDF, metálica), del tamaño, del tipo (principal, interior, closet) y de si viene con marco y herrajes.',
   },
+  {
+    // 14-sep-2026: no había NINGUNA impresión de "tinaco" en Search Console
+    // porque el sitio no tenía página — no es que falte demanda. Búsqueda real
+    // en Google encontró DOS blogs con el título exacto "¿Cuánto cuesta un
+    // tinaco en Santo Domingo, República Dominicana?", compitiendo solo
+    // contra blogs chicos y ferreterías, sin ningún gigante de por medio — el
+    // mismo patrón que funcionó con block. El catálogo tiene 5 capacidades
+    // limpias (265 a 1.100 galones), ideal para variantes.
+    slug: 'tinaco',
+    nombre: 'Tinaco de agua',
+    queries: ['tinaco'],
+    variantes: [
+      { key: 'c265', match: /265\s*gl/i, etiqueta: '265 galones' },
+      { key: 'c400', match: /400\s*gl/i, etiqueta: '400 galones' },
+      { key: 'c530', match: /530\s*gl/i, etiqueta: '530 galones' },
+      { key: 'c700', match: /700\s*gl/i, etiqueta: '700 galones' },
+      { key: 'c1100', match: /1[.,]?100\s*gl/i, etiqueta: '1,100 galones' },
+    ],
+    emoji: '💧',
+    unidad: 'unidad',
+    h1: 'Precio del tinaco de agua en República Dominicana',
+    seoTitle: '¿Cuánto cuesta un tinaco en RD? Precio por capacidad · {mes}',
+    seoDesc: 'Precio del tinaco de agua hoy en RD, en pesos dominicanos (RD$), por capacidad (265 a 1,100 galones) y por zona. Datos de la comunidad, actualizados a diario.',
+    intro: 'Precio del tinaco de agua en República Dominicana por capacidad (265 a 1,100 galones) y por zona, según los reportes de la comunidad de Precios Obra. El tinaco es la reserva de agua de la casa ante los cortes del servicio.',
+    porque: 'El precio de un tinaco en RD depende sobre todo de la capacidad en galones, y también de la marca (Tinacom, Tinagua, Rotoplas…) y de si es de plástico virgen o reciclado. A mayor capacidad, menor precio por galón.',
+    preguntaClave: '¿Cuánto cuesta un tinaco en RD?',
+    respuesta: 'Un tinaco de agua cuesta <strong>{tipico}</strong> en República Dominicana, en un rango de {min} a {max} según la capacidad (265 a 1,100 galones), la marca y la zona. A mayor capacidad, el precio por galón sale más barato.',
+    notaTitulo: 'Precio del tinaco por capacidad',
+    // {v_cKEY} se interpolan con la mediana real del build.
+    nota: 'El <strong>tinaco</strong> es el depósito de agua de la casa, clave en RD por los cortes frecuentes del servicio. Se vende por <strong>capacidad en galones</strong>. Según la comunidad, el de <strong>265 gl</strong> ronda {v_c265}, el de <strong>400 gl</strong> {v_c400}, el de <strong>530 gl</strong> {v_c530}, el de <strong>700 gl</strong> {v_c700} y el de <strong>1,100 gl</strong> {v_c1100}.',
+    faq: [
+      { q: '¿Cuánto cuesta un tinaco en RD?', a: 'Un tinaco de agua cuesta {tipico} en República Dominicana, según la capacidad y la marca. Va de {min} (265 gl) a {max} (1,100 gl) aproximadamente.' },
+      { q: '¿Cuánto cuesta un tinaco de 400 galones?', a: 'Un tinaco de 400 galones ronda {v_c400} en República Dominicana, según la comunidad de Precios Obra.' },
+      { q: '¿Qué tamaño de tinaco necesito para mi casa?', a: 'Como referencia general: 265-400 gl para 1-3 personas, 530-700 gl para una familia de 4-6, y 1,100 gl o más para casas grandes o con cisterna de respaldo. Conviene sumar margen para los días de corte de agua.' },
+      { q: '¿Cuál es la diferencia entre tinaco y cisterna?', a: 'El <strong>tinaco</strong> va elevado (en el techo o en una torre) y reparte agua por gravedad; la <strong>cisterna</strong> va enterrada o a nivel de piso y necesita una bomba para subir el agua. Muchas casas en RD usan las dos juntas.' },
+    ],
+  },
+  {
+    // 14-sep-2026: mismo patrón — el catálogo tiene 12 productos reales por
+    // calibre (D2.30 a D2.90) que hoy solo se mencionan de pasada en la nota
+    // de varilla, sin página propia. IMPORTANTE: "Instalación de acero malla
+    // electrosoldada" es MANO DE OBRA (RD$ 64-68 el rollo instalado en una
+    // medida, no el material) y aparece en la misma búsqueda "malla
+    // electrosoldada" — si no se excluye, arruina el rango de precio igual
+    // que pasó con el block de 12" mezclado en el de 8".
+    slug: 'malla-electrosoldada',
+    nombre: 'Malla electrosoldada',
+    queries: ['malla electrosoldada'],
+    variantes: [
+      { key: 'd230', match: /D2\.30/i, etiqueta: 'Calibre D2.30' },
+      { key: 'd250', match: /D2\.50/i, etiqueta: 'Calibre D2.50' },
+      { key: 'd270', match: /D2\.70/i, etiqueta: 'Calibre D2.70' },
+      { key: 'd290', match: /D2\.90/i, etiqueta: 'Calibre D2.90' },
+    ],
+    emoji: '🕸️',
+    unidad: 'rollo',
+    h1: 'Precio de la malla electrosoldada en República Dominicana',
+    seoTitle: '¿A cómo está la malla electrosoldada en RD? Precio por rollo · {mes}',
+    seoDesc: 'Precio de la malla electrosoldada de acero hoy en RD, en pesos dominicanos (RD$), por calibre (D2.30 a D2.90) y por zona. Datos de la comunidad, actualizados a diario.',
+    intro: 'Precio de la malla electrosoldada de acero en República Dominicana por calibre (D2.30 a D2.90) y por zona, según los reportes de la comunidad de Precios Obra. Se usa para reforzar losas de techo y contrapisos.',
+    porque: 'El precio de la malla electrosoldada en RD depende del calibre del alambre (D2.30 a D2.90, más grueso es más caro) y de la separación de la cuadrícula (10x10, 15x15, 20x20 — más cerrada lleva más acero y cuesta más).',
+    preguntaClave: '¿A cómo está la malla electrosoldada en RD?',
+    respuesta: 'La malla electrosoldada de acero está en <strong>{tipico} por rollo</strong> en República Dominicana, entre {min} y {max} según el calibre (D2.30 a D2.90) y la separación de la cuadrícula. Se usa en losas de techo y contrapisos.',
+    notaTitulo: 'Precio de la malla electrosoldada por calibre',
+    nota: 'La <strong>malla electrosoldada de acero</strong> refuerza <strong>losas de techo y contrapisos</strong>. Se vende por <strong>rollo</strong>. Según la comunidad, el calibre <strong>D2.30</strong> ronda {v_d230}, el <strong>D2.50</strong> {v_d250}, el <strong>D2.70</strong> {v_d270} y el <strong>D2.90</strong> {v_d290}, según la separación de la cuadrícula (10x10, 15x15, 20x20).',
+    faq: [
+      { q: '¿A cómo está la malla electrosoldada en RD?', a: 'La malla electrosoldada de acero ronda {tipico} por rollo en República Dominicana, entre {min} y {max} según el calibre. Varía por zona y separación de cuadrícula.' },
+      { q: '¿Para qué se usa la malla electrosoldada?', a: 'La malla electrosoldada refuerza <strong>losas de techo, contrapisos y pisos de concreto</strong>. Evita el agrietamiento y reparte mejor las cargas que el acero suelto en esas aplicaciones.' },
+      { q: '¿Qué calibre de malla electrosoldada usar?', a: 'Para losas de techo residenciales se usa sobre todo <strong>D2.30 o D2.50</strong>; calibres más gruesos (D2.70, D2.90) se usan en losas de mayor carga o pisos industriales. Consultá con tu ingeniero para tu caso específico.' },
+    ],
+  },
 ]
 
 // Filtros de calidad por material: la búsqueda por palabra clave arrastra ruido
@@ -343,6 +432,11 @@ const FILTROS = {
   piso:       { soloUnidad: ['M²', 'M2'], excluir: ['lavado', 'cristalizado', 'pulido'] },
   sanitarios: { incluir: ['inodoro', 'lavamanos'], excluir: ['arandela', 'cera', 'mueble', 'tornillo', 'asiento', 'llave', 'grifo', 'desagüe', 'sifón', 'sifon', 'abrazadera', 'cola de', 'manguera', 'flexible', 'tapón', 'limpiador', 'pera'] },
   puertas:    { incluir: ['puerta'], excluir: ['alarma', 'tirador', 'guia', 'guía', 'bisagra', 'cerradura', 'pomo', 'breaker', 'caja', 'circuito', 'gabinete', 'sensor', 'brazo', 'rueda', 'tope', 'riel', 'fuelle', 'burlete'] },
+  // "Instalación de acero malla electrosoldada" es MANO DE OBRA (RD$ 64-68
+  // el rollo instalado), no el material — sin excluirlo, ese precio se
+  // mezclaba con los RD$ 12.800-30.600 del rollo real y arruinaba min/max,
+  // el mismo tipo de bug que tuvo el block de 12" mezclado en el de 8".
+  'malla-electrosoldada': { excluir: ['instalación', 'instalacion'] },
 }
 
 function pasaFiltro(it, f) {
@@ -490,6 +584,10 @@ const interpolar = (tpl, d, factorM2) => (tpl || '')
   .replaceAll('{min}', pesos(d.minPrecio))
   .replaceAll('{max}', pesos(d.maxPrecio))
   .replaceAll('{m2}', factorM2 && Number.isFinite(d.tipico) ? pesos(d.tipico * factorM2) : '—')
+  // {ciento} = precio × 100. Para materiales que se cotizan por unidad pero
+  // la gente pregunta por el ciento (ej. "cuánto cuesta un ciento de block",
+  // 132 impresiones en Search Console 14-sep-2026, sin cubrir).
+  .replaceAll('{ciento}', Number.isFinite(d.tipico) ? pesos(d.tipico * 100) : '—')
   .replaceAll('{mes}', mesAno())
 
 // Reemplaza {v_KEY} con la mediana real de esa variante (def.variantes),

@@ -56,6 +56,27 @@ const jsonld = [
           text: `Dividí los m² que vas a pintar entre ${p.m2PorGalon}. Por ejemplo, 120 m² de pared necesitan unos ${fmt1(120 / p.m2PorGalon)} galones a dos manos. Ojo: se cuentan los m² de PARED, que no son los m² de la casa.`,
         },
       },
+      // "costo de m2 de pintura" y "mano de obra pintura" — pocas
+      // impresiones (Search Console 14-sep-2026, ~2 c/u) pero sin cubrir con
+      // la frase exacta. La de mano de obra queda cualitativa a propósito
+      // (ver comentario del inicio del archivo): no hay dato del catálogo
+      // para poner un RD$/m² de mano de obra sin inventarlo.
+      ...(Number.isFinite(p.costoM2) ? [{
+        '@type': 'Question',
+        name: '¿Cuánto cuesta el m² de pintura en RD?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `El m² de pintura sale alrededor de RD$ ${fmt(p.costoM2)} solo en material, contando dos manos. Esto NO incluye la mano de obra, que se cotiza aparte.`,
+        },
+      }] : []),
+      {
+        '@type': 'Question',
+        name: '¿Cuánto cuesta la mano de obra de pintura en RD?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `La mano de obra de pintura se cotiza aparte del material y suele ser la mitad o más del costo total del trabajo. No tenemos un precio de mano de obra en el catálogo todavía; lo que sí podés calcular con precisión es el costo de la pintura misma, arriba en esta página.`,
+        },
+      },
     ],
   },
   {
