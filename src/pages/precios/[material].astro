@@ -36,11 +36,21 @@ const fmt = (v) =>
 // confianza más grave que el riesgo de CTR conocido del schema de Producto.
 // Ver bug-google-precios-como-usd.md.
 //
-// Pendiente ~24-sep-2026: revisar el CTR real de block desde el 10-sep. Si
-// cayó fuerte como en ago-2026, revertir en las 13 y buscar otra forma de
-// corregir la moneda (o aceptar que Google la muestre mal). Si se sostuvo,
-// esta extensión ya estaba bien hecha.
-const productLd = data.tipico
+// Revisado el 13-oct-2026 con Search Console (3 meses): el CTR cayó, y más
+// que en agosto. Las páginas que Google marca "Fragmentos de productos"
+// convierten al 0.67% (80,348 impresiones, posición media 6.4) contra 1.73%
+// del resto del sitio; block quedó en 0.42%, por debajo del 0.60% que motivó
+// el retiro de agosto. El fragmento de producto sigue resolviendo la búsqueda
+// en el resultado: el usuario ve "RD$ 51" y no entra.
+//
+// Prueba acotada (13-oct-2026): se saca el AggregateOffer de 'block' y
+// 'cemento' —los dos peores CTR, 55k impresiones juntos— y se deja en las 11
+// restantes como control. Lo que hay que mirar en ~3 semanas, por página:
+//   · ¿subió el CTR de block/cemento hacia el ~2.5% de las páginas sin Offer?
+//   · ¿volvió la insignia en USD, que es lo que el Offer vino a arreglar?
+// Según eso: extender a las 11, o reponerlo acá. Ver bug-google-precios-como-usd.md.
+const SIN_OFFER = new Set(['block', 'cemento'])
+const productLd = data.tipico && !SIN_OFFER.has(data.slug)
   ? {
       '@context': 'https://schema.org',
       '@type': 'Product',

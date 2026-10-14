@@ -27,27 +27,17 @@ if (!data) return Astro.redirect('/precios/block/')
 const fmt = (v) =>
   Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
-// Mismo marcado que las 13 páginas de material (ver [material].astro):
-// Product+AggregateOffer con priceCurrency DOP explícito, para que si Google
-// arma su insignia de precio en el resultado, sea con la moneda correcta —
-// sin este dato estructurado, arma la insignia igual leyendo el número del
-// texto y asume USD (ver bug-google-precios-como-usd.md).
-const productLd = data.tipico
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: `${data.nombre} (precio en República Dominicana)`,
-      description: data.seoDesc,
-      offers: {
-        '@type': 'AggregateOffer',
-        priceCurrency: 'DOP',
-        lowPrice: Math.round(data.minPrecio),
-        highPrice: Math.round(data.maxPrecio),
-        offerCount: data.nProductos,
-        areaServed: 'República Dominicana',
-      },
-    }
-  : null
+// Sin Product/AggregateOffer desde el 13-oct-2026: estas páginas entran en la
+// misma prueba que 'block' y 'cemento' en [material].astro, porque responden
+// al mismo grupo de búsquedas ("precio del block de 6") y dejarles el Offer
+// haría que Google siguiera armando el fragmento de producto para esas
+// consultas, tapando el resultado de la prueba. Venían con el peor CTR del
+// sitio: 0.26% (4"), 0.52% (6"), 0.28% (8").
+//
+// Lo que se mide en ~3 semanas: si el CTR sube hacia el ~2.5% de las páginas
+// sin Offer, y si vuelve la insignia de precio en USD que el Offer arreglaba.
+// Ver el comentario largo en [material].astro y bug-google-precios-como-usd.md.
+const productLd = null
 const faqLd = data.faq?.length
   ? {
       '@context': 'https://schema.org',
