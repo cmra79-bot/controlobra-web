@@ -51,7 +51,7 @@ const CALC = 'https://app.controlobra.ai/precios-obra/calculadora'
       if (!Number.isFinite(n) || n <= 0) { cant.textContent = '—'; tot.textContent = '—'; return }
       const unidades = n * por * extra
       cant.textContent = fmt(unidades, dec)
-      tot.textContent = 'RD$ ' + fmt(Math.round(unidades * precio), 0)
+      tot.textContent = 'RD$' + fmt(Math.round(unidades * precio), 0)
     })
   })
 </script>

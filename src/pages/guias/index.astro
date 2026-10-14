@@ -14,14 +14,14 @@ const GUIAS = [
   {
     slug: 'cuanto-cuesta-construir-casa-republica-dominicana',
     titulo: 'Cuánto cuesta construir una casa en RD',
-    resumen: `Precio por m² según terminación y ejemplos por tamaño. Desde RD$ ${fmt(g.porTerminacion[0].total)}/m² todo incluido.`,
+    resumen: `Precio por m² según terminación y ejemplos por tamaño. Desde RD$${fmt(g.porTerminacion[0].total)}/m² todo incluido.`,
     emoji: '🏠',
   },
   {
     slug: 'cuanto-cuesta-una-pared-de-block',
     titulo: 'Cuánto cuesta una pared de block',
     resumen: pared.referencia
-      ? `Costo por m² según el espesor y cuántos blocks lleva tu pared. Desde RD$ ${fmt(pared.referencia.costoM2)}/m² en material.`
+      ? `Costo por m² según el espesor y cuántos blocks lleva tu pared. Desde RD$${fmt(pared.referencia.costoM2)}/m² en material.`
       : 'Costo por m² según el espesor y cuántos blocks lleva tu pared.',
     emoji: '🧱',
   },
@@ -29,7 +29,7 @@ const GUIAS = [
     slug: 'cuanto-cuesta-pintar-una-casa',
     titulo: 'Cuánto cuesta pintar una casa',
     resumen: Number.isFinite(pint.costoM2)
-      ? `Precio del galón hoy, cuántos galones necesitás y cuánto pesa la mano de obra. Desde RD$ ${fmt(pint.costoM2)}/m² en pintura.`
+      ? `Precio del galón hoy, cuántos galones necesitás y cuánto pesa la mano de obra. Desde RD$${fmt(pint.costoM2)}/m² en pintura.`
       : 'Precio del galón, cuántos galones necesitás y cuánto pesa la mano de obra.',
     emoji: '🎨',
   },
@@ -37,7 +37,7 @@ const GUIAS = [
     slug: 'cuanto-cuesta-un-quintal-de-varilla',
     titulo: 'Cuánto cuesta un quintal de varilla',
     resumen: Number.isFinite(var_.precioQq)
-      ? `Precio del quintal hoy, cuánto sale la libra y cuánto pesa cada calibre. Desde RD$ ${fmt(var_.precioQq)}/qq.`
+      ? `Precio del quintal hoy, cuánto sale la libra y cuánto pesa cada calibre. Desde RD$${fmt(var_.precioQq)}/qq.`
       : 'Precio del quintal, cuánto sale la libra y cuánto pesa cada calibre.',
     emoji: '🔩',
   },
@@ -45,7 +45,7 @@ const GUIAS = [
     slug: 'cuanto-cuesta-echar-el-plato',
     titulo: 'Cuánto cuesta echar el plato',
     resumen: plato.referencia
-      ? `Precio real del subcontrato de losa de techo, por m² y según altura. Desde RD$ ${fmt(plato.referencia.precio)}/m².`
+      ? `Precio real del subcontrato de losa de techo, por m² y según altura. Desde RD$${fmt(plato.referencia.precio)}/m².`
       : 'Precio real del subcontrato de losa de techo, por m² y según altura.',
     emoji: '🏗️',
   },

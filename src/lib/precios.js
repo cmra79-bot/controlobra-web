@@ -76,13 +76,13 @@ export const MATERIALES = [
     preguntaClave: '¿A cómo está el quintal de varilla en RD?',
     respuesta: 'El <strong>quintal (qq) de varilla de acero</strong> está en <strong>{tipico}</strong> en República Dominicana, con un rango de {min} a {max} según el calibre (3/8", 1/2", 5/8"), el grado (40 o 60) y la zona. Como un <strong>quintal son 100 libras</strong>, la libra de acero sale a la centésima parte de ese precio.',
     notaTitulo: 'Precio de la varilla de acero por quintal (qq) y por libra',
-    nota: 'En República Dominicana el <strong>acero</strong> y la <strong>varilla</strong> se cotizan sobre todo por <strong>quintal (qq)</strong> —una medida de peso— y también por <strong>unidad</strong> (varillas de 20 pies). Un <strong>quintal equivale a 100 libras (lb)</strong> y a unos <strong>45.4 kg</strong>. Con el precio reportado por la comunidad —alrededor de <strong>RD$ 3,300 por quintal</strong> para la varilla de acero grado 40-60— la <strong>libra de acero</strong> sale a unos <strong>RD$ 33</strong>. Los calibres más usados en RD son 3/8", 1/2" y 5/8", en grado 40 y 60.',
+    nota: 'En República Dominicana el <strong>acero</strong> y la <strong>varilla</strong> se cotizan sobre todo por <strong>quintal (qq)</strong> —una medida de peso— y también por <strong>unidad</strong> (varillas de 20 pies). Un <strong>quintal equivale a 100 libras (lb)</strong> y a unos <strong>45.4 kg</strong>. Con el precio reportado por la comunidad —alrededor de <strong>RD$3,300 por quintal</strong> para la varilla de acero grado 40-60— la <strong>libra de acero</strong> sale a unos <strong>RD$33</strong>. Los calibres más usados en RD son 3/8", 1/2" y 5/8", en grado 40 y 60.',
     faq: [
-      { q: '¿A cómo está el quintal de varilla de acero en RD?', a: 'La varilla de acero grado 40-60 se cotiza alrededor de <strong>RD$ 3,300 por quintal (qq)</strong> en República Dominicana, según los reportes de la comunidad de Precios Obra. Como un quintal tiene 100 libras, la <strong>libra de acero</strong> sale a unos <strong>RD$ 33</strong>.' },
+      { q: '¿A cómo está el quintal de varilla de acero en RD?', a: 'La varilla de acero grado 40-60 se cotiza alrededor de <strong>RD$3,300 por quintal (qq)</strong> en República Dominicana, según los reportes de la comunidad de Precios Obra. Como un quintal tiene 100 libras, la <strong>libra de acero</strong> sale a unos <strong>RD$33</strong>.' },
       { q: '¿Cuántas libras tiene un quintal de acero?', a: 'Un <strong>quintal (qq)</strong> equivale a <strong>100 libras (lb)</strong> y a aproximadamente <strong>45.36 kg</strong>. Es la unidad de peso más usada para vender el acero y la varilla en República Dominicana.' },
       { q: '¿Cómo se vende la varilla de acero en República Dominicana?', a: 'La varilla de acero en RD se vende por <strong>quintal</strong> (por peso) y por <strong>unidad</strong> (varillas de 20 pies). Los calibres más usados son <strong>3/8", 1/2" y 5/8"</strong>, en grado 40 y 60. El precio varía por calibre, grado, zona y cantidad.' },
       { q: '¿Cuánto pesa una varilla de acero?', a: 'El peso depende del calibre: una varilla de 3/8" de 20 pies pesa alrededor de <strong>7.5 libras</strong>; una de 1/2", unas <strong>13.4 libras</strong>; y una de 5/8", cerca de <strong>20.9 libras</strong>. Por eso el acero se compra por quintal (100 libras).' },
-      { q: '¿A cómo está la malla electrosoldada en RD?', a: 'La <strong>malla electrosoldada de acero</strong> (para losas y contrapisos) va desde unos <strong>RD$ 17,000 hasta RD$ 30,000 por rollo</strong>, según el calibre (D2.90, D2.70…) y el tamaño del rollo. Se usa en la <strong>losa de techo</strong> y en pisos.' },
+      { q: '¿A cómo está la malla electrosoldada en RD?', a: 'La <strong>malla electrosoldada de acero</strong> (para losas y contrapisos) va desde unos <strong>RD$17,000 hasta RD$30,000 por rollo</strong>, según el calibre (D2.90, D2.70…) y el tamaño del rollo. Se usa en la <strong>losa de techo</strong> y en pisos.' },
     ],
   },
   {
@@ -187,7 +187,7 @@ export const MATERIALES = [
     nota: 'El <strong>block de hormigón</strong> es el material principal para levantar <strong>muros y paredes</strong> en RD. Los espesores más usados son <strong>4", 6" y 8"</strong>. Según la comunidad, el block industrial ronda {espesor4} (4"), {espesor6} (6") y {espesor8} (8") por unidad — más abajo está el desglose completo. Para levantar <strong>1 m² de pared</strong> se necesitan aproximadamente <strong>12.5 blocks</strong> de 8"x16", más el mortero de pega.',
     // {espesorN} se interpolan con la mediana real del build (interpolarEspesor()).
     faq: [
-      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$ 45 y RD$ 65 pesos dominicanos</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de abajo está el precio actualizado de cada medida por zona.' },
+      { q: '¿A cómo está el block en RD?', a: 'El block de hormigón está entre <strong>RD$45 y RD$65 pesos dominicanos</strong> por unidad en República Dominicana según el espesor, la zona y la cantidad. En la tabla de abajo está el precio actualizado de cada medida por zona.' },
       { q: '¿A cómo está el block de 6" en RD?', a: 'El block industrial de 6" ronda {espesor6} <strong>pesos dominicanos</strong> por unidad en República Dominicana, según la comunidad. El de 4" ronda {espesor4} y el de 8", {espesor8}. Varía por zona, resistencia y cantidad.' },
       { q: '¿A cómo está el block de 4" en RD?', a: 'El block de 4" x 8" x 16" es el más económico: ronda {espesor4} por unidad. Se usa sobre todo para <strong>divisiones internas</strong>, no para muros de carga.' },
       { q: '¿A cómo está el block de 8" en RD?', a: 'El block de 8" x 8" x 16" es el de mayor espesor de uso común y por eso el más caro de los tres: ronda {espesor8} por unidad. Se usa en <strong>muros de carga, contención y linderos</strong>.' },
@@ -573,8 +573,19 @@ function statsPorZona(productos) {
 // build. Los números de `nota` y `faq` están escritos a mano y envejecen (hoy el
 // FAQ del block dice RD$ 51 mientras la tabla ya va en 58); la respuesta directa
 // se arma desde el dato vivo justamente para no contradecir a la tabla de arriba.
+// Sin espacio entre "RD$" y el número, a propósito, desde el 13-oct-2026.
+// Google arma la insignia de precio del resultado leyendo el TEXTO de la
+// página, no el dato estructurado: con "RD$ 51" tokeniza el "$" por separado,
+// no reconoce el "RD" y lo resuelve como USD. El resultado seguía anunciando
+// "USD 51.00" un mes después de declarar priceCurrency DOP en el Offer y con
+// "pesos dominicanos" escrito en la misma frase — ninguna de las dos señales
+// pesó (el Offer ni lo mira, por eso se retiró; ver [material].astro).
+// "RD$51" pega el símbolo al prefijo, que es la grafía dominicana habitual y
+// el único token que queda por probar. Si Google insiste con USD, el paso
+// siguiente es sacar el "$" del todo en respuesta/FAQ/meta y escribir
+// "51 pesos dominicanos". Ver bug-google-precios-como-usd.md.
 const pesos = (v) => Number.isFinite(v)
-  ? `RD$ ${Math.round(v).toLocaleString('es-DO')}`
+  ? `RD$${Math.round(v).toLocaleString('es-DO')}`
   : '—'
 // {m2} = precio típico × unidades por m² (ej. 12.5 blocks por m² de pared).
 // Responder "cuánto sale el m²" es lo que un resumen del buscador no da y es

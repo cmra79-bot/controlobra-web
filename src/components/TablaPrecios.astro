@@ -32,7 +32,7 @@ const fmt = (v) =>
             <td class="num ud">{p.unidad}</td>
             {ZONAS.map((z) => (
               <td class="num price tnum">
-                {p.zonas[z.id] ? `RD$ ${fmt(p.zonas[z.id])}` : '—'}
+                {p.zonas[z.id] ? `RD$${fmt(p.zonas[z.id])}` : '—'}
               </td>
             ))}
           </tr>

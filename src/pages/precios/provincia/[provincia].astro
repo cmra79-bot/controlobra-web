@@ -99,7 +99,7 @@ const description = `Precios de materiales de construcción en ${data.nombre}${e
             <tr>
               <td class="pn">{p.slug ? <a href={`/precios/${p.slug}/`}>{p.nombre}</a> : p.nombre}</td>
               <td class="num ud">{p.unidad}</td>
-              <td class="num price tnum">RD$ {fmt(p.precio)}</td>
+              <td class="num price tnum">RD${fmt(p.precio)}</td>
             </tr>
           ))}
         </tbody>

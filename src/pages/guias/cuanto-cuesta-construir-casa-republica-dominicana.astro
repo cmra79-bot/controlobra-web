@@ -8,7 +8,7 @@ const g = await getCostoConstruccion()
 const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
 
 const title = 'Cuánto cuesta construir una casa en República Dominicana 2026'
-const description = `Cuánto cuesta construir una casa en RD en 2026: precio por m² según terminación (desde RD$ ${fmt(g.porTerminacion[0].total)}/m²) y ejemplos por tamaño. Estimado con precios reales de la comunidad.`
+const description = `Cuánto cuesta construir una casa en RD en 2026: precio por m² según terminación (desde RD$${fmt(g.porTerminacion[0].total)}/m²) y ejemplos por tamaño. Estimado con precios reales de la comunidad.`
 
 // Datos estructurados FAQ: Google puede mostrar las preguntas en el resultado.
 const jsonld = {
@@ -20,7 +20,7 @@ const jsonld = {
       name: '¿Cuánto cuesta construir una casa en República Dominicana en 2026?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Construir una casa de terminación estándar en RD cuesta alrededor de RD$ ${fmt(g.estandar.total)} por m² (todo incluido: materiales, mano de obra, indirectos e ITBIS). Una casa de 150 m² ronda los RD$ ${fmt(g.estandar.total * 150)}.`,
+        text: `Construir una casa de terminación estándar en RD cuesta alrededor de RD$${fmt(g.estandar.total)} por m² (todo incluido: materiales, mano de obra, indirectos e ITBIS). Una casa de 150 m² ronda los RD$${fmt(g.estandar.total * 150)}.`,
       },
     },
     {
@@ -56,7 +56,7 @@ const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintur
   <div class="hero">
     <div>
       <div class="hlabel">Costo estándar · todo incluido</div>
-      <div class="big tnum">RD$ {fmt(g.estandar.total)}<small> / m²</small></div>
+      <div class="big tnum">RD${fmt(g.estandar.total)}<small> / m²</small></div>
       <div class="hnote">Materiales + mano de obra + indirectos ({g.indirectoPct}%) + ITBIS · casa de 1 nivel, terminación estándar</div>
     </div>
   </div>
@@ -73,8 +73,8 @@ const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintur
           {g.porTerminacion.map((t) => (
             <tr>
               <td class="pn">{t.nombre}</td>
-              <td class="num tnum">RD$ {fmt(t.directo)}</td>
-              <td class="num price tnum">RD$ {fmt(t.total)}</td>
+              <td class="num tnum">RD${fmt(t.directo)}</td>
+              <td class="num price tnum">RD${fmt(t.total)}</td>
             </tr>
           ))}
         </tbody>
@@ -85,7 +85,7 @@ const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintur
 
   <section>
     <h2>Cuánto costaría tu casa según el tamaño</h2>
-    <p class="sub">Ejemplos con terminación estándar (RD$ {fmt(g.estandar.total)}/m², todo incluido).</p>
+    <p class="sub">Ejemplos con terminación estándar (RD${fmt(g.estandar.total)}/m², todo incluido).</p>
     <div class="table-card"><div class="tscroll">
       <table>
         <thead>
@@ -95,7 +95,7 @@ const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintur
           {g.tamanos.map((t) => (
             <tr>
               <td class="pn">{t.m2} m²</td>
-              <td class="num price tnum">RD$ {fmt(t.total)}</td>
+              <td class="num price tnum">RD${fmt(t.total)}</td>
             </tr>
           ))}
         </tbody>

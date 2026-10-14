@@ -118,14 +118,14 @@ const CATALOGO = [
       <div class="hero">
         <div>
           <div class="hlabel">Precio típico · {data.unidad}</div>
-          <div class="big tnum">RD$ {fmt(data.tipico)}</div>
-          <div class="hnote">Rango RD$ {fmt(data.minPrecio)} – {fmt(data.maxPrecio)} · {data.nProductos} productos reportados</div>
+          <div class="big tnum">RD${fmt(data.tipico)}</div>
+          <div class="hnote">Rango RD${fmt(data.minPrecio)} – {fmt(data.maxPrecio)} · {data.nProductos} productos reportados</div>
         </div>
         <div class="zonas">
           {data.zonaStats.map((z) => (
             <div class="zona" style={`--zc:${z.color}`}>
               <div class="zl">{z.label}</div>
-              <div class="zp tnum">{z.prom ? `RD$ ${fmt(z.prom)}` : '—'}</div>
+              <div class="zp tnum">{z.prom ? `RD$${fmt(z.prom)}` : '—'}</div>
             </div>
           ))}
         </div>

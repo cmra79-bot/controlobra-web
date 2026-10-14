@@ -24,7 +24,7 @@ const title = `¿Cuánto cuesta un quintal de varilla en RD? Por qq, libra y cal
 const description = `Precio del quintal de varilla de acero en República Dominicana hoy, cuánto pesa cada calibre (3/8", 1/2", 5/8") y cuánto sale una varilla completa. Con precios reales actualizados a diario.`
 
 const respuesta = Number.isFinite(g.precioQq)
-  ? `El <strong>quintal (qq) de varilla</strong> de acero grado 40-60 está en <strong>RD$ ${fmt(g.precioQq)}</strong> en República Dominicana. Como un quintal son 100 libras, la <strong>libra sale a RD$ ${fmt1(g.precioLb)}</strong>. Con ese precio, una varilla completa de 20 pies de calibre ${ref?.pulgadas}" —la más usada en estructuras residenciales— cuesta alrededor de <strong>RD$ ${fmt(ref?.costoPorVarilla)}</strong>.`
+  ? `El <strong>quintal (qq) de varilla</strong> de acero grado 40-60 está en <strong>RD$${fmt(g.precioQq)}</strong> en República Dominicana. Como un quintal son 100 libras, la <strong>libra sale a RD$${fmt1(g.precioLb)}</strong>. Con ese precio, una varilla completa de 20 pies de calibre ${ref?.pulgadas}" —la más usada en estructuras residenciales— cuesta alrededor de <strong>RD$${fmt(ref?.costoPorVarilla)}</strong>.`
   : null
 
 const jsonld = [
@@ -118,7 +118,7 @@ const jsonld = [
               <td class="pn">Varilla de {c.pulgadas}"{c.pulgadas === ref?.pulgadas && <span class="tag">más usada</span>}</td>
               <td class="uso">{c.uso}</td>
               <td class="num tnum">{fmt1(c.lbPorVarilla)} lb</td>
-              <td class="num price tnum">{Number.isFinite(c.costoPorVarilla) ? `RD$ ${fmt(c.costoPorVarilla)}` : '—'}</td>
+              <td class="num price tnum">{Number.isFinite(c.costoPorVarilla) ? `RD$${fmt(c.costoPorVarilla)}` : '—'}</td>
             </tr>
           ))}
         </tbody>

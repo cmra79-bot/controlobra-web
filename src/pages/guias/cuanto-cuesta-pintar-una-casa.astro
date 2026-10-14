@@ -27,7 +27,7 @@ const title = `¿Cuánto cuesta pintar una casa en RD? Precio por m² · ${mesAn
 const description = `Cuánto sale pintar una casa en República Dominicana: precio del galón de pintura hoy, cuántos galones necesitás según los m² y cuánto pesa la mano de obra. Con precios reales actualizados a diario.`
 
 const respuesta = Number.isFinite(p.costoM2)
-  ? `Pintar cuesta alrededor de RD$ ${fmt(p.costoM2)} por m² solo en pintura, contando dos manos y un galón de RD$ ${fmt(p.precioGalon)} que rinde unos ${p.m2PorGalon} m² terminados. La mano de obra va aparte y suele ser la mitad o más del costo total del trabajo.`
+  ? `Pintar cuesta alrededor de RD$${fmt(p.costoM2)} por m² solo en pintura, contando dos manos y un galón de RD$${fmt(p.precioGalon)} que rinde unos ${p.m2PorGalon} m² terminados. La mano de obra va aparte y suele ser la mitad o más del costo total del trabajo.`
   : null
 
 const jsonld = [
@@ -66,7 +66,7 @@ const jsonld = [
         name: '¿Cuánto cuesta el m² de pintura en RD?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `El m² de pintura sale alrededor de RD$ ${fmt(p.costoM2)} solo en material, contando dos manos. Esto NO incluye la mano de obra, que se cotiza aparte.`,
+          text: `El m² de pintura sale alrededor de RD$${fmt(p.costoM2)} solo en material, contando dos manos. Esto NO incluye la mano de obra, que se cotiza aparte.`,
         },
       }] : []),
       {
@@ -122,7 +122,7 @@ const jsonld = [
       rendimiento={{
         pregunta: 'Calculá lo tuyo: ¿cuántos m² de pared vas a pintar?',
         unidadEntrada: 'm²', porUnidad: 1 / p.m2PorGalon, nombreSalida: 'galones', decimales: 1,
-        nota: `Calculado a dos manos, con un galón que rinde ${p.m2PorGalon} m² terminados y cuesta RD$ ${fmt(p.precioGalon)}. Solo pintura: no incluye mano de obra, sellador ni masilla.`,
+        nota: `Calculado a dos manos, con un galón que rinde ${p.m2PorGalon} m² terminados y cuesta RD$${fmt(p.precioGalon)}. Solo pintura: no incluye mano de obra, sellador ni masilla.`,
       }}
       precio={p.precioGalon}
     />
@@ -130,7 +130,7 @@ const jsonld = [
 
   <section>
     <h2>Lo que más mueve el costo: cuántas manos</h2>
-    <p class="sub">Un dato que sorprende: entre la acrílica más barata y la más cara del catálogo hay apenas RD$ {fmt(p.max - p.min)} de diferencia por galón. Elegir marca casi no mueve la aguja. Lo que sí la mueve es cuántas manos necesita tu pared.</p>
+    <p class="sub">Un dato que sorprende: entre la acrílica más barata y la más cara del catálogo hay apenas RD${fmt(p.max - p.min)} de diferencia por galón. Elegir marca casi no mueve la aguja. Lo que sí la mueve es cuántas manos necesita tu pared.</p>
     <div class="table-card"><div class="tscroll">
       <table>
         <thead>
@@ -142,13 +142,13 @@ const jsonld = [
               <td class="pn">{e.nombre}{e.manos === 2 && <span class="tag">estándar</span>}</td>
               <td class="uso">{e.detalle}</td>
               <td class="num tnum">{fmt(e.m2PorGalon)} m²</td>
-              <td class="num price tnum">RD$ {fmt(e.costoM2)}</td>
+              <td class="num price tnum">RD${fmt(e.costoM2)}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div></div>
-    <p class="mini">Calculado con el galón típico de acrílica del catálogo (RD$ {fmt(p.precioGalon)}), que rinde {p.m2PorGalonUnaMano} m² por mano. El rango de la acrílica hoy va de RD$ {fmt(p.min)} a RD$ {fmt(p.max)} el galón.</p>
+    <p class="mini">Calculado con el galón típico de acrílica del catálogo (RD${fmt(p.precioGalon)}), que rinde {p.m2PorGalonUnaMano} m² por mano. El rango de la acrílica hoy va de RD${fmt(p.min)} a RD${fmt(p.max)} el galón.</p>
   </section>
 
   {p.ejemplos.length > 0 && (
@@ -161,7 +161,7 @@ const jsonld = [
             <div class="ej-t">{e.nombre}</div>
             <div class="ej-m2">{e.m2} m²</div>
             <div class="ej-b">{fmt1(e.galones)} galones</div>
-            <div class="ej-c">RD$ {fmt(e.costo)}</div>
+            <div class="ej-c">RD${fmt(e.costo)}</div>
           </div>
         ))}
       </div>
@@ -171,7 +171,7 @@ const jsonld = [
 
   <section>
     <h2>La mano de obra: lo que falta en ese número</h2>
-    <p>Acá está la parte que casi ninguna calculadora te dice con claridad: <strong>en un trabajo de pintura, la mano de obra suele ser la mitad o más del costo total</strong>. Es decir, si la pintura te sale RD$ {fmt(p.costoM2)} por m², el trabajo terminado puede costarte el doble o más.</p>
+    <p>Acá está la parte que casi ninguna calculadora te dice con claridad: <strong>en un trabajo de pintura, la mano de obra suele ser la mitad o más del costo total</strong>. Es decir, si la pintura te sale RD${fmt(p.costoM2)} por m², el trabajo terminado puede costarte el doble o más.</p>
     <p>Además, el precio del pintor cambia mucho según el estado de la pared:</p>
     <ul class="falta">
       <li><strong>Pared nueva con pañete listo</strong> — el caso más simple y barato.</li>

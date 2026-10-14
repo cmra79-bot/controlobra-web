@@ -36,36 +36,31 @@ const fmt = (v) =>
 // confianza más grave que el riesgo de CTR conocido del schema de Producto.
 // Ver bug-google-precios-como-usd.md.
 //
-// Revisado el 13-oct-2026 con Search Console (3 meses): el CTR cayó, y más
-// que en agosto. Las páginas que Google marca "Fragmentos de productos"
-// convierten al 0.67% (80,348 impresiones, posición media 6.4) contra 1.73%
-// del resto del sitio; block quedó en 0.42%, por debajo del 0.60% que motivó
-// el retiro de agosto. El fragmento de producto sigue resolviendo la búsqueda
-// en el resultado: el usuario ve "RD$ 51" y no entra.
+// Sin Product/AggregateOffer desde el 13-oct-2026, por dos motivos medidos.
 //
-// Prueba acotada (13-oct-2026): se saca el AggregateOffer de 'block' y
-// 'cemento' —los dos peores CTR, 55k impresiones juntos— y se deja en las 11
-// restantes como control. Lo que hay que mirar en ~3 semanas, por página:
-//   · ¿subió el CTR de block/cemento hacia el ~2.5% de las páginas sin Offer?
-//   · ¿volvió la insignia en USD, que es lo que el Offer vino a arreglar?
-// Según eso: extender a las 11, o reponerlo acá. Ver bug-google-precios-como-usd.md.
-const SIN_OFFER = new Set(['block', 'cemento'])
-const productLd = data.tipico && !SIN_OFFER.has(data.slug)
-  ? {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: `${data.nombre} (precio en República Dominicana)`,
-      description: data.seoDesc,
-      offers: {
-        '@type': 'AggregateOffer',
-        priceCurrency: 'DOP',
-        lowPrice: Math.round(data.minPrecio),
-        highPrice: Math.round(data.maxPrecio),
-        offerCount: data.nProductos,
-        areaServed: 'República Dominicana',
-      },
-    }
-  : null
+// 1) El Offer NO controla la insignia de precio, que es para lo que se había
+//    puesto. En /precios/block/ el Offer declaraba lowPrice 45 / highPrice 63
+//    con priceCurrency DOP, y Google mostraba "USD 51.00": el 51 no está en el
+//    Offer, es la mediana que aparece en el TEXTO. Google arma la insignia
+//    leyendo la prosa y le asigna USD por el símbolo "$" suelto; el dato
+//    estructurado nunca entró en esa decisión. Por eso el arreglo del 10 y 13
+//    de septiembre no cambió nada en un mes. La moneda se ataca en el formato
+//    del texto (ver `pesos()` en lib/precios.js), no acá.
+//
+// 2) Cuesta clics. Search Console a 3 meses (13-oct-2026): las páginas que
+//    Google marca "Fragmentos de productos" convierten al 0.67% con 80,348
+//    impresiones en posición 6.4, contra 2.12% del resto del sitio en posición
+//    7.10 — peor puesto y 3.2x mejor CTR, así que la brecha no es de posición.
+//    block quedó en 0.42%, por debajo del 0.60% que motivó el retiro de agosto.
+//    El fragmento resuelve la búsqueda en el resultado: ve el precio, no entra.
+//
+// Sin beneficio comprobado y con costo medido, no queda nada que compensar.
+// Queda un confusor que esta serie no puede descartar: "precio del block" es
+// una consulta corta, que Google llena de anuncios y responde sola, mientras
+// las páginas de categoría atienden cola larga. Parte de la brecha puede ser
+// eso. Se verá en ~3 semanas, ahora que las 13 quedan sin Offer y el único
+// cambio en juego es este. Ver bug-google-precios-como-usd.md.
+const productLd = null
 const faqLd = data.faq?.length
   ? {
       '@context': 'https://schema.org',
@@ -161,14 +156,14 @@ const CATALOGO = [
       <div class="hero">
         <div>
           <div class="hlabel">Precio típico · {data.unidad}</div>
-          <div class="big tnum">RD$ {fmt(data.tipico)}</div>
-          <div class="hnote">Rango RD$ {fmt(data.minPrecio)} – {fmt(data.maxPrecio)} · {data.nProductos} productos reportados</div>
+          <div class="big tnum">RD${fmt(data.tipico)}</div>
+          <div class="hnote">Rango RD${fmt(data.minPrecio)} – {fmt(data.maxPrecio)} · {data.nProductos} productos reportados</div>
         </div>
         <div class="zonas">
           {data.zonaStats.map((z) => (
             <div class="zona" style={`--zc:${z.color}`}>
               <div class="zl">{z.label}</div>
-              <div class="zp tnum">{z.prom ? `RD$ ${fmt(z.prom)}` : '—'}</div>
+              <div class="zp tnum">{z.prom ? `RD$${fmt(z.prom)}` : '—'}</div>
             </div>
           ))}
         </div>
@@ -199,13 +194,13 @@ const CATALOGO = [
               ['4', '6', '8'].includes(e.espesor) ? (
                 <a class="esp-card" id={`block-${e.espesor}`} href={`/precios/block-de-${e.espesor}/`}>
                   <div class="esp-t">Block de {e.espesor}"</div>
-                  <div class="esp-p tnum">RD$ {fmt(e.precio)}</div>
+                  <div class="esp-p tnum">RD${fmt(e.precio)}</div>
                   <div class="esp-n">{e.n} {e.n === 1 ? 'reporte' : 'reportes'} · ver detalle →</div>
                 </a>
               ) : (
                 <div class="esp-card" id={`block-${e.espesor}`}>
                   <div class="esp-t">Block de {e.espesor}"</div>
-                  <div class="esp-p tnum">RD$ {fmt(e.precio)}</div>
+                  <div class="esp-p tnum">RD${fmt(e.precio)}</div>
                   <div class="esp-n">{e.n} {e.n === 1 ? 'reporte' : 'reportes'}</div>
                 </div>
               )

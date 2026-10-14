@@ -27,7 +27,7 @@ const title = `¿Cuánto cuesta echar el plato (losa de techo) en RD? · ${mesAn
 const description = `Cuánto cuesta vaciar la losa de techo en República Dominicana, por m², según la altura de la obra. Precio real de subcontrato llave en mano: formaleta, desencofrado, malla y colocación. Actualizado a diario.`
 
 const respuesta = ref
-  ? `Echar el plato —vaciar la losa de techo— cuesta alrededor de <strong>RD$ ${fmt(ref.precio)} por m²</strong> en República Dominicana, para una obra de hasta 3 metros de altura (la más común, de 1 nivel). Es el precio de un <strong>subcontrato llave en mano</strong>: incluye la formaleta, el desencofrado, la malla y la colocación. Una losa de 80 m² sale alrededor de <strong>RD$ ${fmt(80 * ref.precio)}</strong>.`
+  ? `Echar el plato —vaciar la losa de techo— cuesta alrededor de <strong>RD$${fmt(ref.precio)} por m²</strong> en República Dominicana, para una obra de hasta 3 metros de altura (la más común, de 1 nivel). Es el precio de un <strong>subcontrato llave en mano</strong>: incluye la formaleta, el desencofrado, la malla y la colocación. Una losa de 80 m² sale alrededor de <strong>RD$${fmt(80 * ref.precio)}</strong>.`
   : null
 
 const jsonld = [
@@ -109,7 +109,7 @@ const jsonld = [
             {g.alturas.map((a) => (
               <tr class={a.nombre === ref?.nombre ? 'destacada' : ''}>
                 <td class="pn">{a.nombre}{a.nombre === ref?.nombre && <span class="tag">1 nivel, el más común</span>}</td>
-                <td class="num price tnum">RD$ {fmt(a.precio)}</td>
+                <td class="num price tnum">RD${fmt(a.precio)}</td>
               </tr>
             ))}
           </tbody>

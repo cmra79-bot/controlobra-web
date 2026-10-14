@@ -21,7 +21,7 @@ const title = `¿Cuánto cuesta una pared de block en RD? Costo por m² · ${mes
 const description = `Cuánto sale levantar una pared de block en República Dominicana: costo por m² según el espesor (4", 6", 8"), cuántos blocks necesitás y ejemplos por tamaño de pared. Con precios reales actualizados a diario.`
 
 const respuesta = ref
-  ? `Levantar 1 m² de pared con block de ${ref.pulgadas}" cuesta alrededor de RD$ ${fmt(ref.costoM2)} solo en blocks, contando los ${g.blocksPorM2} blocks por m² más un 5% por roturas. Una pared de 40 m² sale unos RD$ ${fmt(40 * ref.costoM2)}. No incluye el mortero de pega, los refuerzos ni la mano de obra.`
+  ? `Levantar 1 m² de pared con block de ${ref.pulgadas}" cuesta alrededor de RD$${fmt(ref.costoM2)} solo en blocks, contando los ${g.blocksPorM2} blocks por m² más un 5% por roturas. Una pared de 40 m² sale unos RD$${fmt(40 * ref.costoM2)}. No incluye el mortero de pega, los refuerzos ni la mano de obra.`
   : null
 
 const jsonld = [
@@ -115,8 +115,8 @@ const jsonld = [
             <tr class={e.pulgadas === ref?.pulgadas ? 'destacada' : ''}>
               <td class="pn">Block de {e.pulgadas}"{e.pulgadas === ref?.pulgadas && <span class="tag">más usado</span>}</td>
               <td class="uso">{e.uso || '—'}</td>
-              <td class="num tnum">RD$ {fmt(e.precio)}</td>
-              <td class="num price tnum">RD$ {fmt(e.costoM2)}</td>
+              <td class="num tnum">RD${fmt(e.precio)}</td>
+              <td class="num price tnum">RD${fmt(e.costoM2)}</td>
             </tr>
           ))}
         </tbody>
@@ -134,7 +134,7 @@ const jsonld = [
           <div class="ej">
             <div class="ej-m2">{e.m2} m²</div>
             <div class="ej-b">{fmt(e.blocks)} blocks</div>
-            <div class="ej-c">RD$ {fmt(e.costo)}</div>
+            <div class="ej-c">RD${fmt(e.costo)}</div>
           </div>
         ))}
       </div>

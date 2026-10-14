@@ -68,7 +68,7 @@ const description =
       {destacadosRaw.map((it) => (
         <a class="card" href={`/precios/${it.slug}/`}>
           <div class="top"><span class="emoji">{it.emoji}</span><span class="name">{it.nombre}</span></div>
-          <div class="price tnum">{it.prom ? `RD$ ${fmt(it.prom)}` : '—'}</div>
+          <div class="price tnum">{it.prom ? `RD$${fmt(it.prom)}` : '—'}</div>
           <div class="meta">{it.prom ? `típico · ${it.unidad}` : 'sin datos'}{it.n ? ` · ${it.n} productos` : ''}</div>
         </a>
       ))}
