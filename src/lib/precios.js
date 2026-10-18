@@ -29,9 +29,10 @@ export const MATERIALES = [
     ],
     emoji: '🧱',
     unidad: 'funda',
-    h1: 'Precio del cemento en República Dominicana',
-    seoTitle: '¿Cuánto cuesta una funda de cemento en RD? Precio hoy · gris y blanco',
-    seoDesc: 'Precio de la funda de cemento gris (94 lb) y blanco hoy en RD, por zona y por palé. Además: cuántas fundas lleva 1 m³ de concreto. Datos de la comunidad, actualizados a diario.',
+    // 18-oct-2026 · misma lógica que block: vender la herramienta, no el dato.
+    h1: 'Calculadora de cemento: cuántas fundas necesitas y precio por zona en RD',
+    seoTitle: '¿Cuánto cuesta una funda de cemento en RD? Calculadora + precio · {mes}',
+    seoDesc: 'Calcula cuántas fundas de cemento necesitas para tu concreto y cuánto te sale en RD$. Precio de gris (94 lb) y blanco por zona, con comparador. Datos de la comunidad.',
     intro: 'Precio de la funda de cemento gris y blanco en República Dominicana, por zona (Cibao Norte, Sur y Este) y por presentación, según los reportes de la comunidad de Precios Obra. El cemento es el material líder de toda obra: representa más del 90% del uso en construcción.',
     porque: 'El precio de la funda de cemento en RD depende de la zona (el flete lo encarece lejos de las plantas del Cibao y el Gran Santo Domingo), la presentación (gris de 94 lb, blanco de 40 kg) y el volumen de compra: comprar por palé o camión baja el precio por funda entre 5% y 12%.',
     // "cuanto cuesta una funda de cemento en rd" — 26 impresiones, posición 10.9
@@ -66,9 +67,10 @@ export const MATERIALES = [
     queries: ['varilla'],
     emoji: '🔩',
     unidad: 'quintal',
-    h1: 'Precio de la varilla de acero en República Dominicana',
-    seoTitle: '¿A cómo está el quintal de varilla en RD? Precio por qq y libra · {mes}',
-    seoDesc: 'Precio de la varilla de acero hoy en RD por quintal (qq), libra y unidad, en calibres 3/8", 1/2" y 5/8". Además: cuánto acero lleva tu obra. Datos de la comunidad, actualizados a diario.',
+    // 18-oct-2026 · misma lógica: la IA ya da el precio, el h1 vende la herramienta.
+    h1: 'Varilla de acero en RD: precio por quintal y calculadora de cuánto acero lleva tu obra',
+    seoTitle: '¿A cómo está el quintal de varilla en RD? Calculadora + precio · {mes}',
+    seoDesc: 'Precio de la varilla por quintal (qq), libra y unidad en RD$, por calibre (3/8", 1/2", 5/8") y zona. Calcula cuánto acero necesitas. Datos de la comunidad.',
     intro: 'Precio de la varilla de acero de refuerzo en República Dominicana, por quintal (qq), por libra y por unidad, y por zona (Cibao Norte, Sur y Este). La varilla de acero es uno de los insumos que más pesa en el costo de una estructura, y en RD se cotiza sobre todo por quintal.',
     porque: 'El precio de la varilla de acero en RD sigue de cerca el acero internacional y el dólar, y varía por calibre (3/8", 1/2", 5/8"), por grado (40 o 60), por zona y por cantidad. La varilla se vende por quintal (peso) y por unidad (varillas de 20 pies), así que conviene comparar el precio por quintal y por libra antes de comprar. Además de la varilla, el acero incluye las mallas electrosoldadas (para losas de techo y pisos) y los perfiles metálicos.',
     // "a cómo está el quintal de varilla" (31, pos 11.1) y "precio del quintal
@@ -98,9 +100,10 @@ export const MATERIALES = [
     ],
     emoji: '⛰️',
     unidad: 'm³',
-    h1: 'Precio de la arena en República Dominicana',
-    seoTitle: '¿A cómo está el metro de arena en RD? Precio por m³ y zona · {mes}',
-    seoDesc: 'Precio del m³ de arena hoy en RD (lavada, fina de pañete, gruesa) por zona. Además: cuánta arena lleva 1 m³ de concreto. Datos de la comunidad, actualizados a diario.',
+    // 18-oct-2026 · herramienta > dato.
+    h1: 'Arena en RD: precio por m³ y calculadora de cuánta arena lleva tu concreto',
+    seoTitle: '¿A cómo está el metro de arena en RD? Calculadora + precio · {mes}',
+    seoDesc: 'Calcula cuántos m³ de arena necesitas para tu concreto y cuánto te sale en RD$. Precio de arena lavada y fina por zona, con comparador. Datos de la comunidad.',
     intro: 'Precio de la arena de construcción en RD por tipo (lavada, fina, gruesa) y por zona, según los reportes de la comunidad. La arena es la base para preparar el concreto y los morteros en obra; se cotiza por metro cúbico (m³) puesto en sitio.',
     porque: 'El precio de la arena en RD lo define sobre todo el transporte: mientras más lejos esté la obra del banco de arena o del río, más sube el flete. También cambia por tipo (fina, gruesa, de río o lavada) y por el volumen del pedido.',
     // "precio del metro de arena en república dominicana" — 31 impr, pos 7.7, 0 clics.
@@ -130,9 +133,10 @@ export const MATERIALES = [
     ],
     emoji: '🪨',
     unidad: 'm³',
-    h1: 'Precio de la grava y gravilla en República Dominicana',
-    seoTitle: '¿A cómo está el metro de grava en RD? Precio de grava y gravilla · {mes}',
-    seoDesc: 'Precio del m³ de grava y gravilla hoy en RD (3/8", 1/2", 3/4") por zona. Además: cuánta grava lleva 1 m³ de concreto. Datos de la comunidad, actualizados a diario.',
+    // 18-oct-2026 · herramienta > dato.
+    h1: 'Grava y gravilla en RD: precio por m³ y calculadora para tu concreto',
+    seoTitle: '¿A cómo está el metro de grava en RD? Calculadora + precio · {mes}',
+    seoDesc: 'Calcula cuántos m³ de grava necesitas para tu concreto y cuánto te sale en RD$. Precio de grava 3/8", 1/2" y 3/4" por zona. Datos de la comunidad.',
     intro: 'Precio de la grava y gravilla para concreto en RD por tipo y por zona, según los reportes de la comunidad. Son el agregado grueso base del concreto; se cotizan por metro cúbico (m³) puesto en obra.',
     porque: 'Como todo agregado pétreo, el precio de la grava en RD depende del transporte desde la cantera, del tamaño del árido y del volumen del pedido. En zonas turísticas del Este suele ser algo más alto por la demanda.',
     // "precio del metro de grava en república dominicana" — 27 impr, pos 4.2,
@@ -159,12 +163,24 @@ export const MATERIALES = [
     queries: ['block', 'bloque'],
     emoji: '🧱',
     unidad: 'unidad',
-    h1: 'Precio del block de hormigón en República Dominicana',
-    // El snippet viejo solo prometía el precio — y el buscador ya muestra el
-    // precio, así que no daba razón para entrar (pos 4-6 con CERO clics).
-    // Este promete lo que el resumen no puede resolver: cuántos lleva tu pared.
-    seoTitle: '¿A cómo está el block en RD? Precio de 4", 6" y 8" · {mes}',
-    seoDesc: 'Precio del block de hormigón hoy en RD en pesos dominicanos (RD$), por espesor (4", 6", 8") y por zona. Además: cuántos blocks lleva tu pared y cuánto te sale el m². Datos de la comunidad, actualizados a diario.',
+    // 18-oct-2026 · h1 + title + desc reescritos.
+    //
+    // PROBLEMA: 472 impresiones → 3 clics (0.6%) en 24h. Google AI Overview
+    // ya da el precio por espesor con rangos, usando NUESTROS datos. El snippet
+    // orgánico dice lo mismo que la IA de arriba → no hay razón para hacer clic.
+    //
+    // CAMBIO: el h1 ahora vende la HERRAMIENTA (calculadora + comparador por
+    // zona), no el dato. Google suele usar el h1 como title del snippet cuando
+    // lo considera más relevante que el <title>. Si muestra "Calculadora de
+    // blocks" en vez de "Precio del block", el usuario ve algo que la IA NO le
+    // dio y tiene razón para entrar.
+    //
+    // El seoTitle mantiene la pregunta clave ("¿A cómo está el block?") para
+    // que Google la use si prefiere el <title>, pero ahora agrega "calculadora"
+    // como gancho. El seoDesc promete la herramienta interactiva.
+    h1: 'Calculadora de blocks: cuántos necesitas y cuánto te cuestan en RD',
+    seoTitle: '¿A cómo está el block en RD? Calculadora + precio por zona · {mes}',
+    seoDesc: 'Calcula cuántos blocks necesitas para tu pared y cuánto te sale en pesos dominicanos (RD$). Precio actualizado de 4", 6" y 8" por zona, con comparador. Datos de la comunidad.',
     intro: 'Precio del block de hormigón en RD por espesor (4", 6", 8") y por zona, según los reportes de la comunidad. El block es el material principal para levantar muros y paredes; se cotiza por unidad puesto en obra o en fábrica.',
     porque: 'El precio del block en RD varía por espesor (4", 6", 8"), por resistencia y por zona. El transporte pesa mucho porque es un material voluminoso; comprar en la bloquera más cercana suele salir más barato que traerlo de lejos.',
     // Consultas reales que traen el volumen (Search Console, 3 meses):
@@ -294,9 +310,10 @@ export const MATERIALES = [
     ],
     emoji: '◻️',
     unidad: 'm²',
-    h1: 'Precio del porcelanato y piso en República Dominicana',
-    seoTitle: '¿A cómo está el porcelanato y la cerámica en RD? Precio por m² · {mes}',
-    seoDesc: 'Precio del porcelanato y la cerámica para piso hoy en RD, en pesos dominicanos (RD$), por m² y por zona. Formatos 50x50 y 60x60. Datos de la comunidad, actualizados a diario.',
+    // 18-oct-2026 · herramienta > dato.
+    h1: 'Porcelanato y cerámica en RD: precio por m² y comparador por zona',
+    seoTitle: '¿A cómo está el porcelanato en RD? Comparador + precio por m² · {mes}',
+    seoDesc: 'Precio del porcelanato y la cerámica para piso en RD$ por m² y por zona, con comparador. Formatos 50x50 y 60x60. Datos de la comunidad, actualizados a diario.',
     intro: 'Precio del porcelanato y piso cerámico en RD por formato y calidad, y por zona, según los reportes de la comunidad de Precios Obra. El porcelanato y la cerámica son los acabados más cotizados para pisos y fachadas; se cotizan por metro cuadrado (m²).',
     porque: 'El precio del piso en RD depende del tipo (cerámica nacional, porcelanato importado), el formato de la pieza, el acabado (mate, pulido, rectificado) y la marca. El porcelanato de gran formato suele ser el más caro por m².',
     notaTitulo: 'Precio del porcelanato por m² para pisos y fachadas',
