@@ -8,6 +8,41 @@
 
 const API_BASE = 'https://app.controlobra.ai/api/precios-obra'
 
+// Desde el 4-nov-2026 el catálogo exige sesión (`/items`, `/proveedores`,
+// `/calculadora-config`). El build entra con la clave `SEO_BUILD_KEY`: la misma
+// variable que tiene el backend en DigitalOcean, cargada en Cloudflare Pages →
+// Settings → Variables and Secrets (Production y Preview).
+const CLAVE_SEO = (process.env.SEO_BUILD_KEY || '').trim()
+
+// En el build de producción, quedarse sin datos tiene que ROMPER el build, no
+// publicar páginas vacías. Cada lectura de abajo traga sus errores y devuelve
+// `[]` — pensado para un mal momento de la red —, y eso hizo que entre el 4 y
+// el 12-nov-2026 el sitio publicara "Todavía no hay precios…" en todas las
+// páginas de material y borrara las 28 de categoría, sin que ningún build
+// fallara. Con el build en rojo, Cloudflare Pages deja en línea el último
+// deploy bueno. `CF_PAGES` lo define Cloudflare; en local solo se avisa.
+const EN_BUILD_REAL = !!(process.env.CF_PAGES || process.env.CI)
+function sinDatos(motivo) {
+  console.error(`\n[precios] ✖ ${motivo}`)
+  if (EN_BUILD_REAL) {
+    console.error('[precios]   Build abortado para no publicar páginas sin precios.\n')
+    process.exit(1)
+  }
+  console.error('[precios]   (build local: sigue, pero las páginas van a salir vacías)\n')
+}
+
+let _avisoAcceso = false
+async function apiFetch(url) {
+  const res = await fetch(url, CLAVE_SEO ? { headers: { 'x-seo-key': CLAVE_SEO } } : undefined)
+  if ((res.status === 401 || res.status === 403) && !_avisoAcceso) {
+    _avisoAcceso = true
+    sinDatos(`HTTP ${res.status} en ${url} — ${CLAVE_SEO
+      ? 'la SEO_BUILD_KEY de Cloudflare Pages no coincide con la del backend'
+      : 'falta la variable SEO_BUILD_KEY en Cloudflare Pages'}`)
+  }
+  return res
+}
+
 // Zonas (ids fijos en la BD). Colores y nombres cortos para la UI.
 export const ZONAS = [
   { id: 1, label: 'Norte', nombre: 'Cibao Norte', color: '#2A4FA0' },
@@ -510,7 +545,7 @@ export const isoHoy = () => new Date().toISOString().slice(0, 10)
 async function fetchItems(query) {
   const url = `${API_BASE}/items?q=${encodeURIComponent(query)}&tipo_recurso=MATERIAL&limit=1000`
   try {
-    const res = await fetch(url)
+    const res = await apiFetch(url)
     if (!res.ok) return []
     return await res.json()
   } catch (e) {
@@ -990,15 +1025,19 @@ function fetchAll() {
   if (!_allPromise) {
     _allPromise = (async () => {
       const out = []
-      for (let off = 0; off < 12000; off += 1000) {
+      // El tope era 12.000 filas y el catálogo ya pasa de 22.000 (nov-2026):
+      // se estaba leyendo poco más de la mitad. Corta solo, en el primer lote
+      // incompleto; el tope queda como freno ante un endpoint que no pagine.
+      for (let off = 0; off < 200000; off += 1000) {
         let batch = []
         try {
-          const res = await fetch(`${API_BASE}/items?limit=1000&offset=${off}`)
+          const res = await apiFetch(`${API_BASE}/items?limit=1000&offset=${off}`)
           if (res.ok) batch = await res.json()
         } catch { batch = [] }
         out.push(...batch)
         if (batch.length < 1000) break
       }
+      if (!out.length) sinDatos('el catálogo vino vacío (API caída o sin acceso)')
       return out
     })()
   }
@@ -1010,7 +1049,7 @@ function fetchFamilias() {
   if (!_famPromise) {
     _famPromise = (async () => {
       try {
-        const res = await fetch(`${API_BASE}/familias`)
+        const res = await apiFetch(`${API_BASE}/familias`)
         return res.ok ? await res.json() : []
       } catch { return [] }
     })()
@@ -1155,7 +1194,7 @@ function fetchProveedores() {
   if (!_provsPromise) {
     _provsPromise = (async () => {
       try {
-        const res = await fetch(`${API_BASE}/proveedores?limit=5000`)
+        const res = await apiFetch(`${API_BASE}/proveedores?limit=5000`)
         if (!res.ok) return []
         const d = await res.json()
         return Array.isArray(d) ? d : (d.items || [])
@@ -1254,7 +1293,7 @@ function fetchZonas() {
   if (!_zonasPromise) {
     _zonasPromise = (async () => {
       try {
-        const res = await fetch(`${API_BASE}/zonas`)
+        const res = await apiFetch(`${API_BASE}/zonas`)
         return res.ok ? await res.json() : []
       } catch { return [] }
     })()
@@ -1381,7 +1420,7 @@ export function provinciasIndexables() {
 // Estadísticas del catálogo para la tarjeta "Estado del catálogo".
 export async function getStats() {
   try {
-    const res = await fetch(`${API_BASE}/stats`)
+    const res = await apiFetch(`${API_BASE}/stats`)
     if (!res.ok) return null
     const s = await res.json()
     const act30 = (s.zonas || []).reduce((a, z) => a + (z.actualizados_30d || 0), 0)
@@ -1415,7 +1454,7 @@ const CALC_FALLBACK = {
 
 async function fetchCalcConfig() {
   try {
-    const res = await fetch(`${API_BASE}/calculadora-config`)
+    const res = await apiFetch(`${API_BASE}/calculadora-config`)
     if (!res.ok) return CALC_FALLBACK
     const r = await res.json()
     const d = r?.data
