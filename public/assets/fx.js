@@ -39,6 +39,54 @@
 
   var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
 
+
+  /* ════════════════════ 0. TITULAR DEL HERO EN 2 LÍNEAS ════════════════════
+     Ajusta el tamaño para que la línea 1 llene el ancho sin pasarse, con la
+     fuente que el navegador haya cargado de verdad. Así el titular queda
+     siempre en 2 líneas y no brinca cuando cambia la palabra rotativa. */
+  (function fitH1() {
+    var h = document.querySelector('.hero h1.h1-2l');
+    if (!h) return;
+    var l1 = h.querySelector('.l1');
+    function fit() {
+      if (window.innerWidth < 768) { h.style.fontSize = ''; return; }
+      h.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(h).fontSize);
+      var r = document.createRange(); r.selectNodeContents(l1);
+      var w = r.getBoundingClientRect().width, avail = h.clientWidth;
+      if (w > 0 && avail > 0) h.style.fontSize = Math.min(76, fs * (avail * .985) / w).toFixed(2) + 'px';
+    }
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 100); });
+  })();
+
+
+  /* Títulos de sección: máximo 2 líneas (mismo criterio que el hero).
+     Usan todo el ancho disponible y, si aun así pasan de 2 líneas, se achica
+     la letra de a 1 px hasta que entren (mínimo 26 px). En móvil no se toca. */
+  (function fitTitles() {
+    var hs = Array.prototype.slice.call(document.querySelectorAll(
+      '.sec-h h2, .po-sec h2, .roi h2, .ai h3, .cta-final h2'));
+    if (!hs.length) return;
+    hs.forEach(function (h) { h.classList.add('fx-2l'); h._fs0 = h.style.fontSize; });
+    function lines(h, fs) {
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || fs * 1.08;
+      return Math.round(h.getBoundingClientRect().height / lh);
+    }
+    function fit() {
+      hs.forEach(function (h) {
+        h.style.fontSize = h._fs0 || '';
+        if (window.innerWidth < 768) return;
+        var fs = parseFloat(getComputedStyle(h).fontSize), n = 0;
+        while (lines(h, fs) > 2 && fs > 26 && n++ < 40) { fs -= 1; h.style.fontSize = fs + 'px'; }
+      });
+    }
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 120); });
+  })();
+
   /* ════════════════════ 1. ESFERAS 3D (WebGL) ════════════════════ */
   var FRAG = [
     'precision highp float;',
@@ -157,68 +205,7 @@
     };
   }
 
-  /* ════════════════════ 2. RED DE PARTÍCULAS (canvas 2D) ════════════════════ */
-  function Net(canvas, opt) {
-    var ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    var pts = [], w = 0, h = 0;
-    var link = opt.link || 130;
-    function resize() {
-      var r = canvas.getBoundingClientRect();
-      w = r.width; h = r.height;
-      canvas.width = Math.round(w * DPR); canvas.height = Math.round(h * DPR);
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      var n = Math.round(clamp((w * h) / (opt.density || 14000), 12, MOBILE ? (opt.maxMobile || 36) : (opt.max || 90)));
-      while (pts.length < n) pts.push({
-        x: Math.random() * w, y: Math.random() * h,
-        vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
-        r: Math.random() * 1.4 + .5, o: Math.random() < .28
-      });
-      pts.length = n;
-    }
-    resize();
-    function draw(moving) {
-      ctx.clearRect(0, 0, w, h);
-      var rect = canvas.getBoundingClientRect();
-      var mx = mouse.px - rect.left, my = mouse.py - rect.top;
-      var i, j, a, b, dx, dy, d2, L2 = link * link;
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        if (moving) {
-          a.x += a.vx; a.y += a.vy;
-          if (a.x < -10) a.x = w + 10; else if (a.x > w + 10) a.x = -10;
-          if (a.y < -10) a.y = h + 10; else if (a.y > h + 10) a.y = -10;
-          // el mouse empuja suavemente
-          dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
-          if (d2 < 14400 && d2 > 1) { var f = (1 - d2 / 14400) * .6; a.x += dx / Math.sqrt(d2) * f; a.y += dy / Math.sqrt(d2) * f; }
-        }
-      }
-      ctx.lineWidth = 1;
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        for (j = i + 1; j < pts.length; j++) {
-          b = pts[j]; dx = a.x - b.x; dy = a.y - b.y; d2 = dx * dx + dy * dy;
-          if (d2 < L2) {
-            var al = (1 - d2 / L2) * (opt.lineAlpha || .18);
-            ctx.strokeStyle = (a.o || b.o) ? 'rgba(242,107,31,' + al * 1.4 + ')' : 'rgba(200,207,215,' + al + ')';
-            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-          }
-        }
-        // líneas hacia el mouse: la red "te reconoce"
-        dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
-        if (d2 < 32400) {
-          ctx.strokeStyle = 'rgba(255,162,101,' + (1 - d2 / 32400) * .35 + ')';
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke();
-        }
-      }
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        ctx.fillStyle = a.o ? 'rgba(242,107,31,.9)' : 'rgba(255,255,255,.55)';
-        ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.2832); ctx.fill();
-      }
-    }
-    return { resize: resize, draw: draw };
-  }
+  /* 2. La red de partículas vive en /assets/fx-net.js (toda la página). */
 
   /* ════════════════════ 3. MONTAJE ════════════════════ */
   var hero = document.querySelector('.hero');
@@ -232,32 +219,20 @@
   if (hero) {
     var host = hero.querySelector('.hero-blobs') || hero;
     var cOrbs = document.createElement('canvas'); cOrbs.className = 'fx-orbs'; cOrbs.setAttribute('aria-hidden', 'true');
-    var cNet = document.createElement('canvas'); cNet.className = 'fx-net'; cNet.setAttribute('aria-hidden', 'true');
-    host.appendChild(cOrbs); host.appendChild(cNet);
+    // La red de partículas ya no va por sección: fx-net.js la pone fija detrás de toda la página.
+    host.appendChild(cOrbs);
     try { orbs = Orbs(cOrbs); } catch (e) { orbs = null; }
     if (orbs) hero.classList.add('fx-on'); else cOrbs.remove();
-    var heroNet = Net(cNet, { density: 15000, max: 85, maxMobile: 34, link: MOBILE ? 110 : 140, lineAlpha: .16 });
     heroH = hero.offsetHeight || 1;
     addLayer({
       el: hero,
       tick: function (t, moving) {
         var s = clamp(window.scrollY / Math.max(1, window.innerHeight), 0, 1.2);
         if (orbs) orbs.draw(moving ? t : 8.0, mouse.sx, mouse.sy, s);
-        if (heroNet) heroNet.draw(moving);
       },
-      resize: function () { if (orbs) orbs.resize(); if (heroNet) heroNet.resize(); heroH = hero.offsetHeight || 1; }
+      resize: function () { if (orbs) orbs.resize(); heroH = hero.offsetHeight || 1; }
     });
   }
-
-  ['.metrics', '.cta-final'].forEach(function (sel) {
-    var sec = document.querySelector(sel);
-    if (!sec) return;
-    var c = document.createElement('canvas'); c.className = 'fx-net fx-net-sec'; c.setAttribute('aria-hidden', 'true');
-    sec.insertBefore(c, sec.firstChild);
-    var n = Net(c, { density: 18000, max: 60, maxMobile: 22, link: 120, lineAlpha: .13 });
-    if (!n) return;
-    addLayer({ el: sec, tick: function (t, moving) { n.draw(moving); }, resize: n.resize });
-  });
 
   /* ════════════════════ 4. SCROLL ════════════════════ */
   var bar = document.createElement('div'); bar.id = 'fx-progress'; bar.setAttribute('aria-hidden', 'true');

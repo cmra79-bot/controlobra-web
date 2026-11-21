@@ -1199,6 +1199,28 @@
     .wa-fab::before{ animation: none }
     .wa-fab{ transition: none }
   }
+  /* Titular del hero: siempre 2 líneas fijas (pedido de Carlos 21-nov-2026).
+     Línea 1 fija y línea 2 con la palabra rotativa; el tamaño se calcula para que
+     la línea 1 quepa en el ancho disponible, así nunca brinca a 3 líneas. */
+  @media (min-width: 768px){
+    .hero h1.h1-2l{ font-size: clamp(26px, calc((min(100vw, 1280px) - 64px) / 22.6), 76px); max-width:none }
+    .hero h1.h1-2l .l1, .hero h1.h1-2l .l2{ display:block; white-space:nowrap }
+    .hero p.lead{ max-width: 1060px }
+    .hero .hero-kicker{ max-width: 1060px }
+  }
+  /* En el celular: la palabra rotativa va en su propia línea, así el alto no cambia */
+  @media (max-width: 767px){
+    .hero h1.h1-2l .rot{ display:block; width:max-content }
+  }
+  /* Títulos de sección a lo ancho, en 2 líneas máximo (fx.js ajusta el tamaño)
+     y el texto de abajo aprovechando el ancho (pedido de Carlos 21-nov-2026). */
+  @media (min-width: 768px){
+    .sec-h, .modules .sec-h{ max-width:none }
+    .sec-h h2, .sec-h h2.modules-headline{ max-width:none; text-wrap: balance }
+    .sec-h p{ max-width: 1060px }
+    .po-sec h2, .roi h2, .ai h3, .cta-final h2{ text-wrap: balance }
+    .cta-final-in{ max-width: 1060px }
+  }
   /* ═══════════════ MODO OSCURO FUTURISTA (21-nov-2026) ═══════════════
      Toda la página sobre fondo casi negro. Las secciones quedan transparentes
      y debajo vive un fondo fijo con rejilla técnica + auroras naranjas que se
@@ -1222,7 +1244,7 @@
             mask-image: radial-gradient(ellipse 120% 90% at 50% 40%, #000 35%, rgba(0,0,0,.35) 100%);
   }
   html[data-theme="dark"] body::after{
-    content:''; position:fixed; inset:-20%; z-index:-1; pointer-events:none;
+    content:''; position:fixed; inset:-20%; z-index:-2; pointer-events:none;
     background:
       radial-gradient(circle at 18% 30%, rgba(242,107,31,.10), transparent 32%),
       radial-gradient(circle at 82% 70%, rgba(242,107,31,.08), transparent 30%),
@@ -1254,22 +1276,42 @@
   html[data-theme="dark"] .hero{background:
       radial-gradient(ellipse 900px 600px at 78% -10%, rgba(242,107,31,.28), transparent 60%),
       radial-gradient(ellipse 700px 500px at 0% 110%, rgba(58,71,90,.30), transparent 65%),
-      linear-gradient(180deg, #06080C 0%, #0D1118 70%, rgba(6,8,12,0) 100%)}
+      linear-gradient(180deg, rgba(6,8,12,.55) 0%, rgba(13,17,24,.45) 70%, rgba(6,8,12,0) 100%)}
   html[data-theme="dark"] .metrics{background:
       radial-gradient(ellipse 700px 280px at 50% 0%, rgba(242,107,31,.16), transparent 65%),
-      linear-gradient(180deg, rgba(10,13,18,.9), rgba(10,13,18,.6));
+      linear-gradient(180deg, rgba(10,13,18,.5), rgba(10,13,18,.3));
     border-top:1px solid rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.05)}
   html[data-theme="dark"] .metric .v{text-shadow: 0 0 28px rgba(242,107,31,.35)}
 
   /* Secciones: separadas por una línea de luz en vez de cambio de fondo */
   html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
     border-top: 0 !important; border-bottom: 0 !important; position:relative}
-  html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container::before{
-    content:''; position:absolute; left:50%; top:-44px; width:min(900px, 80%); height:1px; transform:translateX(-50%);
-    background: linear-gradient(90deg, transparent, rgba(242,107,31,.45), transparent); pointer-events:none}
   html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container{position:relative}
   html[data-theme="dark"] .po-sec{background: transparent}
 
+
+  /* Separación marcada entre secciones (pedido de Carlos 21-nov-2026):
+     fondos alternados (transparente / panel elevado), una línea de luz naranja
+     a todo lo ancho en cada borde y la sección numerada en su etiqueta. */
+  html[data-theme="dark"] body{counter-reset: fxsec}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
+    counter-increment: fxsec; background: transparent !important}
+  html[data-theme="dark"] :is(.modules,.po-sec,.roi,.reports,.faq){
+    background:
+      radial-gradient(ellipse 70% 120px at 50% 0%, rgba(242,107,31,.10), transparent 100%),
+      linear-gradient(180deg, rgba(20,25,36,.62) 0%, rgba(14,18,27,.52) 100%) !important;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,.06)}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq)::before{
+    content:''; position:absolute; left:0; right:0; top:0; height:1px; z-index:1; pointer-events:none;
+    background: linear-gradient(90deg, transparent 0%, rgba(242,107,31,.15) 15%, rgba(242,107,31,.85) 50%, rgba(242,107,31,.15) 85%, transparent 100%);
+    box-shadow: 0 0 14px 1px rgba(242,107,31,.35)}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) .sec-tag::before{
+    content: counter(fxsec, decimal-leading-zero) " /"; font-family:'JetBrains Mono', monospace; font-weight:800;
+    color:#fff; opacity:.9; margin-right:2px; letter-spacing:.04em}
+  @media (min-width: 768px){
+    html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
+      padding-top: clamp(72px, 10vh, 110px); padding-bottom: clamp(72px, 10vh, 110px)}
+  }
   /* Títulos con brillo sutil */
   html[data-theme="dark"] .sec-h h2 b, html[data-theme="dark"] .cta-final h2 b{color:#fff; text-shadow: 0 0 32px rgba(255,255,255,.12)}
   html[data-theme="dark"] .sec-tag{color:var(--orange-2); border-color: rgba(242,107,31,.35); box-shadow: 0 0 20px -6px rgba(242,107,31,.45)}
@@ -1298,6 +1340,13 @@
   html[data-theme="dark"] .ct-row .col.cmp{border-left-color: rgba(242,107,31,.25); border-right-color: rgba(242,107,31,.25); background: rgba(242,107,31,.05)}
   html[data-theme="dark"] .ct-row:last-child .col.cmp{border-bottom:1px solid rgba(242,107,31,.25)}
   html[data-theme="dark"] .roi-calc input[type=range]::-webkit-slider-runnable-track{background: rgba(255,255,255,.08)}
+
+  /* Red de partículas en toda la página (fx-net.js, canvas fijo detrás del contenido):
+     los fondos de franjas quedan translúcidos para que se vea en todas las secciones. */
+  html[data-theme="dark"] .cta-final{background:
+      radial-gradient(ellipse 800px 400px at 50% -10%, rgba(242,107,31,.32), transparent 60%),
+      linear-gradient(180deg, rgba(10,13,18,.45) 0%, rgba(20,24,31,.6) 100%)}
+  html[data-theme="dark"] footer{background: rgba(8,10,14,.72)}
 
   /* ═══════════════ FX · capa futurista (ver /assets/fx.js) ═══════════════ */
   .fx-orbs{position:absolute; left:0; top:0; width:100%; height:100vh; max-height:100%; display:block;
@@ -1518,12 +1567,12 @@ const html = `
       Tus presupuestos con IA — ahora 10× más rápidos
       <span class="arr">→</span>
     </div>
-    <h1>El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b> de <span class="rot" id="rot">
+    <h1 class="h1-2l"><span class="l1">El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b></span> <span class="l2">de <span class="rot" id="rot">
       <span class="on">vivienda residencial.</span>
       <span>vivienda vertical.</span>
       <span>obra horizontal.</span>
       <span>desarrollos turísticos.</span>
-    </span></h1>
+    </span></span></h1>
     <p class="hero-kicker" style="margin:0 0 14px; font-size:15px; color:var(--muted); letter-spacing:-.01em">Toda tu obra en una sola mano — la dirección de proyectos ve <b style="color:#fff">lo que pasa hoy</b> y decide <span class="serif" style="color:var(--orange)">en el momento justo</span>, no cuando ya es tarde.</p>
     <p class="lead">De la cotización al cierre de obra: presupuesto, control de costos, cubicaciones y gestión — ahora con <b style="color:#fff; font-weight:700">inteligencia artificial</b> que te ayuda a presupuestar, detectar desviaciones y redactar informes en minutos.</p>
     <div class="trust">
@@ -3086,6 +3135,7 @@ const _demoStyle = document.createElement('style');
 _demoStyle.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
 document.head.appendChild(_demoStyle);
 </script>
+<script src="/assets/fx-net.js" defer></script>
 <script src="/assets/fx.js" defer></script>
 </body>
 </html>
