@@ -475,7 +475,11 @@ const FILTROS = {
   // son block de pared: metían un precio de RD$ 681 que disparaba el rango a
   // "RD$ 45 – 681" y viajaba al JSON-LD como highPrice. Un block no cuesta eso,
   // y el rango absurdo le quitaba credibilidad a la página entera.
-  block:      { excluir: ['mortero', 'adoblock', 'forma irregular'] },
+  // 21-nov-2026: la búsqueda "bloque" trae también "bloqueo" (una sierra
+  // circular de RD$ 8.675, un interruptor de pie) y "block" trae "blockaid" (un
+  // sellador): el rango llegó a "RD$ 42 – 8,675". Ahora la palabra tiene que
+  // estar entera y el precio ser por unidad.
+  block:      { soloUnidad: ['UD'], test: esBlockDePared, excluir: ['mortero', 'adoblock', 'forma irregular'] },
   pintura:    { test: esGalonSuelto },
   madera:     { excluir: ['clip', 'pincel', 'formaleta', 'tornillo', 'brocha', 'sierra', 'lija', 'espátula', 'espatula', 'llana', 'regla', 'mango', 'nivel', 'flexómetro'] },
   zinc:       { excluir: ['rejilla', 'puntilla', 'desagüe', 'tornillo'] },
@@ -489,6 +493,12 @@ const FILTROS = {
   // mezclaba con los RD$ 12.800-30.600 del rollo real y arruinaba min/max,
   // el mismo tipo de bug que tuvo el block de 12" mezclado en el de 8".
   'malla-electrosoldada': { excluir: ['instalación', 'instalacion'] },
+}
+
+// "block"/"blocks"/"bloque"/"bloques" como palabra entera: deja afuera
+// "bloqueo", "blockaid" y cualquier nombre que solo contenga esas letras.
+function esBlockDePared(nombre) {
+  return /(^|[^a-záéíóúñ])(blocks?|bloques?)([^a-záéíóúñ]|$)/i.test(nombre || '')
 }
 
 function pasaFiltro(it, f) {
