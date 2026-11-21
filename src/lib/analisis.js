@@ -24,7 +24,9 @@ export const APP = 'https://app.controlobra.ai'
 // Igual que precios.js: en el build de producción quedarse sin datos rompe el
 // build (Cloudflare deja en línea el último deploy bueno) en vez de publicar
 // el sitio sin /analisis/. En local solo avisa y no genera las páginas.
-const EN_BUILD_REAL = !!(process.env.CF_PAGES || process.env.CI)
+// Las vistas previas de un PR (Cloudflare, rama distinta de main) solo avisan:
+// mientras la app no publique el archivo, el PR se puede revisar igual.
+const EN_BUILD_REAL = !!(process.env.CI || (process.env.CF_PAGES && (process.env.CF_PAGES_BRANCH || 'main') === 'main'))
 function sinDatos(motivo) {
   console.error(`\n[analisis] ✖ ${motivo}`)
   if (EN_BUILD_REAL) {
