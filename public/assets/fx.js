@@ -346,8 +346,10 @@
   if (!RM && !seen) {
     var pre = document.createElement('div');
     pre.id = 'fx-pre'; pre.setAttribute('aria-hidden', 'true');
-    pre.innerHTML = '<div class="fx-pre-in"><div class="fx-pre-word">' +
-      'MANESTRO'.split('').map(function (ch, i) { return '<span style="animation-delay:' + (i * 45) + 'ms">' + ch + '</span>'; }).join('') +
+    // Logo y wordmark tal cual los de la marca (no se estilizan).
+    pre.innerHTML = '<div class="fx-pre-in"><div class="fx-pre-brand">' +
+      '<div class="lg"><img src="/assets/logo-icon-hd.png" alt=""/></div>' +
+      '<div class="nm">MANESTRO<small>P · R · O</small></div>' +
       '</div><div class="fx-pre-row"><span class="fx-pre-n">000</span><span class="fx-pre-bar"><i></i></span><span class="fx-pre-t">ERP · IA · OBRA</span></div></div>';
     document.body.appendChild(pre);
     var n = pre.querySelector('.fx-pre-n'), i0 = performance.now(), DUR = 1050;
