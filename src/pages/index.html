@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="dark">
 <head>
 <meta charset="utf-8"/>
 <title>Manestro Pro — El ERP profesional con IA para constructoras LATAM</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="description" content="Manestro es el ERP profesional con IA para constructoras LATAM: presupuesto, control de costos, cubicaciones, compras, almacén y flujo de caja en una sola plataforma."/>
-<meta name="theme-color" content="#F26B1F"/>
+<meta name="theme-color" content="#07090D"/>
 <link rel="canonical" href="https://controlobra.ai/"/>
 <link rel="alternate" hreflang="es-do" href="https://controlobra.ai/"/>
 
@@ -1198,6 +1198,186 @@
   @media (prefers-reduced-motion: reduce){
     .wa-fab::before{ animation: none }
     .wa-fab{ transition: none }
+  }
+  /* ═══════════════ MODO OSCURO FUTURISTA (21-nov-2026) ═══════════════
+     Toda la página sobre fondo casi negro. Las secciones quedan transparentes
+     y debajo vive un fondo fijo con rejilla técnica + auroras naranjas que se
+     mueven lento. Las tarjetas son paneles translúcidos ("vidrio oscuro"). */
+  html[data-theme="dark"]{
+    --paper: rgba(22,27,36,.62); --cream: transparent; --cream-2: rgba(255,255,255,.02); --cream-3: rgba(255,255,255,.045);
+    --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.06); --line-3: rgba(255,255,255,.14);
+    --orange-soft: rgba(242,107,31,.15); --orange-deep:#FF8B4D;
+    --success-soft: rgba(31,138,91,.18); --warn-soft: rgba(197,138,26,.18);
+    --danger-soft: rgba(194,69,69,.18); --info-soft: rgba(73,112,201,.22);
+    background:#06080C;
+  }
+  html[data-theme="dark"] body{background: transparent}
+  html[data-theme="dark"] body::before{
+    content:''; position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background:
+      linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(180deg, #06080C, #0A0D13 50%, #06080C);
+    -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 40%, #000 35%, rgba(0,0,0,.35) 100%);
+            mask-image: radial-gradient(ellipse 120% 90% at 50% 40%, #000 35%, rgba(0,0,0,.35) 100%);
+  }
+  html[data-theme="dark"] body::after{
+    content:''; position:fixed; inset:-20%; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(circle at 18% 30%, rgba(242,107,31,.10), transparent 32%),
+      radial-gradient(circle at 82% 70%, rgba(242,107,31,.08), transparent 30%),
+      radial-gradient(circle at 70% 15%, rgba(73,112,201,.07), transparent 28%);
+    animation: fxAurora 38s ease-in-out infinite alternate;
+  }
+  @keyframes fxAurora{
+    0%{transform: translate3d(0,0,0) rotate(0deg)}
+    50%{transform: translate3d(4%,-3%,0) rotate(6deg)}
+    100%{transform: translate3d(-3%,4%,0) rotate(-4deg)}
+  }
+  @media (prefers-reduced-motion: reduce){ html[data-theme="dark"] body::after{animation:none} }
+
+  /* Nav: vidrio oscuro */
+  html[data-theme="dark"] .nav{background: rgba(6,8,12,.45); border-bottom-color: rgba(255,255,255,.06)}
+  html[data-theme="dark"] .nav.scrolled{background: rgba(8,10,15,.78); border-bottom-color: rgba(255,255,255,.08); box-shadow: 0 10px 30px -14px rgba(0,0,0,.6)}
+  html[data-theme="dark"] .brand .nm{color:#fff}
+  html[data-theme="dark"] .nav-links a{color:#9AA1AB}
+  html[data-theme="dark"] .nav-links a:hover{color:#fff}
+  html[data-theme="dark"] .nav .btn.ghost{color:#E8EAEE}
+  html[data-theme="dark"] .nav .btn.ghost:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.1)}
+  html[data-theme="dark"] .nav .btn.primary{
+    background: linear-gradient(135deg, #F26B1F, #FF8B4D); border-color: transparent; color:#fff;
+    box-shadow: 0 0 0 1px rgba(255,162,101,.35), 0 8px 28px -6px rgba(242,107,31,.6);
+  }
+  html[data-theme="dark"] .nav .btn.primary:hover{filter: brightness(1.08)}
+
+  /* Hero y franjas: sin el borde duro entre secciones */
+  html[data-theme="dark"] .hero{background:
+      radial-gradient(ellipse 900px 600px at 78% -10%, rgba(242,107,31,.28), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 0% 110%, rgba(58,71,90,.30), transparent 65%),
+      linear-gradient(180deg, #06080C 0%, #0D1118 70%, rgba(6,8,12,0) 100%)}
+  html[data-theme="dark"] .metrics{background:
+      radial-gradient(ellipse 700px 280px at 50% 0%, rgba(242,107,31,.16), transparent 65%),
+      linear-gradient(180deg, rgba(10,13,18,.9), rgba(10,13,18,.6));
+    border-top:1px solid rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.05)}
+  html[data-theme="dark"] .metric .v{text-shadow: 0 0 28px rgba(242,107,31,.35)}
+
+  /* Secciones: separadas por una línea de luz en vez de cambio de fondo */
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
+    border-top: 0 !important; border-bottom: 0 !important; position:relative}
+  html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container::before{
+    content:''; position:absolute; left:50%; top:-44px; width:min(900px, 80%); height:1px; transform:translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(242,107,31,.45), transparent); pointer-events:none}
+  html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container{position:relative}
+  html[data-theme="dark"] .po-sec{background: transparent}
+
+  /* Títulos con brillo sutil */
+  html[data-theme="dark"] .sec-h h2 b, html[data-theme="dark"] .cta-final h2 b{color:#fff; text-shadow: 0 0 32px rgba(255,255,255,.12)}
+  html[data-theme="dark"] .sec-tag{color:#FF9A5E; border-color: rgba(242,107,31,.35); box-shadow: 0 0 20px -6px rgba(242,107,31,.45)}
+
+  /* Tarjetas: vidrio oscuro con borde de luz */
+  html[data-theme="dark"] :is(.bento .card, .prob, .step, .day-item .card, .roi-calc, .ct-tbl, .rep-card, .po-cat-card){
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 24px 48px -28px rgba(0,0,0,.7)}
+  html[data-theme="dark"] :is(.bento .card, .rep-card, .step, .po-cat-card, .day-item .card):hover{
+    border-color: rgba(242,107,31,.45) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 0 0 1px rgba(242,107,31,.18), 0 30px 60px -26px rgba(242,107,31,.35)}
+  html[data-theme="dark"] .bento .card.acc-purp, html[data-theme="dark"] .rep-card.acc-purp{--accent-soft: rgba(122,77,191,.22)}
+  html[data-theme="dark"] .bento .card.acc-teal{--accent-soft: rgba(30,138,138,.22)}
+  html[data-theme="dark"] .bento .card .ic{background: var(--accent-soft, var(--orange-soft)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08)}
+
+  /* Arreglos puntuales de contraste */
+  html[data-theme="dark"] .roi{background: radial-gradient(ellipse 900px 500px at 15% 60%, rgba(242,107,31,.07), transparent 60%) !important}
+  html[data-theme="dark"] .rep-card .tag{filter: brightness(1.7) saturate(1.2)}
+  html[data-theme="dark"] .ba-before h4{color:#E8EAEE !important}
+  html[data-theme="dark"] .ba-before{background: rgba(255,255,255,.03)}
+  html[data-theme="dark"] .po-cat-card .cn{color:#E8EAEE}
+  html[data-theme="dark"] .po-cat-card .ci{background: rgba(242,107,31,.12) !important; box-shadow: inset 0 0 0 1px rgba(242,107,31,.22)}
+  html[data-theme="dark"] .po-cat-card .ci svg{stroke:#FF9A5E}
+  html[data-theme="dark"] .day-item .time{color:#E8EAEE; background:#10141B; border-color: rgba(242,107,31,.35); box-shadow: 0 0 18px -4px rgba(242,107,31,.4)}
+  html[data-theme="dark"] .ct-row.head .col.cmp{background: rgba(242,107,31,.16); color:#FF9A5E}
+  html[data-theme="dark"] .ct-row .col.cmp{border-left-color: rgba(242,107,31,.25); border-right-color: rgba(242,107,31,.25); background: rgba(242,107,31,.05)}
+  html[data-theme="dark"] .ct-row:last-child .col.cmp{border-bottom:1px solid rgba(242,107,31,.25)}
+  html[data-theme="dark"] .roi-calc input[type=range]::-webkit-slider-runnable-track{background: rgba(255,255,255,.08)}
+
+  /* ═══════════════ FX · capa futurista (ver /assets/fx.js) ═══════════════ */
+  .fx-orbs{position:absolute; left:0; top:0; width:100%; height:100vh; max-height:100%; display:block;
+    -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent); mask-image: linear-gradient(180deg, #000 72%, transparent)}
+  .fx-net{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none}
+  .fx-net-sec{z-index:0; opacity:.8}
+  .hero.fx-on .blob{display:none}
+  @media (max-width: 767px){ .fx-orbs{opacity:.7} }
+  #fx-progress{position:fixed; left:0; top:0; height:2px; width:100%; z-index:300; pointer-events:none;
+    transform-origin:0 50%; transform:scaleX(0);
+    background: linear-gradient(90deg, var(--orange-deep), var(--orange), var(--orange-2));
+    box-shadow: 0 0 12px rgba(242,107,31,.7)}
+  /* dashboard que se "asienta" en 3D al bajar */
+  .preview-wrap.fx-3d{perspective: 1800px}
+  .preview-wrap.fx-3d .preview-frame,
+  .preview-wrap.fx-3d .preview-frame:hover{
+    transform: translateY(var(--fx-ty,0)) rotateX(var(--fx-rx,0deg)) scale(var(--fx-sc,1));
+    transform-origin: 50% 0; transition: transform .12s linear}
+  /* títulos palabra por palabra */
+  .fx-words .fx-w{display:inline-block; opacity:0; transform: translateY(.45em); filter: blur(8px);
+    transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1), filter .7s ease}
+  .fx-words.fx-in .fx-w{opacity:1; transform:none; filter:none}
+  /* brillo que sigue al mouse en tarjetas */
+  .fx-spot{position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:0; opacity:0; transition: opacity .35s;
+    background: radial-gradient(340px circle at var(--mx,50%) var(--my,50%), rgba(242,107,31,.16), transparent 60%); mix-blend-mode: screen}
+  *:hover > .fx-spot{opacity:1}
+  /* ── Firma: intro ── */
+  #fx-pre{position:fixed; inset:0; z-index:1000; background:#06080C; display:grid; place-items:center;
+    clip-path: inset(0 0 0 0); transition: clip-path .85s cubic-bezier(.77,0,.18,1)}
+  #fx-pre.out{clip-path: inset(0 0 100% 0)}
+  .fx-pre-in{width:min(640px, 84vw)}
+  .fx-pre-word{display:flex; justify-content:space-between; font-weight:900; letter-spacing:.02em; line-height:1;
+    font-size: clamp(44px, 10vw, 112px); color:#fff; overflow:hidden}
+  .fx-pre-word span{display:inline-block; transform: translateY(105%); animation: fxUp .7s cubic-bezier(.2,.8,.2,1) forwards}
+  .fx-pre-word span:nth-child(odd){color:transparent; -webkit-text-stroke:1.5px rgba(255,255,255,.85)}
+  @keyframes fxUp{to{transform:none}}
+  .fx-pre-row{display:flex; align-items:center; gap:16px; margin-top:22px; font-family:'JetBrains Mono',monospace; font-size:12px; color:#9AA1AB; letter-spacing:.18em}
+  .fx-pre-n{color:#F26B1F; font-weight:800; min-width:3.2ch}
+  .fx-pre-bar{flex:1; height:1px; background: rgba(255,255,255,.12); position:relative}
+  .fx-pre-bar i{position:absolute; left:0; top:-.5px; height:2px; width:100%; transform-origin:0 50%; transform: scaleX(var(--k,0));
+    background: linear-gradient(90deg, #C5501A, #F26B1F, #FFA265); box-shadow: 0 0 14px rgba(242,107,31,.8)}
+  /* ── Firma: entrada del hero ── */
+  .hero.fx-intro .hero-in > *{opacity:0; transform: translateY(36px); filter: blur(6px);
+    transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1), filter .9s ease}
+  .hero.fx-intro.fx-entered .hero-in > *{opacity:1; transform:none; filter:none}
+  .hero.fx-intro .hero-in > *:nth-child(2){transition-delay:.08s} .hero.fx-intro .hero-in > *:nth-child(3){transition-delay:.16s}
+  .hero.fx-intro .hero-in > *:nth-child(4){transition-delay:.24s} .hero.fx-intro .hero-in > *:nth-child(5){transition-delay:.32s}
+  .hero.fx-intro .hero-in > *:nth-child(6){transition-delay:.40s} .hero.fx-intro .hero-in > *:nth-child(n+7){transition-delay:.48s}
+  .hero.fx-intro .fx-orbs{opacity:0; transform: scale(1.08); transition: opacity 1.6s ease .1s, transform 2s cubic-bezier(.2,.8,.2,1)}
+  .hero.fx-intro.fx-entered .fx-orbs{opacity:1; transform:none}
+  @media (max-width: 767px){ .hero.fx-intro.fx-entered .fx-orbs{opacity:.7} }
+  /* ── Firma: cursor ── */
+  html.fx-cursor-on, html.fx-cursor-on *{cursor:none !important}
+  html.fx-cursor-on input, html.fx-cursor-on textarea, html.fx-cursor-on select{cursor:auto !important}
+  #fx-cursor{position:fixed; left:0; top:0; z-index:1001; pointer-events:none; mix-blend-mode: difference; transition: opacity .2s}
+  #fx-cursor i{position:absolute; left:0; top:0; border-radius:99px; will-change:transform}
+  #fx-cursor .d{width:6px; height:6px; margin:-3px 0 0 -3px; background:#fff}
+  #fx-cursor .r{width:36px; height:36px; margin:-18px 0 0 -18px; border:1px solid rgba(255,255,255,.7);
+    transition: width .3s cubic-bezier(.2,.8,.2,1), height .3s cubic-bezier(.2,.8,.2,1), margin .3s cubic-bezier(.2,.8,.2,1), background .3s, border-color .3s}
+  #fx-cursor.big .r{width:68px; height:68px; margin:-34px 0 0 -34px; background:#fff; border-color:transparent}
+  #fx-cursor.big .d{opacity:0}
+  #fx-cursor.down .r{width:26px; height:26px; margin:-13px 0 0 -13px}
+  #fx-cursor.txt{opacity:0 !important}
+  .btn.fx-mag, .wa-fab.fx-mag{transition: transform .35s cubic-bezier(.2,.8,.2,1), background .22s, box-shadow .22s, filter .22s}
+  /* ── Firma: marquesina cinética ── */
+  .fx-mq{position:relative; overflow:hidden; padding: clamp(30px, 6vw, 70px) 0; border-bottom:1px solid rgba(255,255,255,.05)}
+  .fx-mq-row{white-space:nowrap; line-height:1; overflow:visible}
+  .fx-mq-row + .fx-mq-row{margin-top: clamp(4px, 1vw, 14px)}
+  .fx-mq-track{display:inline-flex; align-items:center; gap: clamp(18px, 3vw, 44px); padding-right: clamp(18px, 3vw, 44px); will-change:transform}
+  .fx-mq span{font-size: clamp(48px, 9vw, 140px); font-weight:800; letter-spacing:-.035em; text-transform:uppercase}
+  .fx-mq span.f{color:#fff}
+  .fx-mq span.o{color:transparent; -webkit-text-stroke: 1.2px rgba(255,255,255,.38)}
+  .fx-mq-row.rev span.f{color:transparent; -webkit-text-stroke: 1.2px rgba(242,107,31,.75)}
+  .fx-mq-row.rev span.o{color:#F26B1F; -webkit-text-stroke:0}
+  .fx-mq em{font-style:normal; color:#F26B1F; font-size: clamp(22px, 3vw, 44px); text-shadow: 0 0 20px rgba(242,107,31,.8)}
+  .fx-mq::before, .fx-mq::after{content:''; position:absolute; top:0; bottom:0; width:14%; z-index:1; pointer-events:none}
+  .fx-mq::before{left:0; background: linear-gradient(90deg, #06080C, transparent)}
+  .fx-mq::after{right:0; background: linear-gradient(-90deg, #06080C, transparent)}
+  @media (prefers-reduced-motion: reduce){
+    .fx-words .fx-w{opacity:1; transform:none; filter:none; transition:none}
+    .reveal, .reveal-stagger > *{opacity:1 !important; transform:none !important; transition:none !important}
   }
 </style>
 <script>
@@ -2452,7 +2632,7 @@ const html = `
             <p>¿Qué obras necesitan mi atención esta semana?</p>
           </div>
           <div class="ai-msg">
-            <div class="who"><div class="av">Manestro</div>Asistente · Manestro</div>
+            <div class="who"><div class="av">M</div>Asistente · Manestro</div>
             <p>Tres obras tienen alertas activas:</p>
             <p style="margin-top:8px">→ <span class="pill">MG73</span> Estructura supera proyectado en <span class="pill">+$255 K</span>. Causa: alza de acero 4.6%.</p>
             <p style="margin-top:6px">→ <span class="pill">TR45</span> 18 órdenes de compra acumuladas en aprobación.</p>
@@ -2903,5 +3083,6 @@ const _demoStyle = document.createElement('style');
 _demoStyle.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
 document.head.appendChild(_demoStyle);
 </script>
+<script src="/assets/fx.js" defer></script>
 </body>
 </html>
