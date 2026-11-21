@@ -131,9 +131,11 @@ const url = enApp(p)
   /* PC: dibujo a la izquierda y «Qué lleva» + botón a la derecha, para que todo
      entre en una pantalla. Celular: uno debajo del otro. */
   .cuerpo { margin-top: 12px; display: grid; gap: 14px; }
-  @media (min-width: 860px) { .cuerpo.con-dibujo { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; } }
+  @media (min-width: 860px) { .cuerpo.con-dibujo { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: stretch; } }
   /* El dibujo usa los colores fijos de la app: va siempre sobre blanco. */
-  .dibujo { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 6px 8px 2px; }
+  .dibujo { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 6px 8px 2px; display: flex; flex-direction: column; }
+  /* Si «Qué lleva» es más alto, el dibujo se centra dentro de su tarjeta: no queda hueco debajo. */
+  .lienzo { flex: 1; display: flex; align-items: center; }
   .lienzo :global(svg) { display: block; width: 100%; height: auto; max-height: 380px; margin: 0 auto; }
   .leyenda { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; line-height: 1.4; color: #5A5045; padding: 6px 6px 6px; border-top: 1px solid #F2EDE4; }
   .leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
@@ -146,7 +148,10 @@ const url = enApp(p)
   .grupo h3 small { font: 500 11px 'DM Mono', monospace; color: var(--muted); }
   .punto { width: 9px; height: 9px; border-radius: 3px; background: var(--gc); display: inline-block; }
   .grupo p { margin: 0 !important; font-size: 13.5px; line-height: 1.45; color: var(--ink); text-align: left !important; }
-  .bloque-app { background: var(--brand-wash); border: 1px dashed var(--brand); border-radius: 12px; padding: 10px 12px; }
+  /* Las dos columnas terminan a la misma altura: el recuadro de la app baja al
+     fondo de la columna y el dibujo se centra en su tarjeta. Sin huecos. */
+  .lado { display: flex; flex-direction: column; }
+  .bloque-app { margin-top: auto; background: var(--brand-wash); border: 1px dashed var(--brand); border-radius: 12px; padding: 10px 12px; }
   .bloque-app p { margin: 0 0 8px !important; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); text-align: left !important; }
 
   ul.enlaces { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
