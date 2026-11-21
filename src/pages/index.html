@@ -1199,6 +1199,37 @@
     .wa-fab::before{ animation: none }
     .wa-fab{ transition: none }
   }
+
+  /* ═══════════════ VIDEO REAL DEL PRODUCTO (21-nov-2026) ═══════════════
+     Grabación de la app de verdad (modo oscuro, obra de ejemplo). Liviano:
+     preload="none", 854 px en móvil (~0.5 MB) y 1280 px en escritorio
+     (~1 MB); solo se reproduce mientras está en pantalla. */
+  .demo-video .sec-h{text-align:center}
+  .demo-video .sec-h .sec-tag, .demo-video .sec-h h2, .demo-video .sec-h p{margin-left:auto; margin-right:auto}
+  .dv-frame{position:relative; max-width:1080px; margin:34px auto 0; border-radius:18px; overflow:hidden;
+    background:#0B0E14; border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 40px 120px -30px rgba(242,107,31,.35), 0 30px 80px -20px rgba(0,0,0,.7)}
+  .dv-bar{display:flex; align-items:center; gap:7px; height:34px; padding:0 14px; background:rgba(255,255,255,.035); border-bottom:1px solid rgba(255,255,255,.07)}
+  .dv-bar i{width:10px; height:10px; border-radius:99px; background:rgba(255,255,255,.14)}
+  .dv-bar span{margin-left:10px; font-size:12px; color:#8B93A1; letter-spacing:.02em}
+  .dv-frame video{display:block; width:100%; height:auto; aspect-ratio:16/10; background:#0B0E14}
+  .dv-play{position:absolute; left:50%; top:calc(50% + 17px); transform:translate(-50%,-50%); width:76px; height:76px; border-radius:99px; border:0; cursor:pointer;
+    background:var(--orange); color:#fff; display:none; place-items:center; box-shadow:0 12px 40px rgba(242,107,31,.5)}
+  .dv-play svg{width:28px; height:28px; margin-left:4px}
+  .dv-frame.paused .dv-play{display:grid}
+  .dv-chaps{display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:22px auto 0; max-width:1080px}
+  .dv-chap{display:flex; align-items:center; gap:9px; padding:9px 14px 9px 9px; border-radius:12px; cursor:pointer; font:inherit; font-size:14px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); color:#C7CCD4; transition:border-color .2s, background .2s, color .2s}
+  .dv-chap b{width:24px; height:24px; border-radius:7px; display:grid; place-items:center; font-size:12.5px; background:rgba(255,255,255,.08); color:#fff}
+  .dv-chap.on{border-color:rgba(242,107,31,.55); background:rgba(242,107,31,.10); color:#fff}
+  .dv-chap.on b{background:var(--orange)}
+  .dv-note{text-align:center; margin-top:14px; font-size:13px; color:#8B93A1}
+  @media (max-width: 720px){
+    .dv-frame{margin-top:24px; border-radius:12px}
+    .dv-bar{height:26px} .dv-bar span{font-size:11px}
+    .dv-chap{font-size:13px; padding:7px 11px 7px 7px}
+  }
+
   /* ═══════════════ MODO OSCURO FUTURISTA (21-nov-2026) ═══════════════
      Toda la página sobre fondo casi negro. Las secciones quedan transparentes
      y debajo vive un fondo fijo con rejilla técnica + auroras naranjas que se
@@ -1649,6 +1680,30 @@ const html = `
       <div class="v"><span class="count" data-to="100">0</span>%</div>
       <div class="l">trazabilidad entre presupuesto, obra y cobro</div>
     </div>
+  </div>
+</section>
+
+<!-- ─── VIDEO REAL DEL PRODUCTO ─── -->
+<section class="demo-video" id="video">
+  <div class="container">
+    <div class="sec-h center reveal">
+      <div class="sec-tag"><span class="d"></span>Míralo funcionando</div>
+      <h2 class="modules-headline">La app real, <span class="serif">sin maquetas:</span> <b>del plano al control de obra.</b></h2>
+      <p>Grabado en Manestro Pro con una obra de ejemplo. Así se ve un presupuesto partida por partida, Kubicar midiendo un plano solo y el control de obra corte a corte.</p>
+    </div>
+    <div class="dv-frame reveal" id="dvFrame">
+      <div class="dv-bar" aria-hidden="true"><i></i><i></i><i></i><span>app.controlobra.ai</span></div>
+      <video id="dvVideo" muted loop playsinline preload="none" poster="/assets/video/manestro-demo-poster.webp"
+             aria-label="Recorrido por Manestro Pro: inicio, presupuesto, Kubicar y control de obra" width="1280" height="800"></video>
+      <button class="dv-play" id="dvPlay" aria-label="Reproducir video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+    </div>
+    <div class="dv-chaps" id="dvChaps">
+      <button class="dv-chap on" data-t="0"><b>1</b>Toda la obra en un lugar</button>
+      <button class="dv-chap" data-t="7.05"><b>2</b>Presupuesto</button>
+      <button class="dv-chap" data-t="18.45"><b>3</b>Kubicar mide el plano</button>
+      <button class="dv-chap" data-t="38.45"><b>4</b>Control de obra</button>
+    </div>
+    <div class="dv-note">Video sin sonido · 46 segundos</div>
   </div>
 </section>
 
@@ -2883,6 +2938,33 @@ const io = new IntersectionObserver(entries=>{
   });
 }, {threshold: 0.12, rootMargin: '0px 0px -50px 0px'});
 document.querySelectorAll('.reveal, .reveal-stagger').forEach(el=>io.observe(el));
+
+/* ───── 3b. VIDEO REAL DEL PRODUCTO ─────
+   preload="none": no baja nada hasta que la sección está cerca. En móvil usa
+   la versión de 854 px. Con "reducir movimiento" no arranca solo. */
+(function(){
+  const v = document.getElementById('dvVideo'); if(!v) return;
+  const frame = document.getElementById('dvFrame'), play = document.getElementById('dvPlay');
+  const chaps = [...document.querySelectorAll('#dvChaps .dv-chap')];
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cargado = false, usuarioPauso = false;
+  function cargar(){ if(cargado) return; cargado = true;
+    v.src = '/assets/video/manestro-demo-' + (Math.min(window.innerWidth, screen.width || 9999) < 760 ? '854' : '1280') + '.mp4'; }
+  function intentar(){ cargar(); const p = v.play(); if(p && p.catch) p.catch(()=>frame.classList.add('paused')); }
+  v.addEventListener('play', ()=>frame.classList.remove('paused'));
+  v.addEventListener('pause', ()=>frame.classList.add('paused'));
+  play.addEventListener('click', ()=>{ usuarioPauso = false; intentar(); });
+  v.addEventListener('click', ()=>{ if(v.paused){ usuarioPauso = false; intentar(); } else { usuarioPauso = true; v.pause(); } });
+  chaps.forEach(c=>c.addEventListener('click', ()=>{ cargar(); const t = +c.dataset.t;
+    const ir = ()=>{ v.currentTime = t; usuarioPauso = false; intentar(); };
+    if(v.readyState >= 1) ir(); else v.addEventListener('loadedmetadata', ir, {once:true}); }));
+  v.addEventListener('timeupdate', ()=>{ let k = 0; chaps.forEach((c,i)=>{ if(v.currentTime >= +c.dataset.t - .05) k = i; });
+    chaps.forEach((c,i)=>c.classList.toggle('on', i===k)); });
+  if(quieto){ frame.classList.add('paused'); return; }
+  new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ if(!usuarioPauso) intentar(); } else if(!v.paused){ v.pause(); }
+  }), {rootMargin:'200px 0px', threshold:.35}).observe(frame);
+})();
 
 /* ───── 4. COUNTERS ───── */
 const counterIO = new IntersectionObserver(entries=>{
