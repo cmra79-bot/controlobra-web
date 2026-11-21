@@ -1,6 +1,8 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
+import { analisisQueDicen } from '../../lib/analisis.js'
 import { getCostoConstruccion, MATERIALES } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
@@ -36,6 +38,8 @@ const jsonld = {
 
 const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintura']
   .map((s) => MATERIALES.find((m) => m.slug === s)).filter(Boolean)
+// Plan Google, Fase 3: la guía enlaza a los análisis de su tema.
+const relacionados = await analisisQueDicen(/^(zapata|columna|viga|losa (maciza|aligerada))/i)
 ---
 <PrecioLayout title={title} description={description} canonicalPath="/guias/cuanto-cuesta-construir-casa-republica-dominicana/" jsonld={jsonld} breadcrumbs={[
   { nombre: 'Inicio', path: '/' },
@@ -115,6 +119,8 @@ const materialesClave = ['cemento', 'varilla', 'block', 'arena', 'piso', 'pintur
   </section>
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo="Análisis de las partidas de una casa" sub="Qué lleva cada partida, cómo se mide y su dibujo." lista={relacionados.lista} total={relacionados.total} />
 
   <section>
     <h2>Precios de los materiales clave</h2>

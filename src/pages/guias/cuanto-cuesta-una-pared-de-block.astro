@@ -10,6 +10,8 @@
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
+import { analisisQueDicen } from '../../lib/analisis.js'
 import { getParedBlock, isoHoy, mesAno } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
@@ -60,6 +62,8 @@ const jsonld = [
     inLanguage: 'es-DO',
   },
 ]
+// Plan Google, Fase 3: la guía enlaza a los análisis de su tema.
+const relacionados = await analisisQueDicen({ capitulo: 'mamposteria' })
 ---
 <PrecioLayout
   title={title}
@@ -155,6 +159,8 @@ const jsonld = [
   </section>
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo="Análisis de muros de bloques" sub="Qué lleva cada partida, cómo se mide y su dibujo." lista={relacionados.lista} total={relacionados.total} />
 
   <section>
     <h2>Preguntas frecuentes</h2>

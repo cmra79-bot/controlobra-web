@@ -3,6 +3,8 @@ import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
+import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
+import { analisisQueUsan } from '../../lib/analisis.js'
 import { MATERIALES, getMaterial, isoHoy, categoriaDeMaterial, TIPO_RESUMEN } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
@@ -13,6 +15,7 @@ export async function getStaticPaths() {
 
 const { material } = Astro.params
 const data = await getMaterial(material)
+const usan = data ? await analisisQueUsan(data.itemIds) : { lista: [], total: 0 }
 if (!data) return Astro.redirect('/precios/')
 
 const fmt = (v) =>
@@ -250,6 +253,8 @@ const CATALOGO = [
   )}
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo={`Partidas que llevan ${data.nombre.toLowerCase()}`} sub="Análisis de precio unitario con su dibujo y lo que incluye." lista={usan.lista} total={usan.total} />
 
   {GUIAS_DEL_MATERIAL.length > 0 && (
     <section>

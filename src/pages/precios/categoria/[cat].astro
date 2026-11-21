@@ -3,6 +3,8 @@ import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
 import { getCategorias, getCategoria, TIPOS } from '../../../lib/precios.js'
+import { analisisQueUsan } from '../../../lib/analisis.js'
+import AnalisisRelacionados from '../../../components/AnalisisRelacionados.astro'
 import NotaMoneda from '../../../components/NotaMoneda.astro'
 
 export async function getStaticPaths() {
@@ -13,6 +15,7 @@ export async function getStaticPaths() {
 const { cat } = Astro.params
 const data = await getCategoria(cat)
 if (!data) return Astro.redirect('/precios/')
+const usan = await analisisQueUsan(data.itemIds)
 
 const tipo = TIPOS[data.tipo] || TIPOS.MATERIAL
 const title = `Precios de ${data.nombre.toLowerCase()} en República Dominicana 2026`
@@ -54,6 +57,8 @@ const APP = 'https://app.controlobra.ai/precios-obra'
   </section>
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo={`Partidas que llevan ${data.nombre.toLowerCase()}`} lista={usan.lista} total={usan.total} />
 
   {relacionadas.length > 0 && (
     <section>

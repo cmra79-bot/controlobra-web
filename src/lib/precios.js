@@ -686,7 +686,12 @@ const interpolarEspesor = (tpl, porEspesor) => {
 }
 
 // Devuelve todos los datos agregados de un material por su slug.
-export async function getMaterial(slug) {
+const _matMemo = new Map()
+export function getMaterial(slug) {
+  if (!_matMemo.has(slug)) _matMemo.set(slug, _getMaterial(slug))
+  return _matMemo.get(slug)
+}
+async function _getMaterial(slug) {
   const def = MATERIALES.find((m) => m.slug === slug)
   if (!def) return null
 
@@ -740,6 +745,9 @@ export async function getMaterial(slug) {
   return {
     ...def,
     productos,
+    // Ids de las filas (producto × zona): enlazan el material con los análisis
+    // que lo usan (plan Google, Fase 3).
+    itemIds: [...byId.keys()],
     zonaStats: statsPorZona(productos),
     ...base,
     nProductos: productos.length,
@@ -1115,6 +1123,7 @@ export async function getCategoria(slug) {
   const ordenados = [...todos].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
   return {
     ...def,
+    itemIds: filas.map((it) => it.id),
     productos: ordenados.slice(0, MAX),
     total: todos.length,
     truncado: todos.length > MAX,
@@ -1610,4 +1619,30 @@ export async function getCostoConstruccion() {
     tamanos,
     actualizado: fmtHoy(),
   }
+}
+
+// ---------------------------------------------------------------------------
+// Enlaces insumo → página de precio (plan Google, Fase 3)
+//
+// Cada fila del catálogo (id) → la página de este sitio donde está su precio:
+// la del material si la tiene (cemento, block…), si no la de su categoría. Lo
+// usan los análisis para enlazar sus insumos.
+// ---------------------------------------------------------------------------
+let _mapaItems = null
+export function paginaDeItems() {
+  _mapaItems ??= (async () => {
+    const mapa = new Map()
+    const [items, cats] = await Promise.all([fetchAll(), getCategorias()])
+    const catPorFam = new Map(cats.map((c) => [c.famId, c]))
+    for (const it of items) {
+      const c = catPorFam.get(it.familia_id)
+      if (c) mapa.set(it.id, { url: `/precios/categoria/${c.slug}/`, nombre: c.nombre })
+    }
+    for (const def of MATERIALES) {
+      const d = await getMaterial(def.slug)
+      for (const id of d?.itemIds || []) mapa.set(id, { url: `/precios/${def.slug}/`, nombre: def.nombre })
+    }
+    return mapa
+  })()
+  return _mapaItems
 }

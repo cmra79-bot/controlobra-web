@@ -101,7 +101,7 @@ export function gruposDe(partida) {
       const k = n.toLowerCase()
       if (!n || vistos.has(k)) continue
       vistos.add(k)
-      nombres.push(n)
+      nombres.push({ nombre: n, item_id: x.item_id ?? null })
     }
     return { ...g, nombres }
   }).filter((g) => g.nombres.length)
@@ -115,3 +115,28 @@ export function listaY(xs) {
 
 /** Enlace a la ficha completa en la app (precio y desglose, con cuenta). */
 export const enApp = (p) => `${APP}/precios-obra/analisis/${encodeURIComponent(p.codigo)}`
+
+/**
+ * Los análisis que usan alguno de estos precios (ids de fila del catálogo),
+ * para enlazar material ↔ análisis (plan Google, Fase 3).
+ */
+export async function analisisQueUsan(itemIds, max = 12) {
+  const ids = new Set(itemIds || [])
+  if (!ids.size) return { lista: [], total: 0 }
+  const { partidas } = await getAnalisis()
+  const todas = partidas.filter((p) => (p.insumos || []).some((x) => x.item_id != null && ids.has(x.item_id)))
+  return { lista: todas.slice(0, max), total: todas.length }
+}
+
+/**
+ * Los análisis de un tema (para las guías): `filtro` es una expresión sobre la
+ * descripción o `{ capitulo: 'mamposteria' }`.
+ */
+export async function analisisQueDicen(filtro, max = 12) {
+  const { partidas } = await getAnalisis()
+  const cumple = filtro instanceof RegExp
+    ? (p) => filtro.test(p.descripcion || '')
+    : (p) => p.capitulo === filtro.capitulo
+  const todas = partidas.filter(cumple)
+  return { lista: todas.slice(0, max), total: todas.length }
+}

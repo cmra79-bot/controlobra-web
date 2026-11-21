@@ -1,6 +1,7 @@
 ---
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import { getAnalisis, gruposDe, listaY, enApp } from '../../lib/analisis.js'
+import { paginaDeItems } from '../../lib/precios.js'
 
 // Una página por análisis de precio unitario (plan Google, Fase 2). Vienen de
 // app.controlobra.ai/precios-obra/partidas/<slug>.html, que redirige acá (301)
@@ -16,6 +17,8 @@ const cap = datos.capitulos.find((c) => c.slug === p.capitulo)
 const capNombre = cap?.nombre || 'Otras partidas'
 const svg = p.dibujo ? datos.dibujos[p.dibujo] : null
 const grupos = gruposDe(p)
+// Cada insumo enlaza a la página de su precio, si este sitio la tiene (Fase 3).
+const paginas = await paginaDeItems()
 const und = p.und || 'unidad'
 
 // Vecinas del mismo capítulo, alrededor de esta (enlaces internos).
@@ -70,7 +73,10 @@ const url = enApp(p)
           {grupos.map((g) => (
             <div class="grupo" style={`--gc:${g.color}`}>
               <h3><span class="punto"></span>{g.nombre} <small>{g.nombres.length}</small></h3>
-              <p>{g.nombres.join(' · ')}</p>
+              <p>{g.nombres.map((x, i) => {
+                const pg = x.item_id != null ? paginas.get(x.item_id) : null
+                return <>{i > 0 && ' · '}{pg ? <a href={pg.url} title={`Precio de ${pg.nombre.toLowerCase()} en RD`}>{x.nombre}</a> : x.nombre}</>
+              })}</p>
             </div>
           ))}
         </>
@@ -147,6 +153,8 @@ const url = enApp(p)
   .grupo h3 { font-size: 13.5px; margin: 0 0 2px; display: flex; align-items: center; gap: 7px; color: var(--gc); }
   .grupo h3 small { font: 500 11px 'DM Mono', monospace; color: var(--muted); }
   .punto { width: 9px; height: 9px; border-radius: 3px; background: var(--gc); display: inline-block; }
+  .grupo p a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 2px; }
+  .grupo p a:hover { color: var(--brand-deep); }
   .grupo p { margin: 0 !important; font-size: 13.5px; line-height: 1.45; color: var(--ink); text-align: left !important; }
   /* Las dos columnas terminan a la misma altura: el recuadro de la app baja al
      fondo de la columna y el dibujo se centra en su tarjeta. Sin huecos. */
