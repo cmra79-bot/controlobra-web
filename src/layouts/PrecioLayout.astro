@@ -125,6 +125,24 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
       } catch (e) {}
     })()
   </script>
+  <script is:inline>
+    // Cada enlace a la app dice de qué página salió (plan Google → app,
+    // nov-2026). La app guarda la llegada y el panel Actividad de Precios Obra
+    // cuenta, por página de origen, cuántos entran, se registran y vuelven.
+    (function () {
+      try {
+        var desde = location.pathname
+        document.querySelectorAll('a[href^="https://app.controlobra.ai"]').forEach(function (a) {
+          var u = new URL(a.href)
+          if (u.searchParams.has('utm_source')) return
+          u.searchParams.set('utm_source', 'controlobra')
+          u.searchParams.set('utm_medium', 'web')
+          u.searchParams.set('utm_content', desde)
+          a.href = u.toString()
+        })
+      } catch (e) {}
+    })()
+  </script>
 </body>
 </html>
 

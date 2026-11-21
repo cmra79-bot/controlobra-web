@@ -380,6 +380,10 @@ Commit `dd1586c` (26-ago-2026).
 - **Google Analytics 4:** `G-ZH0W9FS496` — `src/components/GoogleAnalytics.astro`
   (instalado 10-sep-2026).
 - **Search Console:** verificado como **propiedad de dominio**.
+- **Paso a la app (21-nov-2026):** `PrecioLayout` agrega a todo enlace hacia
+  `app.controlobra.ai` las etiquetas `utm_source=controlobra&utm_medium=web&utm_content=<ruta>`.
+  La app guarda la llegada (`po_llegada`, repo APP-CMP) y el panel Actividad de
+  Precios Obra muestra, por página de origen, cuántos entran, se registran y vuelven.
 - **WhatsApp del negocio:** `+1 809 637 6377`.
 - **Correos:** `soporte@controlobra.ai` · `admin@controlobra.ai`.
 - **GitHub:** `cmra79-bot`.
