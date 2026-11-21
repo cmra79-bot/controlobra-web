@@ -352,7 +352,9 @@ Textos ajustados y **sin espacio perdido**: que en una pantalla, en PC y en el c
 lo más posible. Reglas:
 - Márgenes cortos entre bloques (secciones a ~26 px, no 40+), títulos medianos
   (h1 24–34 px, h2 18 px), cuerpo 14.5–15 px con interlineado 1.5.
-- En PC, aprovechar el ancho (contenedor de 1000 px) y poner lado a lado lo que se lee junto
+- En PC, aprovechar el ancho (contenedor de 1160 px) y que los textos (título, entrada, párrafos)
+  usen TODO el ancho: nada de `max-width` en `ch` que deje el texto en una columna angosta.
+  Poner lado a lado lo que se lee junto
   (en `/analisis/`: dibujo a la izquierda, «Qué lleva» y el botón a la derecha).
 - Listas cortas en línea («a · b · c») antes que una fila por elemento.
 - Textos: una frase donde había dos; nada de párrafos de relleno.
