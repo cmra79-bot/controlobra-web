@@ -1026,8 +1026,11 @@ function titulizar(s) {
   return t.charAt(0).toUpperCase() + t.slice(1)
 }
 
-// Mínimo de productos para que una categoría tenga página propia.
-const MIN_CAT = 12
+// Mínimo de productos para que una categoría tenga página propia. Era 12;
+// bajó a 3 el 21-nov-2026 (plan Google, Fase 2): las categorías chicas que solo
+// tenían página en la app (excavaciones, pavimento…) se mudan acá, y las de la
+// app redirigen con 301 a estas.
+const MIN_CAT = 3
 
 // Memo del catálogo completo (una sola descarga por build).
 let _allPromise = null
@@ -1092,7 +1095,11 @@ export async function getCategorias() {
       nProductos: n,
     })
   }
-  return cats.sort((a, b) => b.nProductos - a.nProductos)
+  // Dos familias con el mismo nombre (distinto tipo) darían la misma URL: queda
+  // la de más productos, para no generar dos páginas con un mismo slug.
+  const porSlug = new Map()
+  for (const c of cats) if (!porSlug.has(c.slug) || porSlug.get(c.slug).nProductos < c.nProductos) porSlug.set(c.slug, c)
+  return [...porSlug.values()].sort((a, b) => b.nProductos - a.nProductos)
 }
 
 // Datos completos de una categoría por slug.

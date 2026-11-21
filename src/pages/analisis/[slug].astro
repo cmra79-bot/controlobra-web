@@ -46,43 +46,40 @@ const url = enApp(p)
   <div class="head">
     <div class="chips"><span class="cod">{p.codigo}</span><span class="cap">{capNombre.toUpperCase()}</span><span class="und">por {und}</span></div>
     <h1>{p.descripcion}</h1>
-    <p class="lead">
-      Análisis de precio unitario de la partida «{p.descripcion}» en República Dominicana, medida por {und}.
-      {p.como_se_mide && <> {p.como_se_mide}</>}
-    </p>
-    <a class="cta" href={url}>Ver el precio por {und} en la app →</a>
+    <p class="lead">Análisis de precio unitario en República Dominicana, por {und}.{p.como_se_mide && ' ' + p.como_se_mide}</p>
+    <a class="cta solo-movil" href={url}>Ver el precio por {und} en la app →</a>
   </div>
 
-  {svg && (
-    <figure class="dibujo">
-      <div class="lienzo" set:html={svg} />
-      {(p.incluye.length > 0 || p.aparte.length > 0) && (
-        <figcaption class="leyenda">
-          {p.incluye.length > 0 && <span><i class="in"></i><b>Incluye:</b> {listaY(p.incluye).toLowerCase()}</span>}
-          {p.aparte.length > 0 && <span><i class="ap"></i><b>Aparte:</b> {listaY(p.aparte).toLowerCase()}</span>}
-        </figcaption>
+  <div class={svg ? 'cuerpo con-dibujo' : 'cuerpo'}>
+    {svg && (
+      <figure class="dibujo">
+        <div class="lienzo" set:html={svg} />
+        {(p.incluye.length > 0 || p.aparte.length > 0) && (
+          <figcaption class="leyenda">
+            {p.incluye.length > 0 && <span><i class="in"></i><b>Incluye:</b> {listaY(p.incluye).toLowerCase()}</span>}
+            {p.aparte.length > 0 && <span><i class="ap"></i><b>Aparte:</b> {listaY(p.aparte).toLowerCase()}</span>}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
+    <aside class="lado">
+      {grupos.length > 0 && (
+        <>
+          <h2>Qué lleva</h2>
+          {grupos.map((g) => (
+            <div class="grupo" style={`--gc:${g.color}`}>
+              <h3><span class="punto"></span>{g.nombre} <small>{g.nombres.length}</small></h3>
+              <p>{g.nombres.join(' · ')}</p>
+            </div>
+          ))}
+        </>
       )}
-    </figure>
-  )}
-
-  {grupos.length > 0 && (
-    <section>
-      <h2>Qué lleva esta partida</h2>
-      <p class="sub">Los materiales, la mano de obra y los equipos del análisis. Las cantidades, los rendimientos y el precio de cada uno están en la app.</p>
-      <div class="grupos">
-        {grupos.map((g) => (
-          <div class="grupo" style={`--gc:${g.color};--gb:${g.bg}`}>
-            <h3><span class="punto"></span>{g.nombre} <small>{g.nombres.length}</small></h3>
-            <ul>{g.nombres.map((n) => <li>{n}</li>)}</ul>
-          </div>
-        ))}
+      <div class="bloque-app">
+        <p>Precio por {und}, cantidades y rendimientos por zona, gratis en Precios Obra. Ajústalo y agrégalo a tu presupuesto.</p>
+        <a class="cta" href={url}>Ver el análisis completo →</a>
       </div>
-    </section>
-  )}
-
-  <div class="bloque-app">
-    <p>El precio por {und} y el análisis completo, con cantidades, rendimientos y precios por zona, están en Precios Obra. Gratis, con tu cuenta. Puedes ajustarlo y agregarlo a tu presupuesto.</p>
-    <a class="cta" href={url}>Ver el análisis completo →</a>
+    </aside>
   </div>
 
   {cerca.length > 0 && (
@@ -119,47 +116,42 @@ const url = enApp(p)
   .crumb a { color: var(--muted); text-decoration: none; }
   .crumb a:hover { color: var(--brand-deep); text-decoration: underline; }
   .crumb span { margin: 0 4px; }
-  .head { padding: 14px 0 6px; }
+  .head { padding: 6px 0 0; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .cod { font: 500 11.5px 'DM Mono', monospace; color: var(--ink-2); background: var(--line); padding: 3px 9px; border-radius: 8px; }
-  .cap, .und { font: 500 11px 'DM Mono', monospace; letter-spacing: .1em; color: var(--muted); }
-  h1 { font-size: clamp(26px, 4.4vw, 36px); line-height: 1.12; letter-spacing: -.025em; margin: 12px 0 0; }
-  .lead { font-size: 16px; color: var(--ink-2); margin: 12px 0 18px; max-width: 66ch; }
+  .cod { font: 500 11px 'DM Mono', monospace; color: var(--ink-2); background: var(--line); padding: 2px 8px; border-radius: 7px; }
+  .cap, .und { font: 500 10.5px 'DM Mono', monospace; letter-spacing: .1em; color: var(--muted); }
   .cta {
     display: inline-block; background: var(--brand); color: #fff; text-decoration: none; font-weight: 700;
-    font-size: 15px; padding: 12px 20px; border-radius: 12px; box-shadow: 0 10px 24px -10px rgba(240,105,30,.6);
+    font-size: 14.5px; padding: 10px 16px; border-radius: 11px; box-shadow: 0 8px 20px -10px rgba(240,105,30,.6);
   }
   .cta:hover { background: var(--brand-deep); color: #fff; }
+  .solo-movil { margin-top: 10px; }
+  @media (min-width: 860px) { .solo-movil { display: none; } }
 
+  /* PC: dibujo a la izquierda y «Qué lleva» + botón a la derecha, para que todo
+     entre en una pantalla. Celular: uno debajo del otro. */
+  .cuerpo { margin-top: 12px; display: grid; gap: 14px; }
+  @media (min-width: 860px) { .cuerpo.con-dibujo { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; } }
   /* El dibujo usa los colores fijos de la app: va siempre sobre blanco. */
-  .dibujo { margin: 26px 0 0; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 12px 12px 4px; }
-  .lienzo :global(svg) { display: block; width: 100%; height: auto; max-width: 1000px; margin: 0 auto; }
-  .leyenda { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: #5A5045; padding: 10px 10px 8px; border-top: 1px solid #F2EDE4; margin-top: 6px; }
-  .leyenda i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .dibujo { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 6px 8px 2px; }
+  .lienzo :global(svg) { display: block; width: 100%; height: auto; max-height: 380px; margin: 0 auto; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; line-height: 1.4; color: #5A5045; padding: 6px 6px 6px; border-top: 1px solid #F2EDE4; }
+  .leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
   .leyenda i.in { background: #FFE6D3; border: 2px solid #F0691E; }
   .leyenda i.ap { background: #F2EDE4; border: 2px solid #8A7D6E; }
 
-  section { margin-top: 38px; }
-  h2 { font-size: 21px; letter-spacing: -.015em; margin: 0; }
-  .sub { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
-  .grupos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 16px; }
-  .grupo { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); }
-  .grupo h3 { font-size: 15px; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; color: var(--gc); }
+  .lado h2 { font-size: 16px; margin: 0 0 6px; }
+  .grupo { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; }
+  .grupo h3 { font-size: 13.5px; margin: 0 0 2px; display: flex; align-items: center; gap: 7px; color: var(--gc); }
   .grupo h3 small { font: 500 11px 'DM Mono', monospace; color: var(--muted); }
-  .punto { width: 10px; height: 10px; border-radius: 3px; background: var(--gc); display: inline-block; }
-  .grupo ul { list-style: none; padding: 0; margin: 0; }
-  .grupo li { font-size: 14px; padding: 5px 0; border-top: 1px solid var(--line); }
-  .grupo li:first-child { border-top: 0; }
+  .punto { width: 9px; height: 9px; border-radius: 3px; background: var(--gc); display: inline-block; }
+  .grupo p { margin: 0 !important; font-size: 13.5px; line-height: 1.45; color: var(--ink); text-align: left !important; }
+  .bloque-app { background: var(--brand-wash); border: 1px dashed var(--brand); border-radius: 12px; padding: 10px 12px; }
+  .bloque-app p { margin: 0 0 8px !important; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); text-align: left !important; }
 
-  .bloque-app {
-    margin-top: 30px; background: var(--brand-wash); border: 1px dashed var(--brand); border-radius: 16px;
-    padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
-  }
-  .bloque-app p { margin: 0; font-size: 14.5px; color: var(--ink-2); max-width: 58ch; }
-
-  ul.enlaces { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
-  ul.enlaces a { display: inline-block; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 6px 12px; font-size: 13.5px; text-decoration: none; color: var(--ink-2); }
+  ul.enlaces { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  ul.enlaces a { display: inline-block; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 4px 10px; font-size: 13px; text-decoration: none; color: var(--ink-2); }
   ul.enlaces a:hover { border-color: var(--brand); color: var(--brand-deep); }
-  .todas { margin: 14px 0 0; font-size: 14px; }
+  .todas { margin: 8px 0 0; font-size: 14px; }
   .todas a { color: var(--brand-deep); font-weight: 600; text-decoration: none; }
 </style>

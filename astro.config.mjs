@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 import { writeFile } from 'node:fs/promises'
-import { provinciasIndexables } from './src/lib/precios.js'
+import { provinciasIndexables, getCategorias } from './src/lib/precios.js'
 import { getAnalisis } from './src/lib/analisis.js'
 
 // Fecha del build. El sitio se reconstruye a diario (.github/workflows/rebuild-diario.yml)
@@ -27,13 +27,16 @@ const ES_PROVINCIA = /^\/precios\/provincia\/([^/]+)\/$/
 // app.controlobra.ai/precios-obra/partidas/<slug>.html, llegan acá por una
 // regla 301 de DigitalOcean que conserva la ruta. Este `_redirects` de
 // Cloudflare Pages las lleva con otra 301 a /analisis/<slug>/ (mismo slug).
-// Límite de Cloudflare: 2.000 reglas fijas + 100 dinámicas; son ~1.191.
+// Límite de Cloudflare: 2.000 reglas fijas + 100 dinámicas; son ~1.191 fijas y
+// una dinámica por categoría (~30).
 function redireccionesAnalisis() {
   return {
     name: 'redirecciones-analisis',
     hooks: {
       'astro:build:done': async ({ dir }) => {
         const { partidas } = await getAnalisis()
+        // Una entrada por slug (dos familias con el mismo nombre son una página).
+        const cats = [...new Map((await getCategorias()).map((c) => [c.slug, c])).values()]
         const lineas = [
           '# Generado por astro.config.mjs en cada build. No editar a mano.',
           '/precios-obra/partidas.html /analisis/ 301',
@@ -41,6 +44,14 @@ function redireccionesAnalisis() {
           ...partidas.map((p) => `/precios-obra/partidas/${p.slug}.html /analisis/${p.slug}/ 301`),
           // Una partida que ya no está en el catálogo: al índice, no a un 404.
           '/precios-obra/partidas/* /analisis/ 301',
+          // Las páginas de precios que armaba la app (retiradas el 21-nov-2026):
+          // cada categoría, y sus páginas por zona, a la categoría de acá.
+          '/precios-obra/precios.html /precios/ 301',
+          ...cats.flatMap((c) => [
+            `/precios-obra/precios/${c.slug}.html /precios/categoria/${c.slug}/ 301`,
+            `/precios-obra/precios/${c.slug}/* /precios/categoria/${c.slug}/ 301`,
+          ]),
+          '/precios-obra/precios/* /precios/ 301',
           // Cualquier otra ruta de la app que llegue acá por error vuelve a la app.
           '/precios-obra/* https://app.controlobra.ai/precios-obra/:splat 302',
         ]
