@@ -1286,12 +1286,32 @@
   /* Secciones: separadas por una línea de luz en vez de cambio de fondo */
   html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
     border-top: 0 !important; border-bottom: 0 !important; position:relative}
-  html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container::before{
-    content:''; position:absolute; left:50%; top:-44px; width:min(900px, 80%); height:1px; transform:translateX(-50%);
-    background: linear-gradient(90deg, transparent, rgba(242,107,31,.45), transparent); pointer-events:none}
   html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container{position:relative}
   html[data-theme="dark"] .po-sec{background: transparent}
 
+
+  /* Separación marcada entre secciones (pedido de Carlos 21-nov-2026):
+     fondos alternados (transparente / panel elevado), una línea de luz naranja
+     a todo lo ancho en cada borde y la sección numerada en su etiqueta. */
+  html[data-theme="dark"] body{counter-reset: fxsec}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
+    counter-increment: fxsec; background: transparent !important}
+  html[data-theme="dark"] :is(.modules,.po-sec,.roi,.reports,.faq){
+    background:
+      radial-gradient(ellipse 70% 120px at 50% 0%, rgba(242,107,31,.10), transparent 100%),
+      linear-gradient(180deg, #0E121A 0%, #0B0E15 100%) !important;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,.06)}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq)::before{
+    content:''; position:absolute; left:0; right:0; top:0; height:1px; z-index:1; pointer-events:none;
+    background: linear-gradient(90deg, transparent 0%, rgba(242,107,31,.15) 15%, rgba(242,107,31,.85) 50%, rgba(242,107,31,.15) 85%, transparent 100%);
+    box-shadow: 0 0 14px 1px rgba(242,107,31,.35)}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) .sec-tag::before{
+    content: counter(fxsec, decimal-leading-zero) " /"; font-family:'JetBrains Mono', monospace; font-weight:800;
+    color:#fff; opacity:.9; margin-right:2px; letter-spacing:.04em}
+  @media (min-width: 768px){
+    html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
+      padding-top: clamp(72px, 10vh, 110px); padding-bottom: clamp(72px, 10vh, 110px)}
+  }
   /* Títulos con brillo sutil */
   html[data-theme="dark"] .sec-h h2 b, html[data-theme="dark"] .cta-final h2 b{color:#fff; text-shadow: 0 0 32px rgba(255,255,255,.12)}
   html[data-theme="dark"] .sec-tag{color:var(--orange-2); border-color: rgba(242,107,31,.35); box-shadow: 0 0 20px -6px rgba(242,107,31,.45)}
