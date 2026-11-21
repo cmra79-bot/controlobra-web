@@ -347,6 +347,13 @@ porque `Product`/`Offer` **bajó el CTR** en ago-2026 y se retiró del resto
 
 ## 8. Diseño y marca
 
+> **21-nov-2026 — precios, análisis y guías en modo oscuro.** Las páginas de
+> `PrecioLayout.astro` usan el mismo modo oscuro futurista de la portada
+> (fondo negro con rejilla y auroras, Manrope/JetBrains Mono, vidrio oscuro),
+> siempre en oscuro. Textos y precios sin cambios. Imágenes al compartir:
+> `public/assets/og-image.png` (portada, Manestro Pro) y `og-precios.png`
+> (precios/guías), 1200×630.
+
 ### Densidad: compacto (pedido de Carlos, 21-nov-2026)
 Textos ajustados y **sin espacio perdido**: que en una pantalla, en PC y en el celular, se vea
 lo más posible. Reglas:

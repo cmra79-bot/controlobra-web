@@ -1,8 +1,9 @@
 ---
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 
-// Layout de las páginas de precios (SEO), con el look de la app pública de
-// Precios Obra: fondo de cuadrícula, tipografía Archivo/Hanken/DM Mono, header
+// Layout de las páginas de precios, análisis y guías (SEO). Desde el
+// 21-nov-2026 usa el mismo modo oscuro futurista de la portada: fondo negro con
+// rejilla y auroras, tipografía Manrope/JetBrains Mono, header de vidrio oscuro
 // con el logo esfera. Renderiza el <head> completo con SEO + JSON-LD opcional.
 const {
   title,
@@ -42,14 +43,15 @@ const bloques = [
   ...(migasLd ? [migasLd] : []),
 ]
 const jsonldFinal = bloques.length ? (bloques.length === 1 ? bloques[0] : bloques) : null
-const ogImage = `${site}/assets/og-image.png`
+// Imagen al compartir (WhatsApp, Facebook…): la de PreciosObra, 1200×630.
+const ogImage = `${site}/assets/og-precios.png`
 const APP = 'https://app.controlobra.ai'
 // Botón "compartir por WhatsApp": abre WhatsApp con el mensaje + link ya listos.
 const shareText = `${title}\n👉 ${canonical}\n\nPrecios reales de construcción en RD, gratis. Compartilo con quien esté construyendo 👷`
 const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 ---
 <!doctype html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -58,7 +60,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <link rel="canonical" href={canonical} />
   <link rel="alternate" hreflang="es-do" href={canonical} />
   <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
-  <meta name="theme-color" content="#F0691E" />
+  <meta name="theme-color" content="#06080C" />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="es_DO" />
@@ -67,6 +69,9 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content={ogImage} />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
@@ -77,7 +82,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   {jsonldFinal && <script type="application/ld+json" set:html={JSON.stringify(jsonldFinal)} />}
 
@@ -118,15 +123,6 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   </footer>
 
   <script is:inline>
-    (function () {
-      try {
-        var t = localStorage.getItem('theme')
-        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-        document.documentElement.setAttribute('data-theme', t)
-      } catch (e) {}
-    })()
-  </script>
-  <script is:inline>
     // Cada enlace a la app dice de qué página salió (plan Google → app,
     // nov-2026). La app guarda la llegada y el panel Actividad de Precios Obra
     // cuenta, por página de origen, cuántos entran, se registran y vuelven.
@@ -148,60 +144,41 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 </html>
 
 <style is:global>
+  /* ═══ MODO OSCURO FUTURISTA (21-nov-2026) ═══════════════════════════════
+     Mismo lenguaje que la portada (src/pages/index.html): fondo casi negro,
+     rejilla técnica, auroras naranjas y paneles de "vidrio oscuro". Estas
+     páginas van SIEMPRE en oscuro (antes seguían el tema del sistema).
+     Naranja de marca #F26B1F intacto; para texto naranja sobre negro se usa
+     #FFA265 (--orange-2 de la portada). */
   :root {
-    --bg: #FFFFFF;
-    --paper: #FFFFFF;
-    --paper-2: #FDFCFA;
-    --ink: #1F1913;
-    --ink-2: #5A5045;
-    --muted: #8A8175;
-    --line: #ECE7DF;
-    --line-2: #E0D9CE;
-    --brand: #F0691E;
-    --brand-deep: #C5501A;
-    --brand-soft: #FDE4D3;
-    --brand-wash: #FEF3EA;
-    --z-norte: #2A4FA0;
-    --z-sur: #C24545;
-    --z-este: #1F8A5B;
-    --fresh: #15803D;
-    --fresh-soft: #E8F6EC;
-    /* colores por tipo de recurso (idénticos a la app) */
-    --t-material: #B8500F;   --t-material-bg: #FDE4D3;
-    --t-mo: #7C3AED;         --t-mo-bg: #F1ECFD;
-    --t-equipos: #0E7490;    --t-equipos-bg: #E4F4F8;
-    --t-transporte: #B45309; --t-transporte-bg: #FEF3D6;
-    --t-todo: #15803D;       --t-todo-bg: #E8F6EC;
-    --grid: rgba(80,100,130,0.05);
-    --grid-edge: rgba(80,100,130,0.085);
-    --shadow: 0 1px 2px rgba(31,25,19,.04), 0 10px 30px -16px rgba(31,25,19,.14);
-  }
-  :root[data-theme='dark'] {
-    --bg: #12100E;
-    --paper: #1A1613;
-    --paper-2: #211C17;
-    --ink: #F3EDE4;
-    --ink-2: #CBC2B6;
-    --muted: #9A9186;
-    --line: #2A241E;
-    --line-2: #352E26;
-    --brand: #FF8340;
-    --brand-deep: #FFA268;
-    --brand-soft: #3A2413;
-    --brand-wash: #241812;
-    --z-norte: #6E93E0;
-    --z-sur: #E58A8A;
+    color-scheme: dark;
+    --bg: #06080C;
+    --paper: rgba(20,25,34,.72);
+    --paper-2: rgba(255,255,255,.035);
+    --ink: #E8EAEE;
+    --ink-2: #B9C0CA;
+    --muted: #8E96A2;
+    --line: rgba(255,255,255,.08);
+    --line-2: rgba(255,255,255,.13);
+    --brand: #F26B1F;
+    --brand-deep: #FFA265;
+    --brand-dark: #C5501A;
+    --brand-soft: rgba(242,107,31,.16);
+    --brand-wash: rgba(242,107,31,.07);
+    --z-norte: #7FA2EA;
+    --z-sur: #EC8F8F;
     --z-este: #5CC297;
     --fresh: #5CC297;
-    --fresh-soft: #16281F;
-    --t-material: #E8925A;   --t-material-bg: #3A2413;
-    --t-mo: #B79AF5;         --t-mo-bg: #241A38;
-    --t-equipos: #56B6CE;    --t-equipos-bg: #102A31;
-    --t-transporte: #E0A65C; --t-transporte-bg: #33240F;
-    --t-todo: #5CC297;       --t-todo-bg: #16281F;
-    --grid: rgba(150,170,200,0.05);
-    --grid-edge: rgba(150,170,200,0.08);
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
+    --fresh-soft: rgba(31,138,91,.18);
+    /* colores por tipo de recurso (los de la app, aclarados para fondo negro) */
+    --t-material: #FFA265;   --t-material-bg: rgba(242,107,31,.16);
+    --t-mo: #B79AF5;         --t-mo-bg: rgba(122,77,191,.2);
+    --t-equipos: #56B6CE;    --t-equipos-bg: rgba(14,116,144,.22);
+    --t-transporte: #E0A65C; --t-transporte-bg: rgba(180,83,9,.2);
+    --t-todo: #5CC297;       --t-todo-bg: rgba(31,138,91,.18);
+    --grid: rgba(255,255,255,.028);
+    --grid-edge: rgba(255,255,255,.05);
+    --shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 24px 48px -28px rgba(0,0,0,.75);
   }
 
   * { box-sizing: border-box; }
@@ -210,37 +187,69 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   body {
     margin: 0;
     color: var(--ink);
-    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    font-family: 'Manrope', system-ui, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    background-color: var(--bg);
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='rgba(80,100,130,0.05)' stroke-width='1'><line x1='16' y1='0' x2='16' y2='80'/><line x1='32' y1='0' x2='32' y2='80'/><line x1='48' y1='0' x2='48' y2='80'/><line x1='64' y1='0' x2='64' y2='80'/><line x1='0' y1='16' x2='80' y2='16'/><line x1='0' y1='32' x2='80' y2='32'/><line x1='0' y1='48' x2='80' y2='48'/><line x1='0' y1='64' x2='80' y2='64'/></g><g fill='none' stroke='rgba(80,100,130,0.085)' stroke-width='1'><line x1='0' y1='0' x2='80' y2='0'/><line x1='0' y1='0' x2='0' y2='80'/></g></svg>");
+    background: var(--bg);
   }
-  h1, h2, h3 { font-family: 'Archivo', system-ui, sans-serif; }
+  /* Fondo fijo: rejilla técnica + auroras (igual que la portada). */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(180deg, #06080C, #0A0D13 50%, #06080C);
+    -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 40%, #000 35%, rgba(0,0,0,.35) 100%);
+            mask-image: radial-gradient(ellipse 120% 90% at 50% 40%, #000 35%, rgba(0,0,0,.35) 100%);
+  }
+  body::after {
+    content: ''; position: fixed; inset: -20%; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(242,107,31,.12), transparent 32%),
+      radial-gradient(circle at 84% 70%, rgba(242,107,31,.08), transparent 30%),
+      radial-gradient(circle at 70% 12%, rgba(73,112,201,.08), transparent 28%);
+  }
+  /* En PC las auroras se mueven lento; en el celular quedan quietas (batería). */
+  @media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+    body::after { animation: fxAurora 38s ease-in-out infinite alternate; }
+  }
+  @keyframes fxAurora {
+    0% { transform: translate3d(0,0,0) rotate(0deg); }
+    50% { transform: translate3d(4%,-3%,0) rotate(6deg); }
+    100% { transform: translate3d(-3%,4%,0) rotate(-4deg); }
+  }
+  ::selection { background: rgba(242,107,31,.35); color: #fff; }
+
+  h1, h2, h3 { font-family: 'Manrope', system-ui, sans-serif; color: #fff; letter-spacing: -.02em; }
+  main.wrap h1 { text-shadow: 0 0 32px rgba(255,255,255,.10); }
   .wrap { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 22px; }
   .tnum { font-variant-numeric: tabular-nums; }
-  .mono { font-family: 'DM Mono', monospace; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
   a { color: inherit; }
 
   .topbar {
     position: sticky; top: 0; z-index: 30;
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
+    background: rgba(6,8,12,.72);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+            backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    box-shadow: 0 10px 30px -18px rgba(0,0,0,.7);
   }
   .bar { display: flex; align-items: center; justify-content: space-between; height: 66px; }
   .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
   .brand img { display: block; }
-  .brand-tx { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -.02em; line-height: 1; color: var(--ink); display: flex; flex-direction: column; gap: 3px; }
-  .brand-tx small { font-family: 'DM Mono', monospace; font-weight: 400; font-size: 8.5px; letter-spacing: .14em; color: var(--muted); }
-  .nav { display: flex; align-items: center; gap: 22px; font-size: 14.5px; font-weight: 600; color: var(--ink-2); font-family: 'Hanken Grotesk', sans-serif; }
+  .brand-tx { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -.02em; line-height: 1; color: #fff; display: flex; flex-direction: column; gap: 3px; }
+  .brand-tx small { font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 8.5px; letter-spacing: .14em; color: var(--muted); }
+  .nav { display: flex; align-items: center; gap: 22px; font-size: 14.5px; font-weight: 600; color: var(--ink-2); font-family: 'Manrope', sans-serif; }
   .nav a { text-decoration: none; }
-  .nav a:hover { color: var(--brand-deep); }
+  .nav a { transition: color .15s ease; }
+  .nav a:hover { color: #fff; }
   .nav-cta {
     color: #fff; background: var(--brand); padding: 9px 16px; border-radius: 999px;
-    font-weight: 700; white-space: nowrap; transition: background .15s ease;
+    font-weight: 700; white-space: nowrap; transition: filter .15s ease, box-shadow .15s ease;
+    box-shadow: 0 0 0 1px rgba(255,162,101,.35), 0 8px 28px -6px rgba(242,107,31,.6);
   }
-  .nav-cta:hover { color: #fff; background: var(--brand-deep); }
+  .nav-cta:hover { color: #fff; filter: brightness(1.08); box-shadow: 0 0 0 1px rgba(255,162,101,.5), 0 10px 32px -6px rgba(242,107,31,.75); }
   @media (max-width: 660px) { .nav a:not(.nav-cta) { display: none; } .brand-tx small { display: none; } }
 
   .wa-share { margin-top: 40px; display: flex; justify-content: center; }
@@ -252,7 +261,12 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   }
   .wa-share a:hover { background: #1EBE5D; transform: translateY(-2px); color: #fff; }
 
-  .foot { margin-top: 40px; border-top: 1px solid var(--line); padding: 30px 0 52px; color: var(--muted); }
+  .foot { margin-top: 40px; border-top: 1px solid var(--line); padding: 30px 0 52px; color: var(--muted); position: relative; }
+  .foot::before {
+    content: ''; position: absolute; left: 50%; top: -1px; width: min(900px, 80%); height: 1px; transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(242,107,31,.45), transparent);
+  }
+  .foot strong { color: var(--ink); }
 
   /* ── Diseño compacto (pedido de Carlos, 21-nov-2026) ──────────────────────
      Textos ajustados y sin espacio perdido: que en una pantalla, en PC y en el
