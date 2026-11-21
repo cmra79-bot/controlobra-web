@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
+import { writeFile } from 'node:fs/promises'
 import { provinciasIndexables } from './src/lib/precios.js'
+import { getAnalisis } from './src/lib/analisis.js'
 
 // Fecha del build. El sitio se reconstruye a diario (.github/workflows/rebuild-diario.yml)
 // y en cada build se hornean los precios frescos del catálogo, así que para casi todas
@@ -21,11 +23,40 @@ const ESTATICAS = {
 const INDEXABLES = await provinciasIndexables()
 const ES_PROVINCIA = /^\/precios\/provincia\/([^/]+)\/$/
 
+// Mudanza de los análisis (plan Google, Fase 2): las páginas viejas de la app,
+// app.controlobra.ai/precios-obra/partidas/<slug>.html, llegan acá por una
+// regla 301 de DigitalOcean que conserva la ruta. Este `_redirects` de
+// Cloudflare Pages las lleva con otra 301 a /analisis/<slug>/ (mismo slug).
+// Límite de Cloudflare: 2.000 reglas fijas + 100 dinámicas; son ~1.191.
+function redireccionesAnalisis() {
+  return {
+    name: 'redirecciones-analisis',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        const { partidas } = await getAnalisis()
+        const lineas = [
+          '# Generado por astro.config.mjs en cada build. No editar a mano.',
+          '/precios-obra/partidas.html /analisis/ 301',
+          '/precios-obra/partidas /analisis/ 301',
+          ...partidas.map((p) => `/precios-obra/partidas/${p.slug}.html /analisis/${p.slug}/ 301`),
+          // Una partida que ya no está en el catálogo: al índice, no a un 404.
+          '/precios-obra/partidas/* /analisis/ 301',
+          // Cualquier otra ruta de la app que llegue acá por error vuelve a la app.
+          '/precios-obra/* https://app.controlobra.ai/precios-obra/:splat 302',
+        ]
+        await writeFile(new URL('_redirects', dir), lineas.join('\n') + '\n', 'utf8')
+        console.log(`[analisis] _redirects con ${partidas.length} páginas viejas → /analisis/`)
+      },
+    },
+  }
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://controlobra.ai',
   output: 'static',
   integrations: [
+    redireccionesAnalisis(),
     sitemap({
       filter(url) {
         const m = new URL(url).pathname.match(ES_PROVINCIA)
