@@ -201,6 +201,7 @@ que anunciarlas solo gasta presupuesto de rastreo.
 | Por provincia | `/precios/provincia/<prov>/` | 32 | Búsqueda local; solo las que tienen suplidores van al sitemap |
 | Resúmenes por tipo | `/precios/resumen/<tipo>/` | 4 | materiales, equipos, mano de obra, subcontratos |
 | Guías | `/guias/<slug>/` | 5 + índice | Long-tail de intención real |
+| Análisis | `/analisis/` y `/analisis/<codigo>-<slug>/` | ~1.191 + índice | Análisis de precio unitario con dibujo e insumos solo por nombre (contenido «b»). Datos de `app.controlobra.ai/precios-obra/analisis-publico.json`, que publica el build de la app (`src/lib/analisis.js`). Plan Google, Fase 2 (`PRECIOS_OBRA.md` §10) |
 
 ### Las 5 guías
 
