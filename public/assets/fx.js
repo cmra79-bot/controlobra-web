@@ -61,6 +61,32 @@
     var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 100); });
   })();
 
+
+  /* Títulos de sección: máximo 2 líneas (mismo criterio que el hero).
+     Usan todo el ancho disponible y, si aun así pasan de 2 líneas, se achica
+     la letra de a 1 px hasta que entren (mínimo 26 px). En móvil no se toca. */
+  (function fitTitles() {
+    var hs = Array.prototype.slice.call(document.querySelectorAll(
+      '.sec-h h2, .po-sec h2, .roi h2, .ai h3, .cta-final h2'));
+    if (!hs.length) return;
+    hs.forEach(function (h) { h.classList.add('fx-2l'); h._fs0 = h.style.fontSize; });
+    function lines(h, fs) {
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || fs * 1.08;
+      return Math.round(h.getBoundingClientRect().height / lh);
+    }
+    function fit() {
+      hs.forEach(function (h) {
+        h.style.fontSize = h._fs0 || '';
+        if (window.innerWidth < 768) return;
+        var fs = parseFloat(getComputedStyle(h).fontSize), n = 0;
+        while (lines(h, fs) > 2 && fs > 26 && n++ < 40) { fs -= 1; h.style.fontSize = fs + 'px'; }
+      });
+    }
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 120); });
+  })();
+
   /* ════════════════════ 1. ESFERAS 3D (WebGL) ════════════════════ */
   var FRAG = [
     'precision highp float;',

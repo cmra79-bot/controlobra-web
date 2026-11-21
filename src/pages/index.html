@@ -1212,6 +1212,15 @@
   @media (max-width: 767px){
     .hero h1.h1-2l .rot{ display:block; width:max-content }
   }
+  /* Títulos de sección a lo ancho, en 2 líneas máximo (fx.js ajusta el tamaño)
+     y el texto de abajo aprovechando el ancho (pedido de Carlos 21-nov-2026). */
+  @media (min-width: 768px){
+    .sec-h, .modules .sec-h{ max-width:none }
+    .sec-h h2, .sec-h h2.modules-headline{ max-width:none; text-wrap: balance }
+    .sec-h p{ max-width: 1060px }
+    .po-sec h2, .roi h2, .ai h3, .cta-final h2{ text-wrap: balance }
+    .cta-final-in{ max-width: 1060px }
+  }
   /* ═══════════════ MODO OSCURO FUTURISTA (21-nov-2026) ═══════════════
      Toda la página sobre fondo casi negro. Las secciones quedan transparentes
      y debajo vive un fondo fijo con rejilla técnica + auroras naranjas que se
