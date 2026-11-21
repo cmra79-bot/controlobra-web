@@ -72,6 +72,8 @@ async function leer() {
 let _datos
 export function getAnalisis() {
   _datos ??= leer().then((d) => {
+    // Algunas descripciones del catálogo traen comillas escapadas («h=6\'»).
+    for (const p of d.partidas) if (p.descripcion) p.descripcion = p.descripcion.replace(/\\(['"])/g, '$1')
     const capitulos = (d.capitulos || []).map((c) => ({
       ...c,
       partidas: d.partidas.filter((p) => p.capitulo === c.slug),
