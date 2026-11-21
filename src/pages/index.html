@@ -505,6 +505,8 @@
   .b-6{grid-column: span 1}                       /* Cronograma · CUADRADO */
   .b-7{grid-column: span 1}                       /* Ventas · CUADRADO */
   .b-8{grid-column: span 1}                       /* RH · CUADRADO */
+  .b-9{grid-column: span 3}                       /* Factibilidad (21-nov-2026) */
+  .b-10{grid-column: span 3}                      /* Kubicar Pro (21-nov-2026) */
   .bento .card .ic{
     width:48px; height:48px; border-radius:13px;
     background: linear-gradient(135deg, var(--accent-soft, var(--orange-soft)) 0%, var(--paper) 100%);
@@ -877,7 +879,7 @@
   @media (max-width: 1100px){
     .nav-links{display:none}
     .bento{grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto}
-    .b-1,.b-2,.b-3,.b-4,.b-5,.b-6,.b-7,.b-8{grid-column: auto; grid-row: auto}
+    .b-1,.b-2,.b-3,.b-4,.b-5,.b-6,.b-7,.b-8,.b-9,.b-10{grid-column: auto; grid-row: auto}
     .problem-grid, .steps, .ai-grid, .metrics-in, .ft-in, .reports-grid, .roi-grid{grid-template-columns: 1fr 1fr}
     .day-item{grid-template-columns: 1fr}
     .day-item .time{grid-column:auto; margin-bottom: 8px}
@@ -1262,12 +1264,12 @@
   html[data-theme="dark"] .metric .v{text-shadow: 0 0 28px rgba(242,107,31,.35)}
 
   /* Secciones: separadas por una línea de luz en vez de cambio de fondo */
-  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
+  html[data-theme="dark"] :is(.problem,.modules,.kb,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq){
     border-top: 0 !important; border-bottom: 0 !important; position:relative}
-  html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container::before{
+  html[data-theme="dark"] :is(.modules,.kb,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container::before{
     content:''; position:absolute; left:50%; top:-44px; width:min(900px, 80%); height:1px; transform:translateX(-50%);
     background: linear-gradient(90deg, transparent, rgba(242,107,31,.45), transparent); pointer-events:none}
-  html[data-theme="dark"] :is(.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container{position:relative}
+  html[data-theme="dark"] :is(.modules,.kb,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) > .container{position:relative}
   html[data-theme="dark"] .po-sec{background: transparent}
 
   /* Títulos con brillo sutil */
@@ -1491,6 +1493,7 @@ const html = `
     </a>
     <div class="nav-links">
       <a href="#modulos">Módulos</a>
+      <a href="#kubicar" class="has-dot">Kubicar</a>
       <a href="#flujo">Cómo funciona</a>
       <a href="#precios-obra">Precios Obra</a>
       <a href="#roi">ROI</a>
@@ -1840,7 +1843,7 @@ const html = `
     <div class="sec-h reveal">
       <div class="sec-tag"><span class="d"></span>La plataforma con IA</div>
       <h2 class="modules-headline">Una sola herramienta <span class="serif">con inteligencia artificial</span> que conecta <b>presupuesto, control, obra y flujo de caja.</b></h2>
-      <p>8 módulos potenciados por IA, diseñados específicamente para constructoras de vivienda. La IA vino para quedarse — que trabaje por ti.</p>
+      <p>10 módulos potenciados por IA, diseñados específicamente para constructoras de vivienda. La IA vino para quedarse — que trabaje por ti.</p>
     </div>
 
     <div class="bento reveal-stagger reveal">
@@ -1898,14 +1901,14 @@ const html = `
       <div class="card b-6 acc-teal tilt">
         <div class="ic">${I.crono}</div>
         <h3>Cronograma</h3>
-        <p>Ruta crítica, hitos y avance vs. plan.</p>
+        <p>Gantt, ruta crítica, línea base y flujo de caja.</p>
         <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
       </div>
 
       <div class="card b-7 acc-info tilt">
         <div class="ic">${I.venta}</div>
         <h3>Ventas</h3>
-        <p>Cotizaciones, cartera de clientes y cierres.</p>
+        <p>Unidades, contratos, plan de pagos y portal del comprador.</p>
         <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
       </div>
 
@@ -1914,6 +1917,209 @@ const html = `
         <h3>Recursos humanos</h3>
         <p>Cuadrillas, nómina por destajo, SST.</p>
         <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <div class="card b-9 acc-ok tilt">
+        <div class="ic">${I.proj}</div>
+        <h3>Factibilidad · de la servilleta a la entrega</h3>
+        <p>Tanteo en 5 minutos, modelo para el comité y seguimiento vivo. Cada número dice si es supuesto, presupuestado, comprometido o real, y el pasado se llena solo con lo ejecutado.</p>
+        <div class="tag">EXPLORAR <span class="arr">${I.arr}</span></div>
+      </div>
+
+      <a class="card b-10 acc-orange tilt" href="#kubicar" data-smooth style="text-decoration:none; color:inherit">
+        <div class="ic">${I.spark}</div>
+        <h3>Kubicar Pro · mediciones desde planos <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800; letter-spacing:.08em; padding:2px 7px; border-radius:99px; background:var(--orange); color:#fff; vertical-align:middle; margin-left:6px">NUEVO</span></h3>
+        <p>Mide pisos, muros, puertas y ventanas sobre el PDF, el CAD o el modelo 3D, y manda las cantidades directo a cada partida del presupuesto.</p>
+        <div class="tag">VER KUBICAR <span class="arr">${I.arr}</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── KUBICAR PRO (21-nov-2026) ─── -->
+<style>
+  .kb{ padding: 96px 0 90px; position:relative }
+  .kb-grid{ display:grid; grid-template-columns: .9fr 1.1fr; gap:52px; align-items:center }
+  .kb .sec-tag{ display:inline-flex; align-items:center; gap:9px }
+  .kb .sec-tag .new{ font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800; letter-spacing:.08em; padding:2px 7px; border-radius:99px; background:var(--orange); color:#fff }
+  .kb h2{ margin:0 0 14px; font-size:clamp(32px,4vw,52px); font-weight:300; letter-spacing:-.02em; line-height:1.05 }
+  .kb h2 b{ font-weight:800 }
+  .kb h2 .serif{ color:var(--orange); font-weight:300 }
+  html[data-theme="dark"] .kb h2 b{ color:#fff; text-shadow:0 0 32px rgba(255,255,255,.12) }
+  .kb-lead{ margin:0 0 20px; color:var(--muted); font-size:16.5px; line-height:1.55; max-width:560px }
+  .kb-fmt{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px }
+  .kb-fmt span{ font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; letter-spacing:.04em; padding:6px 11px; border-radius:8px; border:1px solid var(--line-3); color:var(--muted-2); background:var(--cream-2) }
+  .kb-fmt span b{ color:var(--orange-2) }
+  .kb-list{ display:flex; flex-direction:column; gap:14px; margin:0 0 26px }
+  .kb-l{ display:grid; grid-template-columns:34px 1fr; gap:13px; align-items:flex-start }
+  .kb-l .c{ width:34px; height:34px; border-radius:9px; background:var(--orange-soft); color:var(--orange-2); display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12px; box-shadow:inset 0 0 0 1px rgba(242,107,31,.25) }
+  .kb-l h4{ margin:0 0 3px; font-size:15px; font-weight:800; letter-spacing:-.005em }
+  .kb-l p{ margin:0; font-size:13.5px; color:var(--muted); line-height:1.5 }
+
+  /* Panel del plano: vidrio oscuro */
+  .kb-vis{ position:relative; border-radius:20px; padding:14px; background:linear-gradient(160deg, rgba(28,34,45,.75), rgba(12,15,21,.85)); border:1px solid rgba(255,255,255,.09); box-shadow: 0 40px 90px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(242,107,31,.08), 0 0 80px -30px rgba(242,107,31,.35); backdrop-filter: blur(14px) }
+  .kb-bar{ display:flex; align-items:center; gap:10px; padding:4px 6px 12px; font-family:'JetBrains Mono',monospace; font-size:11px; color:#9AA1AB }
+  .kb-bar .dots{ display:flex; gap:5px } .kb-bar .dots i{ width:9px; height:9px; border-radius:99px; background:#2A303B; display:block }
+  .kb-bar .ttl{ color:#E8EAEE; font-weight:700 } .kb-bar .ttl b{ color:var(--orange-2) }
+  .kb-bar .esc{ margin-left:auto; padding:3px 8px; border-radius:6px; border:1px solid rgba(255,255,255,.1) }
+  .kb-stage{ display:grid; grid-template-columns: 1fr 168px; gap:12px }
+  .kb-plan{ position:relative; border-radius:12px; background:#0B0E13; border:1px solid rgba(255,255,255,.06); overflow:hidden;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 20px 20px }
+  .kb-plan svg{ display:block; width:100%; height:auto }
+  .kb-plan .wall{ fill:none; stroke:#C8CFD7; stroke-width:8; stroke-linecap:square }
+  .kb-plan .door{ fill:none; stroke:#5B6270; stroke-width:1.2; stroke-dasharray:3 3 }
+  .kb-plan .room{ fill:rgba(242,107,31,.0); stroke:rgba(255,162,101,0); stroke-width:1.5; stroke-dasharray:6 4 }
+  .kb-plan .room.alt{ }
+  .kb-plan .rl{ font-family:Inter,sans-serif; font-size:11px; font-weight:700; fill:#E8EAEE; opacity:0 }
+  .kb-plan .rl tspan.m{ font-family:'JetBrains Mono',monospace; font-weight:800; fill:#FFA265 }
+  .kb-plan .wm{ fill:none; stroke:#FFA265; stroke-width:3; stroke-linecap:round; stroke-dasharray:2400; stroke-dashoffset:2400; opacity:.9; filter: drop-shadow(0 0 4px rgba(242,107,31,.8)) }
+  .kb-plan .cnt circle{ fill:#4970C9; stroke:#0B0E13; stroke-width:2 }
+  .kb-plan .cnt text{ font-family:'JetBrains Mono',monospace; font-size:7.5px; font-weight:800; fill:#fff; text-anchor:middle }
+  .kb-plan .cnt{ opacity:0; transform-box:fill-box; transform-origin:center }
+  .kb-scan{ position:absolute; top:0; bottom:0; width:70px; left:-80px; background:linear-gradient(90deg, transparent, rgba(242,107,31,.18), transparent); border-right:1px solid rgba(255,162,101,.6); pointer-events:none; opacity:0 }
+
+  .kb-side{ display:flex; flex-direction:column; gap:8px }
+  .kb-side h5{ margin:2px 0 4px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#9AA1AB; font-weight:800 }
+  .kb-ck{ display:flex; align-items:center; gap:8px; font-size:12px; color:#C8CFD7; padding:7px 9px; border-radius:9px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.06) }
+  .kb-ck .b{ width:15px; height:15px; border-radius:5px; border:1.5px solid #3A3F48; display:grid; place-items:center; color:#fff; flex:none; transition: all .3s }
+  .kb-ck .b svg{ opacity:0; transition: opacity .3s }
+  .kb-ck.on .b{ background:var(--orange); border-color:var(--orange) } .kb-ck.on .b svg{ opacity:1 }
+  .kb-go{ margin-top:4px; padding:9px; border-radius:10px; text-align:center; font-size:12px; font-weight:800; color:#fff; background:linear-gradient(180deg, #F26B1F, #C5501A); box-shadow: 0 8px 22px -8px rgba(242,107,31,.7) }
+
+  .kb-out{ margin-top:12px; display:grid; grid-template-columns: repeat(3, 1fr); gap:8px }
+  .kb-o{ padding:10px 11px; border-radius:10px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.07); opacity:0; transform: translateY(8px); transition: all .6s cubic-bezier(.2,.8,.2,1) }
+  .kb-o .k{ font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#9AA1AB; font-weight:700 }
+  .kb-o .v{ font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:800; color:#fff; margin:3px 0 2px } .kb-o .v small{ font-size:11px; color:#9AA1AB; margin-left:3px }
+  .kb-o .p{ font-size:10.5px; color:var(--orange-2) }
+  .kb-o .p em{ font-style:normal; color:#9AA1AB }
+
+  /* Secuencia: arranca cuando el panel entra en pantalla (.reveal.in) */
+  .kb-vis.in .kb-scan{ animation: kbScan 2.4s cubic-bezier(.5,0,.3,1) .4s forwards }
+  .kb-vis.in .room{ animation: kbRoom .9s ease forwards } .kb-vis.in .rl{ animation: kbFade .6s ease forwards }
+  .kb-vis.in .wm{ animation: kbDraw 2s ease forwards 3.4s }
+  .kb-vis.in .cnt{ animation: kbPop .45s cubic-bezier(.3,1.6,.5,1) forwards }
+  .kb-vis.in .kb-o{ opacity:1; transform:none }
+  .kb-vis.in .kb-o:nth-child(1){ transition-delay: 2.9s } .kb-vis.in .kb-o:nth-child(2){ transition-delay: 4.8s } .kb-vis.in .kb-o:nth-child(3){ transition-delay: 6.2s }
+  @keyframes kbScan{ 0%{ left:-80px; opacity:1 } 90%{ opacity:1 } 100%{ left:100%; opacity:0 } }
+  @keyframes kbRoom{ to{ fill:rgba(242,107,31,.16); stroke:rgba(255,162,101,.85) } }
+  @keyframes kbFade{ to{ opacity:1 } }
+  @keyframes kbDraw{ to{ stroke-dashoffset:0 } }
+  @keyframes kbPop{ 0%{ opacity:0; transform:scale(.2) } 100%{ opacity:1; transform:scale(1) } }
+
+  /* Tarjetas de abajo */
+  .kb-cards{ display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin-top:56px }
+  .kb-card{ position:relative; padding:24px 24px 22px; border-radius:18px; background:var(--paper); border:1px solid var(--line); overflow:hidden }
+  .kb-card::after{ content:''; position:absolute; inset:auto -40% -60% auto; width:220px; height:220px; border-radius:99px; background:radial-gradient(circle, rgba(242,107,31,.16), transparent 65%); pointer-events:none }
+  .kb-card .ey{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:800; letter-spacing:.1em; color:var(--orange-2); text-transform:uppercase; margin-bottom:10px }
+  .kb-card h3{ margin:0 0 8px; font-size:19px; font-weight:800; letter-spacing:-.01em }
+  .kb-card p{ margin:0; font-size:14px; color:var(--muted); line-height:1.55 }
+  .kb-card ul{ margin:12px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px }
+  .kb-card li{ font-size:13px; color:var(--muted-3); display:flex; gap:8px; align-items:flex-start }
+  .kb-card li::before{ content:''; width:5px; height:5px; border-radius:99px; background:var(--orange); margin-top:7px; flex:none }
+
+  @media (prefers-reduced-motion: reduce){
+    .kb-vis .room{ fill:rgba(242,107,31,.16); stroke:rgba(255,162,101,.85) } .kb-vis .rl, .kb-vis .cnt{ opacity:1 } .kb-vis .wm{ stroke-dashoffset:0 }
+    .kb-vis .kb-o{ opacity:1; transform:none } .kb-vis.in *{ animation:none !important; transition:none !important }
+  }
+  @media (max-width: 1000px){ .kb-grid{ grid-template-columns:1fr; gap:36px } .kb-cards{ grid-template-columns:1fr } }
+  @media (max-width: 640px){
+    .kb{ padding:64px 0 60px } .kb h2{ font-size:clamp(26px,7vw,34px); line-height:1.1 }
+    .kb-stage{ grid-template-columns:1fr } .kb-side{ display:grid; grid-template-columns:1fr 1fr; gap:6px } .kb-side h5, .kb-go{ grid-column:1/-1 }
+    .kb-out{ grid-template-columns:1fr } .kb-bar .esc{ display:none }
+  }
+</style>
+<section class="kb" id="kubicar">
+  <div class="container">
+    <div class="kb-grid">
+      <div class="reveal">
+        <div class="sec-tag"><span class="new">NUEVO</span>Kubicar Pro · mediciones desde planos</div>
+        <h2>Mide el plano. <b>El presupuesto se llena solo.</b> <span class="serif">Tú apruebas.</span></h2>
+        <p class="kb-lead">Kubicar Pro es el módulo de cubicación de Manestro. Abres el plano, marcas lo que quieres medir y en segundos tienes pisos, muros, puertas, ventanas y aparatos medidos por nivel y por ambiente, listos para la partida.</p>
+        <div class="kb-fmt"><span><b>PDF</b> planos</span><span><b>DWG · DXF</b> CAD</span><span><b>Escaneados</b></span><span><b>IFC</b> modelo 3D</span></div>
+        <div class="kb-list">
+          <div class="kb-l"><div class="c">01</div><div><h4>«Medir todo» en un clic</h4><p>Pisos, muros (largo × alto del nivel), puertas y ventanas por su código, sanitarios, plafones, revestimientos y fascias. Lee los muros del dibujo y encuentra cada cuarto solo.</p></div></div>
+          <div class="kb-l"><div class="c">02</div><div><h4>Directo a la partida</h4><p>Cada acabado va a su partida del presupuesto, una línea por nivel y ambiente. Si alguien editó una línea a mano, Kubicar no la pisa.</p></div></div>
+          <div class="kb-l"><div class="c">03</div><div><h4>Nada entra sin tu visto bueno</h4><p>Todo lo medido queda por aprobar. Solo lo que apruebas llega al reporte y al presupuesto.</p></div></div>
+        </div>
+        <button class="btn primary" data-demo>Ver Kubicar en una demo</button>
+      </div>
+
+      <div class="kb-vis reveal" aria-label="Animación: Kubicar mide los cuartos, los muros y los vanos de una planta">
+        <div class="kb-bar"><div class="dots"><i></i><i></i><i></i></div><span class="ttl">Kubicar <b>Pro</b> · Planta N1</span><span class="esc">Escala 1:100 ✓</span></div>
+        <div class="kb-stage">
+          <div class="kb-plan">
+            <svg viewBox="0 0 480 340" role="img" aria-label="Planta de una vivienda con sus cuartos medidos">
+              <!-- cuartos (cara interior de los muros) -->
+              <rect class="room" x="34" y="34" width="232" height="142" style="animation-delay:.9s"/>
+              <rect class="room" x="34" y="184" width="232" height="122" style="animation-delay:1.3s"/>
+              <rect class="room" x="274" y="34" width="172" height="102" style="animation-delay:1.7s"/>
+              <rect class="room" x="274" y="144" width="82" height="162" style="animation-delay:2.1s"/>
+              <rect class="room" x="364" y="144" width="82" height="162" style="animation-delay:2.5s"/>
+              <!-- muros -->
+              <path class="wall" d="M30 30H450V310H30Z"/>
+              <path class="wall" d="M270 30V160M270 190V310"/>
+              <path class="wall" d="M30 180H120M150 180H270"/>
+              <path class="wall" d="M270 140H340M370 140H450"/>
+              <path class="wall" d="M360 140V220M360 250V310"/>
+              <!-- puertas -->
+              <path class="door" d="M120 180A30 30 0 0 1 150 150M270 160A30 30 0 0 1 300 190M340 140A30 30 0 0 0 370 170M360 220A30 30 0 0 1 390 250"/>
+              <!-- muros medidos (trazo naranja) -->
+              <path class="wm" d="M30 30H450V310H30Z M270 30V310 M30 180H270 M270 140H450 M360 140V310"/>
+              <!-- etiquetas -->
+              <text class="rl" x="150" y="100" text-anchor="middle" style="animation-delay:1.2s">Sala-comedor<tspan class="m" x="150" dy="15">22.50 m²</tspan></text>
+              <text class="rl" x="150" y="240" text-anchor="middle" style="animation-delay:1.6s">Dormitorio 1<tspan class="m" x="150" dy="15">19.50 m²</tspan></text>
+              <text class="rl" x="360" y="82" text-anchor="middle" style="animation-delay:2s">Cocina<tspan class="m" x="360" dy="15">12.38 m²</tspan></text>
+              <text class="rl" x="315" y="262" text-anchor="middle" style="animation-delay:2.4s">Baño<tspan class="m" x="315" dy="15">9.56 m²</tspan></text>
+              <text class="rl" x="405" y="200" text-anchor="middle" style="animation-delay:2.8s">Dorm. 2<tspan class="m" x="405" dy="15">9.56 m²</tspan></text>
+              <!-- conteo de vanos -->
+              <g class="cnt" style="animation-delay:5.6s"><circle cx="135" cy="180" r="9"/><text x="135" y="183">P1</text></g>
+              <g class="cnt" style="animation-delay:5.75s"><circle cx="270" cy="175" r="9"/><text x="270" y="178">P1</text></g>
+              <g class="cnt" style="animation-delay:5.9s"><circle cx="355" cy="140" r="9"/><text x="355" y="143">P2</text></g>
+              <g class="cnt" style="animation-delay:6.05s"><circle cx="360" cy="235" r="9"/><text x="360" y="238">P2</text></g>
+              <g class="cnt" style="animation-delay:6.2s"><circle cx="150" cy="30" r="9"/><text x="150" y="33">V1</text></g>
+              <g class="cnt" style="animation-delay:6.35s"><circle cx="360" cy="30" r="9"/><text x="360" y="33">V2</text></g>
+              <g class="cnt" style="animation-delay:6.5s"><circle cx="30" cy="245" r="9"/><text x="30" y="248">V1</text></g>
+              <g class="cnt" style="animation-delay:6.65s"><circle cx="450" cy="225" r="9"/><text x="450" y="228">V3</text></g>
+            </svg>
+            <div class="kb-scan"></div>
+          </div>
+          <div class="kb-side">
+            <h5>Medir todo</h5>
+            <div class="kb-ck" data-kb-at="900"><span class="b">${I.check}</span>Pisos</div>
+            <div class="kb-ck" data-kb-at="3400"><span class="b">${I.check}</span>Muros</div>
+            <div class="kb-ck" data-kb-at="5600"><span class="b">${I.check}</span>Puertas y ventanas</div>
+            <div class="kb-ck" data-kb-at="6900"><span class="b">${I.check}</span>Sanitarios</div>
+            <div class="kb-ck" data-kb-at="7300"><span class="b">${I.check}</span>Plafones</div>
+            <div class="kb-ck" data-kb-at="7700"><span class="b">${I.check}</span>Revestimiento</div>
+            <div class="kb-go">Medir todo · hoja N1</div>
+          </div>
+        </div>
+        <div class="kb-out">
+          <div class="kb-o"><div class="k">Piso porcelanato</div><div class="v">73.50<small>m²</small></div><div class="p">→ 04.02 Pisos <em>· por aprobar</em></div></div>
+          <div class="kb-o"><div class="k">Muro interior</div><div class="v">96.90<small>m²</small></div><div class="p">→ 03.01 Mampostería <em>· por aprobar</em></div></div>
+          <div class="kb-o"><div class="k">Puertas y ventanas</div><div class="v">8<small>und</small></div><div class="p">→ 07 Carpintería <em>· por aprobar</em></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kb-cards reveal-stagger reveal">
+      <div class="kb-card">
+        <div class="ey">Kubicar 3D</div>
+        <h3>Recorre el modelo caminando</h3>
+        <p>Abre el modelo IFC de tu proyecto y camínalo por dentro, como en un videojuego. Mides mientras recorres.</p>
+        <ul><li>El piso de cada cuarto con un clic</li><li>Muros por cara: pañete, fraguache y pintura</li><li>Acabados reales con su material y foto</li></ul>
+      </div>
+      <div class="kb-card">
+        <div class="ey">Misiones del presupuesto</div>
+        <h3>Ves qué falta por medir</h3>
+        <p>Los capítulos del presupuesto aparecen como misiones con su avance. Sabes qué partidas ya tienen cantidad y cuáles no, en 2D y en 3D.</p>
+        <ul><li>Presupuesto de venta o de costo</li><li>Avance por capítulo, al momento</li></ul>
+      </div>
+      <div class="kb-card">
+        <div class="ey">Memoria de medición</div>
+        <h3>Aprende cómo mide tu empresa</h3>
+        <p>Cada medición que apruebas, corriges o descartas le enseña a Kubicar tus reglas. La próxima vez propone como lo harías tú, y sigue esperando tu aprobación.</p>
+        <ul><li>Tus datos son de tu empresa</li><li>Nunca se usan para entrenar modelos</li></ul>
       </div>
     </div>
   </div>
@@ -2602,6 +2808,46 @@ const html = `
         <span class="tag">PRESUPUESTOS</span>
       </div>
     </div>
+
+    <!-- Novedades de informes (21-nov-2026) -->
+    <style>
+      .rep-new{ margin-top:34px; display:grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap:14px }
+      .rn{ position:relative; padding:20px; border-radius:16px; background: var(--paper); border:1px solid var(--line); overflow:hidden }
+      .rn .ey{ font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color: var(--orange-2); margin-bottom:8px }
+      .rn h4{ margin:0 0 6px; font-size:16px; font-weight:800; letter-spacing:-.005em }
+      .rn p{ margin:0; font-size:13px; color: var(--muted); line-height:1.5 }
+      .rn.big{ background: linear-gradient(150deg, rgba(242,107,31,.16), rgba(242,107,31,.02) 60%), var(--paper); border-color: rgba(242,107,31,.28) }
+      .rn .qr{ position:absolute; right:16px; top:16px; width:38px; height:38px; opacity:.85 }
+      .rn .fx{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap }
+      .rn .fx span{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; border:1px solid var(--line-3); color: var(--muted-2) }
+      .rn .fx span.on{ color:#fff; background: var(--orange); border-color: var(--orange) }
+      @media (max-width: 1100px){ .rep-new{ grid-template-columns: 1fr 1fr } }
+      @media (max-width: 640px){ .rep-new{ grid-template-columns: 1fr } }
+    </style>
+    <div class="rep-new reveal-stagger reveal">
+      <div class="rn big">
+        <div class="ey">Nuevo · Expediente</div>
+        <h4>El expediente completo para tu cliente</h4>
+        <p>Portada, carátulas y los informes que elijas, en el orden que quieras, con el membrete y el logo de tu empresa. Sin APU ni insumos: el cliente ve lo que tiene que ver.</p>
+      </div>
+      <div class="rn">
+        <svg class="qr" viewBox="0 0 21 21" aria-hidden="true"><path fill="#FFA265" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM14 0h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 14h7v7H0zm1 1v5h5v-5zm1 1h3v3H2zM9 0h2v2H9zm0 3h2v2H9zm3 1h1v3h-1zM9 8h3v1H9zm5 0h2v2h-2zm4 0h3v1h-3zM8 10h2v2H8zm4 1h3v1h-3zm5 0h4v2h-4zM9 14h2v3H9zm3-1h2v2h-2zm3 2h3v2h-3zm4 3h2v3h-2zm-7 1h3v2h-3zm3-2h1v1h-1z"/></svg>
+        <div class="ey">Nuevo · Seguridad</div>
+        <h4>PDF protegido con QR</h4>
+        <p>Nadie lo edita ni lo copia, y cualquiera verifica con el QR que el documento es auténtico.</p>
+      </div>
+      <div class="rn">
+        <div class="ey">Nuevo · Multi-moneda</div>
+        <h4>En otra divisa</h4>
+        <p>Imprime cualquier informe en otra moneda, con la tasa de cambio que elijas.</p>
+        <div class="fx"><span class="on">DOP</span><span>USD</span><span>EUR</span></div>
+      </div>
+      <div class="rn">
+        <div class="ey">Nuevo · Envío</div>
+        <h4>«Enviar al cliente»</h4>
+        <p>El informe que tienes abierto se lo mandas al cliente como un link por WhatsApp. Lo abre sin cuenta.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -2643,6 +2889,62 @@ const html = `
           </div>
           <div class="ai-input">
             <input type="text" placeholder="Pregúntale algo a Manestro…"/>
+            <button class="send">${I.send}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conector de Claude (21-nov-2026) -->
+    <style>
+      .ai-claude{ margin-top:84px }
+      .ai-claude .ai-vis{ transform: perspective(2000px) rotateY(2deg) }
+      .ai-claude .ai-vis:hover{ transform: perspective(2000px) rotateY(0deg) }
+      .ai-msg .who .av.cl{ background: linear-gradient(135deg, #3A3F48, #262B35); box-shadow: inset 0 0 0 1px rgba(255,255,255,.15) }
+      .ai-msg .tool{ display:flex; align-items:center; gap:8px; margin-top:8px; padding:7px 10px; border-radius:8px; background: rgba(0,0,0,.25); border:1px dashed rgba(255,162,101,.35); font-family:'JetBrains Mono',monospace; font-size:11px; color:#C8CFD7 }
+      .ai-msg .tool b{ color:#FFA265 }
+      .ai-msg .tool .ok{ margin-left:auto; color:#4FC08D; font-weight:800 }
+      .ai-claude .url{ display:inline-flex; align-items:center; gap:8px; margin-top:20px; padding:9px 14px; border-radius:10px; border:1px solid var(--line-3); background: var(--cream-2); font-family:'JetBrains Mono',monospace; font-size:12px; color: var(--muted-2) }
+      .ai-claude .url b{ color: var(--orange-2) }
+      @media (min-width: 769px){ .ai-claude .ai-vis{ order:-1 } }
+      @media (max-width: 768px){ .ai-claude{ margin-top:48px } }
+    </style>
+    <div class="ai-grid ai-claude">
+      <div class="ai-text reveal">
+        <div class="sec-tag"><span class="d"></span>Nuevo · Conector para Claude</div>
+        <h3>Pídele a <b>Claude</b> que mida tu plano y <span class="serif">arme las partidas</span>.</h3>
+        <p>Conecta Manestro a Claude una sola vez y trabaja hablándole. Claude mide en el plano que tienes abierto en Kubicar y crea partidas en tu presupuesto con los mismos recursos y códigos que usa tu empresa.</p>
+        <div class="ai-list">
+          <div class="ai-l">
+            <div class="c">${I.check}</div>
+            <div><h4>Mide en Kubicar por ti</h4><p>Encuentra los cuartos, cuenta puertas y ventanas, lee el cuadro de acabados y deja todo como propuesta punteada en el plano.</p></div>
+          </div>
+          <div class="ai-l">
+            <div class="c">${I.check}</div>
+            <div><h4>Arma partidas como tu equipo</h4><p>Mira cómo están hechas las partidas de tus otros presupuestos y crea las nuevas igual, en amarillo para que las revises.</p></div>
+          </div>
+          <div class="ai-l">
+            <div class="c">${I.check}</div>
+            <div><h4>Propone, tú apruebas</h4><p>Claude nunca escribe directo: con tu usuario y tus permisos, solo propone. El sello de aprobación es siempre de una persona.</p></div>
+          </div>
+        </div>
+        <div class="url">Conector · <b>app.controlobra.ai/api/mcp</b></div>
+      </div>
+      <div class="ai-vis reveal">
+        <div class="ai-vis-in">
+          <div class="ai-msg">
+            <div class="who"><div class="av user">AR</div>Ana · Presupuestista</div>
+            <p>Mide los pisos de la planta N1 con porcelanato y agrégale el zócalo.</p>
+          </div>
+          <div class="ai-msg">
+            <div class="who"><div class="av cl">C</div>Claude · conectado a Manestro</div>
+            <div class="tool">detect_rooms · hoja N1<span class="ok">5 cuartos</span></div>
+            <div class="tool">propose_shapes · <b>PISO PORCELANATO</b><span class="ok">73.50 m²</span></div>
+            <div class="tool">propose_shapes · <b>ZÓCALO</b><span class="ok">94.20 ml</span></div>
+            <p style="margin-top:10px">Listo. Dejé <span class="pill">5 pisos</span> y <span class="pill">5 zócalos</span> como propuesta en Kubicar. El baño lo dejé sin zócalo, como lo aprobaste en el proyecto anterior. Revísalos y apruébalos cuando quieras.</p>
+          </div>
+          <div class="ai-input">
+            <input type="text" placeholder="Pídele algo a Claude…"/>
             <button class="send">${I.send}</button>
           </div>
         </div>
@@ -2883,6 +3185,18 @@ const io = new IntersectionObserver(entries=>{
   });
 }, {threshold: 0.12, rootMargin: '0px 0px -50px 0px'});
 document.querySelectorAll('.reveal, .reveal-stagger').forEach(el=>io.observe(el));
+
+/* Kubicar: la lista «Medir todo» se va marcando al ritmo de la animación del plano */
+(() => {
+  const vis = document.querySelector('.kb-vis'); if (!vis) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const items = vis.querySelectorAll('.kb-ck');
+  if (reduce) { items.forEach(el => el.classList.add('on')); return; }
+  new IntersectionObserver((ents, obs) => {
+    if (!ents[0].isIntersecting) return; obs.disconnect();
+    items.forEach(el => setTimeout(() => el.classList.add('on'), +el.dataset.kbAt + 400));
+  }, {threshold: 0.12, rootMargin: '0px 0px -50px 0px'}).observe(vis);
+})();
 
 /* ───── 4. COUNTERS ───── */
 const counterIO = new IntersectionObserver(entries=>{
