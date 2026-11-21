@@ -1,0 +1,59 @@
+---
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import { getAnalisis, APP } from '../../lib/analisis.js'
+
+// Índice de los análisis por capítulo: el camino de Google hacia cada partida
+// (plan Google, Fase 2). Reemplaza a app.controlobra.ai/precios-obra/partidas.html.
+const datos = await getAnalisis()
+const total = datos.partidas.length
+const n = total.toLocaleString('es-DO')
+const title = 'Análisis de precios unitarios de construcción en RD | Precios Obra'
+const description = `${n} análisis de precios unitarios de construcción en República Dominicana, por capítulo: qué materiales, mano de obra y equipos lleva cada partida, cómo se mide y su dibujo.`
+---
+<PrecioLayout title={title} description={description} canonicalPath="/analisis/" breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Análisis', path: '/analisis/' },
+]} noindex={total === 0}>
+  <nav class="crumb"><a href="/">Inicio</a> <span>›</span> Análisis</nav>
+
+  <div class="head">
+    <h1>Análisis de precios unitarios de construcción en RD</h1>
+    <p class="lead">{n} partidas de obra, cada una con lo que lleva, cómo se mide y su dibujo. El precio por unidad y el desglose completo están en la app de Precios Obra, gratis.</p>
+    <a class="cta" href={`${APP}/precios-obra/analisis`}>Abrir el catálogo de análisis →</a>
+  </div>
+
+  <ul class="caps">
+    {datos.capitulos.map((c) => <li><a href={`#${c.slug}`}>{c.nombre} <small>{c.partidas.length}</small></a></li>)}
+  </ul>
+
+  {datos.capitulos.map((c) => (
+    <section id={c.slug}>
+      <h2>{c.nombre} <small>{c.partidas.length}</small></h2>
+      <ul class="partidas">
+        {c.partidas.map((p) => <li><a href={`/analisis/${p.slug}/`}><small>{p.codigo}</small>{p.descripcion}</a></li>)}
+      </ul>
+    </section>
+  ))}
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 13px; color: var(--muted); padding: 22px 0 0; }
+  .crumb a { color: var(--muted); text-decoration: none; }
+  .crumb span { margin: 0 4px; }
+  .head { padding: 10px 0 6px; }
+  h1 { font-size: clamp(28px, 4.6vw, 38px); line-height: 1.1; letter-spacing: -.025em; margin: 8px 0 0; }
+  .lead { font-size: 16px; color: var(--ink-2); margin: 12px 0 18px; max-width: 66ch; }
+  .cta { display: inline-block; background: var(--brand); color: #fff; text-decoration: none; font-weight: 700; font-size: 15px; padding: 12px 20px; border-radius: 12px; box-shadow: 0 10px 24px -10px rgba(240,105,30,.6); }
+  .cta:hover { background: var(--brand-deep); color: #fff; }
+  ul.caps { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  ul.caps a { display: inline-block; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 6px 12px; font-size: 13.5px; text-decoration: none; color: var(--ink-2); }
+  ul.caps a:hover { border-color: var(--brand); color: var(--brand-deep); }
+  ul.caps small, h2 small { font: 500 11px 'DM Mono', monospace; color: var(--muted); margin-left: 4px; }
+  section { margin-top: 36px; scroll-margin-top: 80px; }
+  h2 { font-size: 21px; letter-spacing: -.015em; margin: 0; }
+  ul.partidas { list-style: none; padding: 0; margin: 10px 0 0; columns: 2 320px; column-gap: 28px; }
+  ul.partidas li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  ul.partidas a { color: var(--ink); text-decoration: none; }
+  ul.partidas a:hover { color: var(--brand-deep); text-decoration: underline; }
+  ul.partidas small { font: 500 11px 'DM Mono', monospace; color: var(--muted); margin-right: 7px; }
+</style>
