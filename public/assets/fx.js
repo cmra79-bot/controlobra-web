@@ -205,68 +205,7 @@
     };
   }
 
-  /* ════════════════════ 2. RED DE PARTÍCULAS (canvas 2D) ════════════════════ */
-  function Net(canvas, opt) {
-    var ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    var pts = [], w = 0, h = 0;
-    var link = opt.link || 130;
-    function resize() {
-      var r = canvas.getBoundingClientRect();
-      w = r.width; h = r.height;
-      canvas.width = Math.round(w * DPR); canvas.height = Math.round(h * DPR);
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      var n = Math.round(clamp((w * h) / (opt.density || 14000), 12, MOBILE ? (opt.maxMobile || 36) : (opt.max || 90)));
-      while (pts.length < n) pts.push({
-        x: Math.random() * w, y: Math.random() * h,
-        vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
-        r: Math.random() * 1.4 + .5, o: Math.random() < .28
-      });
-      pts.length = n;
-    }
-    resize();
-    function draw(moving) {
-      ctx.clearRect(0, 0, w, h);
-      var rect = canvas.getBoundingClientRect();
-      var mx = mouse.px - rect.left, my = mouse.py - rect.top;
-      var i, j, a, b, dx, dy, d2, L2 = link * link;
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        if (moving) {
-          a.x += a.vx; a.y += a.vy;
-          if (a.x < -10) a.x = w + 10; else if (a.x > w + 10) a.x = -10;
-          if (a.y < -10) a.y = h + 10; else if (a.y > h + 10) a.y = -10;
-          // el mouse empuja suavemente
-          dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
-          if (d2 < 14400 && d2 > 1) { var f = (1 - d2 / 14400) * .6; a.x += dx / Math.sqrt(d2) * f; a.y += dy / Math.sqrt(d2) * f; }
-        }
-      }
-      ctx.lineWidth = 1;
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        for (j = i + 1; j < pts.length; j++) {
-          b = pts[j]; dx = a.x - b.x; dy = a.y - b.y; d2 = dx * dx + dy * dy;
-          if (d2 < L2) {
-            var al = (1 - d2 / L2) * (opt.lineAlpha || .18);
-            ctx.strokeStyle = (a.o || b.o) ? 'rgba(242,107,31,' + al * 1.4 + ')' : 'rgba(200,207,215,' + al + ')';
-            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-          }
-        }
-        // líneas hacia el mouse: la red "te reconoce"
-        dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
-        if (d2 < 32400) {
-          ctx.strokeStyle = 'rgba(255,162,101,' + (1 - d2 / 32400) * .35 + ')';
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke();
-        }
-      }
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        ctx.fillStyle = a.o ? 'rgba(242,107,31,.9)' : 'rgba(255,255,255,.55)';
-        ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.2832); ctx.fill();
-      }
-    }
-    return { resize: resize, draw: draw };
-  }
+  /* 2. La red de partículas vive en /assets/fx-net.js (toda la página). */
 
   /* ════════════════════ 3. MONTAJE ════════════════════ */
   var hero = document.querySelector('.hero');
@@ -280,32 +219,20 @@
   if (hero) {
     var host = hero.querySelector('.hero-blobs') || hero;
     var cOrbs = document.createElement('canvas'); cOrbs.className = 'fx-orbs'; cOrbs.setAttribute('aria-hidden', 'true');
-    var cNet = document.createElement('canvas'); cNet.className = 'fx-net'; cNet.setAttribute('aria-hidden', 'true');
-    host.appendChild(cOrbs); host.appendChild(cNet);
+    // La red de partículas ya no va por sección: fx-net.js la pone fija detrás de toda la página.
+    host.appendChild(cOrbs);
     try { orbs = Orbs(cOrbs); } catch (e) { orbs = null; }
     if (orbs) hero.classList.add('fx-on'); else cOrbs.remove();
-    var heroNet = Net(cNet, { density: 15000, max: 85, maxMobile: 34, link: MOBILE ? 110 : 140, lineAlpha: .16 });
     heroH = hero.offsetHeight || 1;
     addLayer({
       el: hero,
       tick: function (t, moving) {
         var s = clamp(window.scrollY / Math.max(1, window.innerHeight), 0, 1.2);
         if (orbs) orbs.draw(moving ? t : 8.0, mouse.sx, mouse.sy, s);
-        if (heroNet) heroNet.draw(moving);
       },
-      resize: function () { if (orbs) orbs.resize(); if (heroNet) heroNet.resize(); heroH = hero.offsetHeight || 1; }
+      resize: function () { if (orbs) orbs.resize(); heroH = hero.offsetHeight || 1; }
     });
   }
-
-  ['.metrics', '.cta-final'].forEach(function (sel) {
-    var sec = document.querySelector(sel);
-    if (!sec) return;
-    var c = document.createElement('canvas'); c.className = 'fx-net fx-net-sec'; c.setAttribute('aria-hidden', 'true');
-    sec.insertBefore(c, sec.firstChild);
-    var n = Net(c, { density: 18000, max: 60, maxMobile: 22, link: 120, lineAlpha: .13 });
-    if (!n) return;
-    addLayer({ el: sec, tick: function (t, moving) { n.draw(moving); }, resize: n.resize });
-  });
 
   /* ════════════════════ 4. SCROLL ════════════════════ */
   var bar = document.createElement('div'); bar.id = 'fx-progress'; bar.setAttribute('aria-hidden', 'true');
