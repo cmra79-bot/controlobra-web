@@ -39,6 +39,28 @@
 
   var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
 
+
+  /* ════════════════════ 0. TITULAR DEL HERO EN 2 LÍNEAS ════════════════════
+     Ajusta el tamaño para que la línea 1 llene el ancho sin pasarse, con la
+     fuente que el navegador haya cargado de verdad. Así el titular queda
+     siempre en 2 líneas y no brinca cuando cambia la palabra rotativa. */
+  (function fitH1() {
+    var h = document.querySelector('.hero h1.h1-2l');
+    if (!h) return;
+    var l1 = h.querySelector('.l1');
+    function fit() {
+      if (window.innerWidth < 768) { h.style.fontSize = ''; return; }
+      h.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(h).fontSize);
+      var r = document.createRange(); r.selectNodeContents(l1);
+      var w = r.getBoundingClientRect().width, avail = h.clientWidth;
+      if (w > 0 && avail > 0) h.style.fontSize = Math.min(76, fs * (avail * .985) / w).toFixed(2) + 'px';
+    }
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 100); });
+  })();
+
   /* ════════════════════ 1. ESFERAS 3D (WebGL) ════════════════════ */
   var FRAG = [
     'precision highp float;',

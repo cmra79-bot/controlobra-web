@@ -1199,6 +1199,19 @@
     .wa-fab::before{ animation: none }
     .wa-fab{ transition: none }
   }
+  /* Titular del hero: siempre 2 líneas fijas (pedido de Carlos 21-nov-2026).
+     Línea 1 fija y línea 2 con la palabra rotativa; el tamaño se calcula para que
+     la línea 1 quepa en el ancho disponible, así nunca brinca a 3 líneas. */
+  @media (min-width: 768px){
+    .hero h1.h1-2l{ font-size: clamp(26px, calc((min(100vw, 1280px) - 64px) / 22.6), 76px); max-width:none }
+    .hero h1.h1-2l .l1, .hero h1.h1-2l .l2{ display:block; white-space:nowrap }
+    .hero p.lead{ max-width: 1060px }
+    .hero .hero-kicker{ max-width: 1060px }
+  }
+  /* En el celular: la palabra rotativa va en su propia línea, así el alto no cambia */
+  @media (max-width: 767px){
+    .hero h1.h1-2l .rot{ display:block; width:max-content }
+  }
   /* ═══════════════ MODO OSCURO FUTURISTA (21-nov-2026) ═══════════════
      Toda la página sobre fondo casi negro. Las secciones quedan transparentes
      y debajo vive un fondo fijo con rejilla técnica + auroras naranjas que se
@@ -1518,12 +1531,12 @@ const html = `
       Tus presupuestos con IA — ahora 10× más rápidos
       <span class="arr">→</span>
     </div>
-    <h1>El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b> de <span class="rot" id="rot">
+    <h1 class="h1-2l"><span class="l1">El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b></span> <span class="l2">de <span class="rot" id="rot">
       <span class="on">vivienda residencial.</span>
       <span>vivienda vertical.</span>
       <span>obra horizontal.</span>
       <span>desarrollos turísticos.</span>
-    </span></h1>
+    </span></span></h1>
     <p class="hero-kicker" style="margin:0 0 14px; font-size:15px; color:var(--muted); letter-spacing:-.01em">Toda tu obra en una sola mano — la dirección de proyectos ve <b style="color:#fff">lo que pasa hoy</b> y decide <span class="serif" style="color:var(--orange)">en el momento justo</span>, no cuando ya es tarde.</p>
     <p class="lead">De la cotización al cierre de obra: presupuesto, control de costos, cubicaciones y gestión — ahora con <b style="color:#fff; font-weight:700">inteligencia artificial</b> que te ayuda a presupuestar, detectar desviaciones y redactar informes en minutos.</p>
     <div class="trust">
