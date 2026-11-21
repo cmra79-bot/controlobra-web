@@ -34,6 +34,11 @@ retomás este proyecto después de un tiempo, **leé este archivo primero**.
 
 ---
 
+> **Plan vigente (21-nov-2026):** `controlobra.ai` pasa a ser el único sitio para Google
+> (precios, guías y los ~1.191 análisis que se mudan desde la app) y cada página es un
+> anzuelo hacia `app.controlobra.ai`. Decisiones, fases y estado en
+> `PRECIOS_OBRA.md` §10 «Plan Google → Precios Obra» del repo **APP-CMP**.
+
 ## 1. Qué es esto y qué NO es
 
 **`controlobra.ai` = sitio de marketing + motor de SEO.** Proyecto Astro estático,
