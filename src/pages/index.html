@@ -1382,6 +1382,113 @@
     .fx-words .fx-w{opacity:1; transform:none; filter:none; transition:none}
     .reveal, .reveal-stagger > *{opacity:1 !important; transform:none !important; transition:none !important}
   }
+  /* ═══════════════ DEMO 3D (ver /assets/demo3d.js) ═══════════════ */
+  .d3 .sec-h{max-width:780px}
+  .d3-grid{display:grid; grid-template-columns: minmax(0,1.55fr) minmax(0,1fr); gap:20px; align-items:stretch}
+  .d3-stage{position:relative; min-height:540px; border-radius:24px; overflow:hidden; isolation:isolate;
+    background:
+      radial-gradient(ellipse 60% 55% at 50% 62%, rgba(242,107,31,.13), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(73,112,201,.10), transparent 70%),
+      linear-gradient(180deg, rgba(14,18,26,.92), rgba(7,9,13,.96));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.07), inset 0 1px 0 rgba(255,255,255,.06), 0 50px 90px -40px rgba(242,107,31,.28), 0 30px 60px -30px rgba(0,0,0,.8)}
+  .d3-stage::after{content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit; z-index:3;
+    background: linear-gradient(90deg, transparent, rgba(242,107,31,.55), transparent) top/70% 1px no-repeat}
+  .d3-canvas{position:absolute; inset:0; width:100%; height:100%; display:block; touch-action: pan-y; cursor:grab; outline:none; z-index:1}
+  .d3-canvas:active{cursor:grabbing}
+  .d3-canvas:focus-visible{box-shadow: inset 0 0 0 2px rgba(255,162,101,.7)}
+  .d3-steps{position:absolute; left:16px; right:16px; top:16px; z-index:2; display:flex; gap:6px; flex-wrap:wrap; pointer-events:none}
+  .d3-steps button{pointer-events:auto; display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px 0 10px; border-radius:99px;
+    border:1px solid rgba(255,255,255,.1); background: rgba(10,13,19,.66); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color:#9AA1AB; font: 700 12.5px/1 Manrope, system-ui, sans-serif; cursor:pointer; transition: color .25s, border-color .25s, background .25s, box-shadow .25s}
+  .d3-steps button span{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:#6B7280; transition: color .25s}
+  .d3-steps button:hover{color:#fff; border-color: rgba(255,255,255,.22)}
+  .d3-steps button.done{color:#C8CFD7}
+  .d3-steps button.done span{color: var(--orange-2)}
+  .d3-steps button[aria-selected="true"]{color:#fff; border-color: rgba(242,107,31,.7); background: rgba(242,107,31,.16);
+    box-shadow: 0 0 0 1px rgba(242,107,31,.25), 0 0 22px -4px rgba(242,107,31,.6)}
+  .d3-steps button[aria-selected="true"] span{color: var(--orange-2)}
+  .d3-hint{position:absolute; left:50%; top:62px; transform:translateX(-50%); z-index:2; pointer-events:none;
+    display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:99px; font-size:12px; font-weight:700; color:#C8CFD7;
+    background: rgba(10,13,19,.6); border:1px solid rgba(255,255,255,.08); transition: opacity .5s; animation: d3Hint 2.6s ease-in-out infinite}
+  .d3-hint svg{color: var(--orange-2)}
+  .d3-hint.gone{opacity:0}
+  @keyframes d3Hint{0%,100%{transform:translateX(-50%)} 50%{transform:translateX(calc(-50% + 6px))}}
+  .d3-cap{position:absolute; left:18px; bottom:72px; z-index:2; pointer-events:none; max-width:70%;
+    font-size:13.5px; font-weight:600; color:#E8EAEE; text-shadow: 0 2px 12px rgba(0,0,0,.8)}
+  .d3-tip{position:absolute; left:0; top:0; z-index:4; pointer-events:none; max-width:260px;
+    padding:9px 12px 9px 26px; border-radius:12px; background: rgba(10,13,19,.92); border:1px solid rgba(255,255,255,.12);
+    box-shadow: 0 14px 30px -10px rgba(0,0,0,.8); font-size:12.5px; font-weight:800; color:#fff; line-height:1.35}
+  .d3-tip span{font-family:'JetBrains Mono', monospace; font-weight:500; font-size:11.5px; color:#C8CFD7}
+  .d3-tip i{position:absolute; left:11px; top:13px; width:8px; height:8px; border-radius:2px}
+  .d3-ctrls{position:absolute; left:14px; right:14px; bottom:14px; z-index:2; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:10px 12px; border-radius:16px; background: rgba(10,13,19,.7); border:1px solid rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px)}
+  .d3-area{flex:1; min-width:180px; display:flex; align-items:center; gap:10px; font-size:12.5px; font-weight:700; color:#9AA1AB}
+  .d3-area b{font-family:'JetBrains Mono', monospace; color:#fff; min-width:6.2ch}
+  .d3-area input{flex:1; min-width:80px; appearance:none; -webkit-appearance:none; height:5px; border-radius:99px; outline:none; cursor:pointer;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--p,14%), rgba(255,255,255,.12) var(--p,14%))}
+  .d3-area input::-webkit-slider-thumb{appearance:none; -webkit-appearance:none; width:20px; height:20px; border-radius:99px; background:#fff; border:3px solid var(--orange); box-shadow: 0 0 14px rgba(242,107,31,.6)}
+  .d3-area input::-moz-range-thumb{width:16px; height:16px; border-radius:99px; background:#fff; border:3px solid var(--orange)}
+  .d3-area input:focus-visible{box-shadow: 0 0 0 3px rgba(255,162,101,.4)}
+  .d3-seg{display:inline-flex; padding:3px; border-radius:99px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08)}
+  .d3-seg button{height:30px; padding:0 13px; border-radius:99px; border:0; background:transparent; color:#9AA1AB; font: 700 12.5px/1 Manrope, system-ui, sans-serif; cursor:pointer; transition: background .2s, color .2s}
+  .d3-seg button[aria-pressed="true"]{background:#F26B1F; color:#fff; box-shadow: 0 6px 18px -6px rgba(242,107,31,.7)}
+
+  .d3-panel{display:flex; flex-direction:column; padding:20px; border-radius:24px; color:#fff;
+    background: linear-gradient(165deg, rgba(27,32,41,.82), rgba(10,13,18,.92));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.07), inset 0 1px 0 rgba(255,255,255,.07), 0 40px 80px -40px rgba(0,0,0,.8)}
+  .d3-ph{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .d3-ph .t{font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#9AA3B2}
+  .d3-live{display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono', monospace; font-size:10.5px; color:#7DD3A8}
+  .d3-live b{width:6px; height:6px; border-radius:99px; background:#22C55E; box-shadow: 0 0 8px rgba(34,197,94,.8)}
+  .d3-dims{margin:12px 0 14px; font-size:14px; color:#C8CFD7}
+  .d3-dims b{color:#fff; font-family:'JetBrains Mono', monospace; font-weight:700}
+  .d3-head, .d3-row{display:grid; grid-template-columns: 12px minmax(0,1fr) 92px 104px; gap:10px; align-items:center}
+  .d3-head{grid-template-columns: minmax(0,1fr) 92px 104px; padding:0 10px 8px 32px; font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#6B7280; border-bottom:1px solid rgba(255,255,255,.07)}
+  .d3-head span:not(:first-child), .d3-row .q, .d3-row .m{text-align:right}
+  .d3-rows{display:flex; flex-direction:column; gap:2px; margin:6px 0 10px}
+  .d3-row{width:100%; padding:9px 10px; border:1px solid transparent; border-radius:11px; background:transparent; color:#E8EAEE; text-align:left; cursor:pointer;
+    font: 600 13px/1.25 Manrope, system-ui, sans-serif; transition: background .2s, border-color .2s}
+  .d3-row i{width:10px; height:10px; border-radius:3px; background: var(--c); box-shadow: 0 0 10px -1px var(--c)}
+  .d3-row .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .d3-row .q, .d3-row .m{font-family:'JetBrains Mono', monospace; font-size:12px; font-variant-numeric: tabular-nums; white-space:nowrap}
+  .d3-row .q{color:#C8CFD7}
+  .d3-row .m{color:#fff; font-weight:700}
+  .d3-row:hover, .d3-row.on{background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.1)}
+  .d3-row.on{border-color: color-mix(in srgb, var(--c) 55%, transparent)}
+  .d3-row:focus-visible{outline:2px solid rgba(255,162,101,.7); outline-offset:1px}
+  .d3-total{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-top:auto; padding:14px 10px 4px; border-top:1px solid rgba(255,255,255,.1)}
+  .d3-total span{font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#9AA1AB}
+  .d3-total b{font-family:'JetBrains Mono', monospace; font-size: clamp(20px, 2.2vw, 26px); font-weight:800; font-variant-numeric: tabular-nums; color:#fff; transition: text-shadow .4s, color .4s}
+  .d3.d3-priced .d3-total b{color:#FFA265; text-shadow: 0 0 26px rgba(242,107,31,.55)}
+  .d3-note{margin:8px 10px 14px; font-size:11.5px; color:#7C8290; line-height:1.45}
+  .d3-cta{align-self:stretch; justify-content:center; height:44px}
+  @media (max-width: 980px){
+    .d3-grid{grid-template-columns:1fr}
+    .d3-stage{min-height:0; height: clamp(420px, 108vw, 540px)}
+  }
+  @media (max-width: 560px){
+    .d3-stage{border-radius:18px}
+    .d3-steps{left:10px; right:10px; top:10px; gap:4px}
+    .d3-steps button{height:28px; padding:0 9px 0 8px; font-size:11.5px; gap:5px}
+    .d3-steps button span{display:none}
+    .d3-hint{top:50px}
+    .d3-cap{display:none}
+    .d3-ctrls{left:8px; right:8px; bottom:8px; padding:7px 8px 7px 12px; gap:8px; flex-wrap:nowrap}
+    .d3-area{min-width:0; gap:8px; font-size:0}
+    .d3-area b{font-size:12px; min-width:5.6ch}
+    .d3-seg button{height:28px; padding:0 10px; font-size:12px}
+    .d3-panel{padding:16px 12px; border-radius:18px}
+    .d3-head{grid-template-columns: minmax(0,1fr) auto; padding-left:28px}
+    .d3-head span:nth-child(2){display:none}
+    .d3-row{grid-template-columns: 10px minmax(0,1fr) auto; row-gap:2px; padding:8px 10px}
+    .d3-row i{grid-row: 1 / span 2}
+    .d3-row .q{grid-column:2; grid-row:2; text-align:left; font-size:11px; color:#9AA1AB}
+    .d3-row .m{grid-column:3; grid-row: 1 / span 2; font-size:12px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .d3-hint{animation:none}
+  }
 </style>
 <script>
   /* Anti scroll-restoration. Bombardea scroll=0 cada 20ms durante 1.2s o hasta
@@ -1490,6 +1597,7 @@ const html = `
       <div class="nm">MANESTRO<small>P · R · O</small></div>
     </a>
     <div class="nav-links">
+      <a href="#demo-3d">Demo 3D</a>
       <a href="#modulos">Módulos</a>
       <a href="#flujo">Cómo funciona</a>
       <a href="#precios-obra">Precios Obra</a>
@@ -1648,6 +1756,50 @@ const html = `
     <div class="metric reveal">
       <div class="v"><span class="count" data-to="100">0</span>%</div>
       <div class="l">trazabilidad entre presupuesto, obra y cobro</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DEMO 3D (ver /assets/demo3d.js) ─── -->
+<section class="d3" id="demo-3d" aria-labelledby="d3-title">
+  <div class="container">
+    <div class="sec-h reveal">
+      <div class="sec-tag"><span class="d"></span>Demo en vivo · 3D</div>
+      <h2 id="d3-title">Gira la obra. <b>Manestro la mide</b> y la <span class="serif">presupuesta.</span></h2>
+      <p>Del plano al modelo 3D, de cada muro a su cantidad y de cada cantidad a su precio. Arrastra para girar la casa, toca cualquier elemento y cambia el tamaño: todo se vuelve a medir al instante.</p>
+    </div>
+    <div class="d3-grid reveal">
+      <div class="d3-stage">
+        <div class="d3-steps" role="tablist" aria-label="Pasos del demo">
+          <button type="button" role="tab" data-step="0"><span>01</span>Plano</button>
+          <button type="button" role="tab" data-step="1"><span>02</span>Modelo 3D</button>
+          <button type="button" role="tab" data-step="2"><span>03</span>Medición</button>
+          <button type="button" role="tab" data-step="3"><span>04</span>Presupuesto</button>
+        </div>
+        <canvas class="d3-canvas" tabindex="0" role="img" aria-label="Modelo 3D de una casa de ejemplo. Arrastra o usa las flechas para girarla."></canvas>
+        <div class="d3-hint" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Arrastra para girar</div>
+        <div class="d3-tip" hidden></div>
+        <div class="d3-cap" aria-live="polite"></div>
+        <div class="d3-ctrls">
+          <label class="d3-area">Área <b>80 m²</b><input type="range" min="60" max="200" step="5" value="80" aria-label="Área de la casa en metros cuadrados" style="--p: 14.3%"/></label>
+          <div class="d3-seg" role="group" aria-label="Niveles">
+            <button type="button" data-lv="1" aria-pressed="true">1 nivel</button>
+            <button type="button" data-lv="2" aria-pressed="false">2 niveles</button>
+          </div>
+        </div>
+      </div>
+      <aside class="d3-panel" aria-label="Presupuesto en vivo">
+        <div class="d3-ph">
+          <span class="t">Presupuesto en vivo</span>
+          <span class="d3-live"><b></b>medido del modelo</span>
+        </div>
+        <div class="d3-dims">Casa de <b>10,00 × 8,00 m</b> · 1 nivel</div>
+        <div class="d3-head"><span>Partida</span><span>Cantidad</span><span>Importe</span></div>
+        <div class="d3-rows"></div>
+        <div class="d3-total"><span>Total · 8 partidas</span><b>RD$ —</b></div>
+        <p class="d3-note">Precios de referencia de ejemplo. En Manestro usas tus propios análisis de costo y precios vigentes.</p>
+        <button class="btn orange d3-cta" type="button" data-demo>Quiero verlo con mi plano</button>
+      </aside>
     </div>
   </div>
 </section>
@@ -3087,5 +3239,6 @@ _demoStyle.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
 document.head.appendChild(_demoStyle);
 </script>
 <script src="/assets/fx.js" defer></script>
+<script src="/assets/demo3d.js" defer></script>
 </body>
 </html>
