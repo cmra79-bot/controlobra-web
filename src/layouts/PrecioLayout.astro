@@ -27,6 +27,36 @@ const {
 const site = 'https://controlobra.ai'
 const canonical = new URL(canonicalPath, site).href
 
+// Marca «Precios Obra» en el título de todas las páginas (plan Google, Fase 5).
+const tituloFinal = /precios\s?obra/i.test(title) ? title : `${title} | Precios Obra`
+
+// Quién publica el sitio (Fase 5): Google lo usa para el nombre del sitio y el
+// logo en el resultado. Va en todas las páginas, junto a lo que mande cada una.
+const marcaLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${site}/#organizacion`,
+    name: 'Precios Obra',
+    alternateName: 'PreciosObra',
+    url: `${site}/`,
+    logo: `${site}/assets/logo-icon-hd.png`,
+    description: 'Precios de construcción de República Dominicana por zona, análisis de precios unitarios y calculadora de obra, gratis.',
+    areaServed: { '@type': 'Country', name: 'República Dominicana' },
+    parentOrganization: { '@type': 'Organization', name: 'ControlObra', url: `${site}/` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${site}/#sitio`,
+    name: 'Precios Obra',
+    alternateName: ['PreciosObra', 'ControlObra'],
+    url: `${site}/`,
+    inLanguage: 'es-DO',
+    publisher: { '@id': `${site}/#organizacion` },
+  },
+]
+
 const migasLd = breadcrumbs?.length
   ? {
       '@context': 'https://schema.org',
@@ -44,6 +74,7 @@ const migasLd = breadcrumbs?.length
 const bloques = [
   ...(Array.isArray(jsonld) ? jsonld : jsonld ? [jsonld] : []),
   ...(migasLd ? [migasLd] : []),
+  ...marcaLd,
 ]
 const jsonldFinal = bloques.length ? (bloques.length === 1 ? bloques[0] : bloques) : null
 const ogImage = `${site}/assets/og-image.png`
@@ -57,7 +88,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title}</title>
+  <title>{tituloFinal}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
   <link rel="alternate" hreflang="es-do" href={canonical} />
@@ -66,13 +97,13 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="es_DO" />
-  <meta property="og:site_name" content="PreciosObra · ControlObra" />
-  <meta property="og:title" content={title} />
+  <meta property="og:site_name" content="Precios Obra" />
+  <meta property="og:title" content={tituloFinal} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
+  <meta name="twitter:title" content={tituloFinal} />
   <meta name="twitter:description" content={description} />
 
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png" />
@@ -92,7 +123,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
     <div class="wrap bar">
       <a class="brand" href="/precios/">
         <img src="/assets/logo-icon.png" alt="" width="38" height="38" />
-        <span class="brand-tx">PreciosObra<small>REPÚBLICA DOMINICANA</small></span>
+        <span class="brand-tx">Precios Obra<small>REPÚBLICA DOMINICANA</small></span>
       </a>
       <nav class="nav">
         <a href="/precios/">Catálogo</a>
@@ -117,7 +148,7 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
 
   <footer class="foot">
     <div class="wrap">
-      <p><strong>PreciosObra</strong> · Datos abiertos de construcción de República Dominicana · un producto de ControlObra.</p>
+      <p><strong>Precios Obra</strong> · Datos abiertos de construcción de República Dominicana · un producto de ControlObra.</p>
       <p class="tiny">Precios referenciales aportados por la comunidad técnica del país, no cotizaciones formales. <a href="/metodologia/">Cómo calculamos los precios</a>.</p>
     </div>
   </footer>
