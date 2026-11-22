@@ -1483,8 +1483,13 @@
     background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 15%, rgba(255,255,255,.22) 50%, rgba(255,255,255,.05) 85%, transparent 100%);
     box-shadow:none}
   /* Etiquetas de sección: vidrio gris */
-  html[data-theme="dark"] .sec-tag{background: var(--tone-soft) !important; color: var(--tone-txt); border-color: var(--tone-line); box-shadow:none}
-  html[data-theme="dark"] .sec-tag .d{background:#8A93A1}
+  /* Etiquetas de sección: protagonistas (pedido de Carlos 22-nov-2026).
+     Píldora oscura con borde naranja, número en naranja y nombre en blanco. */
+  html[data-theme="dark"] .sec-tag{background:#0E1219 !important; color:#fff; border:1px solid rgba(242,107,31,.7);
+    box-shadow: 0 0 24px -6px rgba(242,107,31,.5); font-size:12.5px; padding:8px 16px; letter-spacing:.14em; font-weight:800}
+  html[data-theme="dark"] .sec-tag .d{background:#F26B1F; box-shadow:0 0 8px rgba(242,107,31,.8)}
+  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq) .sec-tag::before{
+    color:#F26B1F; opacity:1; padding-right:10px; margin-right:4px; border-right:1px solid rgba(255,255,255,.18)}
   /* Tarjetas: borde neutro; el naranja aparece al pasar el mouse */
   html[data-theme="dark"] .prob::before{background: linear-gradient(90deg, rgba(255,255,255,.18), transparent); opacity:1}
   html[data-theme="dark"] .prob:hover::before{background: linear-gradient(90deg, var(--orange), transparent)}
