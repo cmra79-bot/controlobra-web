@@ -1,4 +1,5 @@
 ---
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
@@ -148,6 +149,7 @@ const CATALOGO = [
   <p class="eyebrow">Precios de construcción · República Dominicana</p>
   <h1>{data.h1}</h1>
   <p class="lead">{data.intro}</p>
+  <BotonApp href={`https://app.controlobra.ai/precios-obra?q=${encodeURIComponent((data.queries && data.queries[0]) || data.nombre)}`} texto={`Ver precios de ${data.nombre.toLowerCase()} por zona y suplidor`} />
 
   <NotaMoneda />
   {data.nProductos > 0 ? (
@@ -252,7 +254,7 @@ const CATALOGO = [
     </section>
   )}
 
-  <CtaCalculadora />
+  <CtaCalculadora link={`https://app.controlobra.ai/precios-obra?q=${encodeURIComponent((data.queries && data.queries[0]) || data.nombre)}`} linkTexto={`o compara precios de ${data.nombre.toLowerCase()} por zona ↗`} />
 
   <AnalisisRelacionados titulo={`Partidas que llevan ${data.nombre.toLowerCase()}`} sub="Análisis de precio unitario con su dibujo y lo que incluye." lista={usan.lista} total={usan.total} />
 

@@ -1,4 +1,5 @@
 ---
+import BotonApp from '../../../components/BotonApp.astro'
 import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
@@ -34,6 +35,7 @@ const APP = 'https://app.controlobra.ai/precios-obra'
     <span class="tipo" style={`--tc:${est.color};--tb:${est.bg}`}>{est.label}</span>
     <h1>Precios de {data.nombre} en República Dominicana</h1>
     <p class="lead">{data.intro}</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra" texto="Buscar cualquier precio en la app" />
     <NotaMoneda />
     <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.mostrados} principales de {data.total} con precio</div>
   </div>

@@ -14,6 +14,7 @@
  * (formaleta + desencofrado + malla + colocación) cotizado por la
  * comunidad, no una estimación armada en esta página.
  */
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
@@ -89,6 +90,7 @@ const relacionados = await analisisQueDicen(/^losa (maciza|aligerada|inclinada|m
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta echar el plato en RD?</h1>
   <p class="lead">"Echar el plato" es vaciar la losa de techo — una de las partidas más caras y críticas de la obra. Acá está el precio real del subcontrato llave en mano, por m² y según la altura de la construcción.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra/analisis?q=losa" texto="Ver los análisis de losas con precio" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>

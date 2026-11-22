@@ -1,4 +1,5 @@
 ---
+import BotonApp from '../../../components/BotonApp.astro'
 import PrecioLayout from '../../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../../components/CtaCalculadora.astro'
@@ -39,6 +40,7 @@ const APP = 'https://app.controlobra.ai/precios-obra'
     <span class="tipo" style={`--tc:${tipo.color};--tb:${tipo.bg}`}>{tipo.label}</span>
     <h1>Precios de {data.nombre.toLowerCase()} en República Dominicana</h1>
     <p class="lead">Precios de {data.nombre.toLowerCase()} en RD por zona (Cibao Norte, Sur y Este), según los reportes de la comunidad técnica de Precios Obra.</p>
+  <BotonApp href={`https://app.controlobra.ai/precios-obra?fam=${data.famId}`} texto={`Ver los ${data.total} productos de ${data.nombre.toLowerCase()} en la app`} />
     <NotaMoneda />
     <div class="badge"><span class="dot"></span> Actualizado {data.actualizado} · {data.total} productos con precio</div>
   </div>
@@ -52,11 +54,11 @@ const APP = 'https://app.controlobra.ai/precios-obra'
     </p>
     <TablaPrecios productos={data.productos} />
     {data.truncado && (
-      <a class="ver-todos" href={APP}>Ver los {data.total} productos en la app de Precios Obra ↗</a>
+      <a class="ver-todos" href={`${APP}?fam=${data.famId}`}>Ver los {data.total} productos en la app de Precios Obra ↗</a>
     )}
   </section>
 
-  <CtaCalculadora />
+  <CtaCalculadora link={`https://app.controlobra.ai/precios-obra?fam=${data.famId}`} linkTexto={`o mira los ${data.total} productos en la app ↗`} />
 
   <AnalisisRelacionados titulo={`Partidas que llevan ${data.nombre.toLowerCase()}`} lista={usan.lista} total={usan.total} />
 

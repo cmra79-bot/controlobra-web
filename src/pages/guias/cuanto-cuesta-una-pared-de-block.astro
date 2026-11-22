@@ -7,6 +7,7 @@
  * sus propios resultados; "cuánto cuesta MI pared" exige la cuenta, y esa solo
  * se hace acá. Todos los números salen del catálogo real en tiempo de build.
  */
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
@@ -83,6 +84,7 @@ const relacionados = await analisisQueDicen({ capitulo: 'mamposteria' })
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta una pared de block en RD?</h1>
   <p class="lead">Saber el precio de un block no te dice cuánto sale tu pared. Acá está la cuenta completa del material: cuántos blocks lleva cada metro cuadrado, cuánto cuesta según el espesor que uses y qué falta sumarle.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra/analisis?cap=mamposteria" texto="Ver los análisis de muros con precio" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>

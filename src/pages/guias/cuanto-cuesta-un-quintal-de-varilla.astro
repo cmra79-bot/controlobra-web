@@ -9,6 +9,7 @@
  * por libra, por calibre — y ahí es donde el buscador no puede resumir nada,
  * porque hace falta la cuenta.
  */
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
@@ -86,6 +87,7 @@ const relacionados = await analisisQueDicen(/^acero/i)
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta un quintal de varilla en RD?</h1>
   <p class="lead">La varilla se vende por peso, no por unidad — y ahí está la confusión. Acá está el precio del quintal, cuánto sale la libra, y cuánto pesa (y cuesta) una varilla completa según el calibre.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra?q=varilla" texto="Ver precios de varilla por zona y suplidor" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>

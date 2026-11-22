@@ -1,4 +1,5 @@
 ---
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
@@ -53,6 +54,7 @@ const relacionados = await analisisQueDicen(/^(zapata|columna|viga|losa (maciza|
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta construir una casa en República Dominicana?</h1>
   <p class="lead">Una estimación realista del costo de construir una casa en RD en 2026, con el precio por metro cuadrado según la terminación y ejemplos por tamaño. Los números salen del mismo modelo de la calculadora de ControlObra, con precios reales aportados por la comunidad.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra/calculadora" texto="Calcular el costo de mi casa" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado}</div>

@@ -1,0 +1,36 @@
+---
+// «Qué más puedes hacer en Precios Obra» (plan Google, Fase 4): al pie de
+// todas las páginas, una fila con lo que la app hace y la página no. Cada
+// tarjeta va a la pantalla exacta de la app.
+const APP = 'https://app.controlobra.ai/precios-obra'
+const COSAS = [
+  { ico: '🧮', titulo: 'Calculadora de obra', texto: 'El costo de tu casa o edificio por m², con materiales, mano de obra e indirectos.', href: `${APP}/calculadora` },
+  { ico: '📋', titulo: 'Presupuesto gratis', texto: 'Arma el presupuesto de tu obra con las partidas del catálogo y expórtalo en PDF.', href: `${APP}/presupuestos` },
+  { ico: '📐', titulo: 'Análisis con precio', texto: 'Cada partida con cantidades, rendimientos y precio por zona. Ajústalos a tu obra.', href: `${APP}/analisis` },
+  { ico: '⚖️', titulo: 'Comparar y aportar', texto: 'Compara precios entre zonas y suplidores, y aporta los que conoces.', href: `${APP}/comparar` },
+]
+---
+<section class="franja-po" aria-labelledby="franja-po-h">
+  <h2 id="franja-po-h">Qué más puedes hacer en Precios Obra</h2>
+  <ul>
+    {COSAS.map((c) => (
+      <li><a href={c.href}><span class="ico" aria-hidden="true">{c.ico}</span><b>{c.titulo} →</b><small>{c.texto}</small></a></li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  main.wrap .franja-po { margin-top: 26px; }
+  main.wrap .franja-po h2 { font-size: 16px; margin: 0 0 8px; }
+  .franja-po ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 900px) { .franja-po ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .franja-po a {
+    display: grid; grid-template-columns: auto 1fr; column-gap: 8px; height: 100%; box-sizing: border-box;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 9px 11px;
+    text-decoration: none; color: var(--ink);
+  }
+  .franja-po a:hover { border-color: var(--brand); }
+  .franja-po .ico { grid-row: span 2; font-size: 18px; line-height: 1.2; }
+  .franja-po b { font-size: 13.5px; color: var(--brand-deep); }
+  .franja-po small { font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+</style>
