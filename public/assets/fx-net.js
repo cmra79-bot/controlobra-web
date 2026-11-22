@@ -1,4 +1,5 @@
 /* fx-net.js · red de partículas que se une al cursor, en TODA la página.
+   Blanco suave: el naranja queda para las esferas y los botones.
    Un solo canvas fijo detrás del contenido (no uno por sección): el costo es
    el mismo con una página corta o larga. Pensado para cualquier página del
    sitio: basta con <script src="/assets/fx-net.js" defer></script>.
@@ -73,20 +74,20 @@
         b = pts[j]; dx = a.x - b.x; dy = a.y - b.y; d2 = dx * dx + dy * dy;
         if (d2 < L2) {
           var al = (1 - d2 / L2) * .16;
-          ctx.strokeStyle = (a.o || b.o) ? 'rgba(242,107,31,' + al * 1.4 + ')' : 'rgba(200,207,215,' + al + ')';
+          ctx.strokeStyle = 'rgba(210,216,224,' + al + ')';
           ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
         }
       }
       // líneas hacia el cursor: la red "te reconoce"
       dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
       if (d2 < 32400) {
-        ctx.strokeStyle = 'rgba(255,162,101,' + (1 - d2 / 32400) * .38 + ')';
+        ctx.strokeStyle = 'rgba(235,239,245,' + (1 - d2 / 32400) * .34 + ')';
         ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke();
       }
     }
     for (i = 0; i < pts.length; i++) {
       a = pts[i];
-      ctx.fillStyle = a.o ? 'rgba(242,107,31,.9)' : 'rgba(255,255,255,.55)';
+      ctx.fillStyle = a.o ? 'rgba(255,255,255,.8)' : 'rgba(255,255,255,.45)';
       ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.2832); ctx.fill();
     }
   }
