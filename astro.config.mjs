@@ -13,7 +13,8 @@ const FECHA_BUILD = new Date()
 // editaron, no la del build. Mentirle a Google diciendo que la portada cambia todos los
 // días le enseña a ignorar el lastmod de todo el sitio.
 const ESTATICAS = {
-  '/': new Date('2026-11-21T00:00:00Z'),
+  '/': new Date('2026-11-22T00:00:00Z'),
+  '/manestro/': new Date('2026-11-22T00:00:00Z'),
 }
 
 // Provincias con directorio propio de ferreterías. Las demás se generan igual

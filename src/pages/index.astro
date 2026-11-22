@@ -1,0 +1,95 @@
+---
+// Portada de controlobra.ai = Precios Obra (decisión de Carlos, 22-nov-2026,
+// plan Google Fase 5). La página del ERP Manestro pasó a /manestro/ y se
+// enlaza al final. Compacta: lo más buscado arriba y todo a un clic.
+import PrecioLayout from '../layouts/PrecioLayout.astro'
+import BotonApp from '../components/BotonApp.astro'
+import NotaMoneda from '../components/NotaMoneda.astro'
+import { MATERIALES, getMaterial, getCategorias } from '../lib/precios.js'
+import { getAnalisis } from '../lib/analisis.js'
+
+const PO = 'https://app.controlobra.ai/precios-obra'
+const [cats, analisis, destacados] = await Promise.all([
+  getCategorias(),
+  getAnalisis(),
+  Promise.all(MATERIALES.slice(0, 12).map(async (m) => {
+    const d = await getMaterial(m.slug)
+    return { slug: m.slug, nombre: m.nombre, emoji: m.emoji, unidad: m.unidad, prom: d?.tipico ?? null }
+  })),
+])
+const nAnalisis = analisis.partidas.length
+const GUIAS = [
+  ['cuanto-cuesta-construir-casa-republica-dominicana', 'Cuánto cuesta construir una casa'],
+  ['cuanto-cuesta-una-pared-de-block', 'Cuánto cuesta una pared de block'],
+  ['cuanto-cuesta-echar-el-plato', 'Cuánto cuesta echar el plato'],
+  ['cuanto-cuesta-un-quintal-de-varilla', 'Cuánto cuesta un quintal de varilla'],
+  ['cuanto-cuesta-pintar-una-casa', 'Cuánto cuesta pintar una casa'],
+]
+const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : null
+
+const title = 'Precios Obra: precios de construcción en República Dominicana'
+const description = `Precios de materiales de construcción en RD por zona, ${nAnalisis ? `${nAnalisis.toLocaleString('es-DO')} análisis de precios unitarios, ` : ''}guías de costos y calculadora de obra. Gratis, con datos de la comunidad.`
+---
+<PrecioLayout title={title} description={description} canonicalPath="/">
+  <div class="head">
+    <h1>Precios de construcción en República Dominicana</h1>
+    <p class="lead">Lo que cuesta hoy cada material por zona, cómo se arma el precio de cada partida y cuánto sale tu obra. Datos reales de la comunidad de Precios Obra, gratis.</p>
+    <form class="buscar" action={PO} method="get" role="search">
+      <input type="search" name="q" placeholder="Busca un material: cemento, varilla, block de 6…" aria-label="Buscar un precio" required />
+      <button type="submit">Buscar precio</button>
+    </form>
+    <BotonApp href={`${PO}/calculadora`} texto="O calcula el costo de tu casa" />
+    <NotaMoneda />
+  </div>
+
+  <section>
+    <h2>Los precios más buscados</h2>
+    <ul class="mats">
+      {destacados.map((m) => (
+        <li><a href={`/precios/${m.slug}/`}><span class="e">{m.emoji}</span><b>{m.nombre}</b>{fmt(m.prom) && <small class="tnum">RD${fmt(m.prom)} / {m.unidad}</small>}</a></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="tres">
+    <a class="card" href="/precios/">
+      <b>Catálogo de precios →</b>
+      <small>{cats.length ? `${cats.length} categorías: m` : "M"}ateriales, mano de obra, equipos y subcontratos, por zona.</small>
+    </a>
+    <a class="card" href="/analisis/">
+      <b>Análisis de precios unitarios →</b>
+      <small>{nAnalisis ? `${nAnalisis.toLocaleString('es-DO')} partidas` : 'Las partidas de obra'} con lo que lleva cada una, cómo se mide y su dibujo.</small>
+    </a>
+    <div class="card">
+      <b>Guías de costos</b>
+      <ul>{GUIAS.map(([s, t]) => <li><a href={`/guias/${s}/`}>{t}</a></li>)}</ul>
+    </div>
+  </section>
+
+  <p class="erp">¿Eres constructora? Precios Obra es parte de <a href="/manestro/">Manestro, el ERP para controlar tu obra</a>: presupuesto, compras, almacén y costos.</p>
+</PrecioLayout>
+
+<style>
+  .head { padding-top: 14px; }
+  .buscar { display: flex; gap: 8px; margin-top: 12px; max-width: 680px; }
+  .buscar input { flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 10px 14px; border: 1px solid var(--line-2, var(--line)); border-radius: 11px; background: var(--paper); color: var(--ink); }
+  .buscar input:focus { outline: 2px solid var(--brand); outline-offset: 0; }
+  .buscar button { font: inherit; font-weight: 700; font-size: 14.5px; padding: 10px 16px; border: 0; border-radius: 11px; background: var(--ink); color: var(--bg); cursor: pointer; }
+  ul.mats { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  ul.mats a { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 8px 11px; text-decoration: none; color: var(--ink); }
+  ul.mats a:hover { border-color: var(--brand); }
+  ul.mats .e { grid-row: span 2; font-size: 20px; }
+  ul.mats b { font-size: 14px; }
+  ul.mats small { font: 500 12px 'DM Mono', monospace; color: var(--brand-deep); }
+  .tres { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 760px) { .tres { grid-template-columns: 1fr; } }
+  .card { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; text-decoration: none; color: var(--ink); }
+  a.card:hover { border-color: var(--brand); }
+  .card b { display: block; font-size: 15px; color: var(--brand-deep); margin-bottom: 2px; }
+  .card small { font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+  .card ul { list-style: none; padding: 0; margin: 2px 0 0; font-size: 13.5px; line-height: 1.6; }
+  .card ul a { color: var(--ink); text-decoration: none; }
+  .card ul a:hover { color: var(--brand-deep); text-decoration: underline; }
+  main.wrap .erp { margin-top: 22px; font-size: 13.5px; color: var(--muted); }
+  .erp a { color: var(--brand-deep); font-weight: 600; }
+</style>
