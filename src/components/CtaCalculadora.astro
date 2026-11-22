@@ -1,5 +1,5 @@
 ---
-// CTA naranja a la app de Precios Obra: botón a la calculadora + enlace a la app completa.
+// CTA a la app de Precios Obra: botón a la calculadora + enlace a la app completa.
 const CALC = 'https://app.controlobra.ai/precios-obra/calculadora'
 const APP = 'https://app.controlobra.ai/precios-obra'
 ---
@@ -15,31 +15,35 @@ const APP = 'https://app.controlobra.ai/precios-obra'
 </div>
 
 <style>
+  /* Naranja con medida (22-nov-2026): panel de vidrio oscuro; el naranja queda
+     solo en el botón, que es la acción. */
   .cta {
     margin-top: 44px; padding: 32px 30px; border-radius: 20px;
-    position: relative; overflow: hidden; color: #fff;
-    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark, #C5501A) 100%);
-    box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--brand) 70%, transparent);
+    position: relative; overflow: hidden; color: var(--ink);
+    background: linear-gradient(160deg, rgba(27,32,41,.85), rgba(11,14,19,.9));
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 30px 60px -30px rgba(0,0,0,.8);
   }
   .cta::after {
-    content: ''; position: absolute; right: -60px; top: -70px; width: 230px; height: 230px;
-    background: radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
+    content: ''; position: absolute; right: -80px; top: -90px; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(242,107,31,.14), transparent 65%); pointer-events: none;
   }
   .cta-body { position: relative; }
   .cta h2 { margin: 0 0 8px; font-size: 25px; letter-spacing: -.02em; color: #fff; max-width: 22ch; }
-  .cta p { margin: 0 0 22px; font-size: 15px; color: rgba(255,255,255,.92); }
+  .cta p { margin: 0 0 22px; font-size: 15px; color: var(--ink-2); }
   .cta-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
   .cta-btn {
-    display: inline-flex; align-items: center; gap: 10px; background: #fff; color: var(--brand-dark, #C5501A);
+    display: inline-flex; align-items: center; gap: 10px; background: var(--brand); color: #fff;
     font-weight: 700; font-size: 16px; padding: 14px 26px; border-radius: 12px; text-decoration: none;
-    box-shadow: 0 6px 16px -6px rgba(0,0,0,.35); transition: transform .15s ease;
+    box-shadow: 0 0 0 1px rgba(255,162,101,.35), 0 8px 28px -6px rgba(242,107,31,.55);
+    transition: transform .15s ease, filter .15s ease;
   }
-  .cta-btn:hover { transform: translateY(-2px); }
+  .cta-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
   .cta-btn .arrow { transition: transform .15s ease; }
   .cta-btn:hover .arrow { transform: translateX(4px); }
   .cta-link {
-    color: #fff; font-weight: 600; font-size: 14.5px; text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 1px;
+    color: #E8EAEE; font-weight: 600; font-size: 14.5px; text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,.3); padding-bottom: 1px;
   }
-  .cta-link:hover { border-bottom-color: #fff; }
+  .cta-link:hover { color: var(--brand-deep); border-bottom-color: currentColor; }
 </style>

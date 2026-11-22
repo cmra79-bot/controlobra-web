@@ -301,6 +301,36 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
     main.wrap .lead { font-size: 14.5px; }
     main.wrap section { margin-top: 22px; }
   }
+
+  /* ═══ NARANJA CON MEDIDA (pedido de Carlos, 22-nov-2026) ═══════════════════
+     Mismo criterio que la portada: el naranja #F26B1F queda solo en botones de
+     acción, cifras clave (precios) y una palabra destacada por título.
+     Etiquetas, bordes, enlaces de texto y fondos pasan a gris/blanco suave; el
+     naranja vuelve al pasar el mouse. Va aquí, con el prefijo `main.wrap`, para
+     ganarle a los estilos propios de cada página sin tocarlas una por una. */
+  :root { --tone-line: rgba(255,255,255,.10); --tone-soft: rgba(255,255,255,.05); --tone-txt: #C9CED6; }
+  body::after { opacity: .35; }
+  .foot::before { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 15%, rgba(255,255,255,.22) 50%, rgba(255,255,255,.05) 85%, transparent 100%); }
+  footer.foot a { color: var(--tone-txt); text-decoration: underline; text-decoration-color: rgba(255,255,255,.25); text-underline-offset: 3px; }
+  footer.foot a:hover { color: var(--brand-deep); }
+  /* Etiquetas e insignias: vidrio gris */
+  main.wrap :is(.eyebrow, .gb-eyebrow) { color: #9AA3B2; }
+  main.wrap :is(.pill, .tag) { color: var(--tone-txt); background: var(--tone-soft); box-shadow: inset 0 0 0 1px var(--tone-line); }
+  /* Respuesta directa y filas destacadas: borde y fondo neutros */
+  main.wrap .directa { border-left-color: rgba(255,255,255,.35); }
+  main.wrap tbody tr.destacada { background: rgba(255,255,255,.04); }
+  main.wrap tbody tr:hover { background: rgba(255,255,255,.035); }
+  /* Bloques con fondo naranja suave → vidrio oscuro */
+  main.wrap .guia-banner { background: var(--paper); }
+  main.wrap .bloque-app { background: var(--tone-soft); border-color: var(--tone-line); }
+  /* Enlaces de texto y "Leer →": claros; naranja al pasar el mouse */
+  main.wrap :is(.go, .gb-go, .ver-todos, .todas a, .falta a, .empty a, .cta-link, .mc-cta) { color: #E8EAEE; border-bottom-color: rgba(255,255,255,.3); }
+  main.wrap :is(.ver-todos, .todas a, .falta a, .empty a, .cta-link, .mc-cta):hover,
+  main.wrap :is(.card, .guia-banner):hover :is(.go, .gb-go) { color: var(--brand-deep); }
+  main.wrap p a:not([class]), main.wrap li a:not([class]) { color: #E8EAEE; text-decoration-color: rgba(255,255,255,.3); }
+  main.wrap p a:not([class]):hover, main.wrap li a:not([class]):hover { color: var(--brand-deep); text-decoration-color: currentColor; }
+  /* Chips y tarjetas: borde neutro; naranja tenue solo al pasar el mouse */
+  main.wrap :is(.chip, .card, .cat, .guia-banner, a.esp-card):hover { border-color: rgba(242,107,31,.35); }
   .foot p { margin: 0 0 5px; font-size: 13px; }
   .foot .tiny { font-size: 12px; }
   .foot a { color: var(--brand-deep); text-decoration: none; }
