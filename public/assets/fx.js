@@ -180,12 +180,19 @@
     // halo suave alrededor (premultiplicado), detrás de todo
     '  vec3 col = vec3(0.); float a = 0.;',
     '  for (int i = 0; i < 4; i++){',
+    // aura viva: un resplandor que respira y unas lenguas de luz que giran alrededor
     '    vec3 oc = cen(i) - ro; float b = max(dot(oc, rd), 0.);',
-    '    float e = max(length(oc - rd*b) - rad(i), 0.)/rad(i);',
-    '    float g = exp(-e*5.)*(i == 0 ? .16 : .12);',
-    '    col += vec3(.9, .2, .03)*g; a += g;',
+    '    vec3 pp = rd*b - oc; float dp = length(pp);',
+    '    float e = max(dp - rad(i), 0.)/rad(i), fi = float(i);',
+    '    float ang = atan(dot(pp, vv), dot(pp, uu));',
+    '    float br = 1. + .18*sin(T*1.1 + fi*2.1);',
+    '    float w = .5 + .28*sin(ang*3. + T*.9 + fi*1.7) + .22*sin(ang*5. - T*1.35 + fi*.8);',
+    '    w = max(w, 0.); w *= w*1.6;',
+    '    float g = exp(-e*4.6/br)*(.25 + w*.75)*(i == 0 ? .42 : .3) + exp(-e*1.5/br)*.06;',
+    '    vec3 ac = mix(vec3(.9, .2, .03), vec3(1., .5, .12), .5 + .5*sin(ang*2. + T*.6 + fi));',
+    '    col += ac*g; a += g;',
     '  }',
-    '  a = min(a, .6); col = min(col, vec3(.6));',
+    '  a = min(a, .8); col = min(col, vec3(.8));',
     // pintar de atrás hacia adelante (orden por profundidad)
     '  float last = 1e9;',
     '  for (int k = 0; k < 4; k++){',
