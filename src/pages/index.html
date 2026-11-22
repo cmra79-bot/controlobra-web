@@ -1486,7 +1486,7 @@
       radial-gradient(ellipse 500px 320px at 80% 20%, rgba(255,255,255,.06), transparent 60%),
       linear-gradient(160deg, #1B2029, #0B0E13) !important}
   /* Líneas entre secciones: luz blanca suave, sin resplandor naranja */
-  html[data-theme="dark"] :is(.problem,.modules,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq)::before{
+  html[data-theme="dark"] :is(.problem,.modules,.kb,.how,.po-sec,.day,.roi,.compare,.reports,.ai,.faq)::before{
     background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 15%, rgba(255,255,255,.22) 50%, rgba(255,255,255,.05) 85%, transparent 100%);
     box-shadow:none}
   /* Etiquetas de sección: vidrio gris */
@@ -1540,6 +1540,28 @@
   html[data-theme="dark"] .roi-out{box-shadow: 0 60px 100px -28px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06)}
   html[data-theme="dark"] .roi-out::before{background: radial-gradient(circle, rgba(242,107,31,.16), transparent 60%)}
   html[data-theme="dark"] .po-vis::after{background: radial-gradient(circle, rgba(242,107,31,.14), transparent 60%)}
+
+  /* Naranja con medida en las secciones nuevas (Kubicar, Claude, Informes, tarjetas) */
+  html[data-theme="dark"] .kb-l .c{background: var(--tone-soft); color: var(--tone-txt); box-shadow: inset 0 0 0 1px var(--tone-line)}
+  html[data-theme="dark"] .kb-fmt span{border-color: var(--tone-line)} html[data-theme="dark"] .kb-fmt span b{color:#E8EAEE}
+  html[data-theme="dark"] .kb-vis{box-shadow: 0 40px 90px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04)}
+  html[data-theme="dark"] .kb-bar .ttl b{color:#E8EAEE}
+  html[data-theme="dark"] .kb-ck.on .b{background:#E8EAEE; border-color:#E8EAEE; color:#0B0E13}
+  html[data-theme="dark"] .kb-o .p{color: var(--tone-txt)}
+  html[data-theme="dark"] .kb-card .ey, html[data-theme="dark"] .rn .ey{color:#8A93A1}
+  html[data-theme="dark"] .kb-card li::before{background:#8A93A1}
+  html[data-theme="dark"] .kb-card::after{background: radial-gradient(circle, rgba(255,255,255,.05), transparent 65%)}
+  html[data-theme="dark"] .kb-card{transition: border-color .3s} html[data-theme="dark"] .kb-card:hover{border-color: rgba(242,107,31,.35)}
+  html[data-theme="dark"] .kb-card:hover .ey{color: var(--orange-2)}
+  html[data-theme="dark"] .b-1 .b1-kb{background: var(--tone-soft); border-color: var(--tone-line)}
+  html[data-theme="dark"] .b-1 .b1-kb .k{background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18)}
+  html[data-theme="dark"] .b-1 .b1-kb:hover{border-color: rgba(242,107,31,.45)} html[data-theme="dark"] .b-1 .b1-kb:hover .k{background: var(--orange)}
+  html[data-theme="dark"] .ai-msg .tool{border-color: rgba(255,255,255,.14)} html[data-theme="dark"] .ai-msg .tool b{color:#E8EAEE}
+  html[data-theme="dark"] .ai-claude .url{border-color: var(--tone-line)} html[data-theme="dark"] .ai-claude .url b{color:#E8EAEE}
+  html[data-theme="dark"] .rn.big{background: linear-gradient(150deg, rgba(255,255,255,.07), rgba(255,255,255,.01) 60%), var(--paper); border-color: var(--tone-line)}
+  html[data-theme="dark"] .rn{transition: border-color .3s} html[data-theme="dark"] .rn:hover{border-color: rgba(242,107,31,.35)}
+  html[data-theme="dark"] .rn .qr path{fill:#8A93A1}
+  html[data-theme="dark"] .rn .fx span.on{background:#E8EAEE; border-color:#E8EAEE; color:#0B0E13}
 </style>
 <script>
   /* Anti scroll-restoration. Bombardea scroll=0 cada 20ms durante 1.2s o hasta
