@@ -39,85 +39,181 @@
 
   var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
 
-  /* ════════════════════ 1. ESFERAS 3D (WebGL) ════════════════════ */
+
+  /* ════════════════════ 0. TITULAR DEL HERO EN 2 LÍNEAS ════════════════════
+     Ajusta el tamaño para que la línea 1 llene el ancho sin pasarse, con la
+     fuente que el navegador haya cargado de verdad. Así el titular queda
+     siempre en 2 líneas y no brinca cuando cambia la palabra rotativa. */
+  (function fitH1() {
+    var h = document.querySelector('.hero h1.h1-2l');
+    if (!h) return;
+    var l1 = h.querySelector('.l1');
+    function fit() {
+      if (window.innerWidth < 768) { h.style.fontSize = ''; return; }
+      h.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(h).fontSize);
+      var r = document.createRange(); r.selectNodeContents(l1);
+      var w = r.getBoundingClientRect().width, avail = h.clientWidth;
+      if (w > 0 && avail > 0) h.style.fontSize = Math.min(76, fs * (avail * .985) / w).toFixed(2) + 'px';
+    }
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 100); });
+  })();
+
+
+  /* Títulos de sección: máximo 2 líneas (mismo criterio que el hero).
+     Usan todo el ancho disponible y, si aun así pasan de 2 líneas, se achica
+     la letra de a 1 px hasta que entren (mínimo 26 px). En móvil no se toca. */
+  (function fitTitles() {
+    var hs = Array.prototype.slice.call(document.querySelectorAll(
+      '.sec-h h2, .po-sec h2, .roi h2, .ai h3, .cta-final h2'));
+    if (!hs.length) return;
+    hs.forEach(function (h) { h.classList.add('fx-2l'); h._fs0 = h.style.fontSize; });
+    function lines(h, fs) {
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || fs * 1.08;
+      return Math.round(h.getBoundingClientRect().height / lh);
+    }
+    function fit() {
+      hs.forEach(function (h) {
+        h.style.fontSize = h._fs0 || '';
+        if (window.innerWidth < 768) return;
+        var fs = parseFloat(getComputedStyle(h).fontSize), n = 0;
+        while (lines(h, fs) > 2 && fs > 26 && n++ < 40) { fs -= 1; h.style.fontSize = fs + 'px'; }
+      });
+    }
+    fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 120); });
+  })();
+
+  /* ════════════════════ 1. ESFERAS 3D (WebGL) ════════════════════
+     Esferas analíticas (intersección exacta rayo-esfera, sin raymarching):
+     bordes limpios con antialias por cobertura, sin rayas ni escalones.
+     Material físico: base naranja metálica + capa de laca (clearcoat) con
+     Fresnel de Schlick, reflejos de un estudio fotográfico (softboxes)
+     y de las otras esferas, oclusión entre ellas, tonemap ACES y dither. */
   var FRAG = [
     'precision highp float;',
     'uniform vec2 R; uniform float T; uniform vec2 M; uniform float S;',
-    'const vec3 OR = vec3(0.949, 0.420, 0.122);', // #F26B1F
-    'const vec3 OR2 = vec3(1.0, 0.635, 0.396);', // #FFA265
-    'const vec3 BLU = vec3(0.165, 0.310, 0.627);', // #2A4FA0
-    'vec3 c1, c2, c3, c4;',
-    'float smin(float a, float b, float k){ float h = clamp(.5+.5*(b-a)/k, 0., 1.); return mix(b, a, h) - k*h*(1.-h); }',
-    'float map(vec3 p, out float id){',
-    '  float d1 = length(p-c1) - .66;',
-    '  float d2 = length(p-c2) - .22;',
-    '  float d3 = length(p-c3) - .44;',
-    '  float d4 = length(p-c4) - .12;',
-    '  float d = smin(d1, d2, .45); id = d1 < d2 ? 1. : 2.;',
-    '  if (d3 < d){ d = d3; id = 3.; }',
-    '  if (d4 < d){ d = d4; id = 4.; }',
-    '  return d;',
+    'const vec3 ORL = vec3(0.887, 0.147, 0.0134);', // #F26B1F en lineal
+    'vec3 C0, C1, C2, C3;',
+    'const float R0 = .66, R1 = .22, R2 = .44, R3 = .12;',
+    'vec3 cen(int i){ if (i == 0) return C0; if (i == 1) return C1; if (i == 2) return C2; return C3; }',
+    'float rad(int i){ if (i == 0) return R0; if (i == 1) return R1; if (i == 2) return R2; return R3; }',
+    'float box(vec2 p, vec2 b, float s){ vec2 q = abs(p) - b; float d = length(max(q, 0.)) + min(max(q.x, q.y), 0.); return 1. - smoothstep(-s, s, d); }',
+    // Estudio: fondo casi negro, softbox cálido principal, tira cenital, paneles naranjas atrás.
+    'float rbox(vec2 p, vec2 b, float rr, float s){ vec2 q = abs(p) - b + rr; float d = length(max(q, 0.)) + min(max(q.x, q.y), 0.) - rr; return 1. - smoothstep(-s, s, d); }',
+    'vec3 env(vec3 d, float ro){',
+    '  float s = .05 + ro*.45;',
+    '  float az = atan(d.x, d.z), el = d.y;',
+    '  vec3 c = mix(vec3(.003, .0035, .005), vec3(.02, .022, .028), smoothstep(-.6, 1., el));',
+    '  c += ORL*.05*exp(-abs(el + .1)*6.);',
+    // softbox principal (arriba, un poco a la izquierda): el reflejo blanco grande
+    '  c += vec3(1., .95, .88)*14.*rbox(vec2(az + .15, el - .48), vec2(.34, .2), .1, s);',
+    // tira cenital fina
+    '  c += vec3(.9, .93, 1.)*.8*rbox(vec2(az - .3, el - .9), vec2(1.2, .03), .03, s);',
+    // paneles naranjas detrás: dan el borde de luz de marca
+    '  c += ORL*3.2*rbox(vec2(az + 2.2, el - .05), vec2(.12, .6), .1, s*1.4);',
+    '  c += ORL*2.*rbox(vec2(az - 2.3, el + .05), vec2(.2, .45), .12, s*1.4);',
+    // rebote cálido desde abajo
+    '  c += vec3(1., .55, .25)*.22*smoothstep(-.2, -.9, el);',
+    '  return c;',
     '}',
-    'float mapd(vec3 p){ float i; return map(p, i); }',
-    'vec3 nrm(vec3 p){ vec2 e = vec2(.0015, 0.);',
-    '  return normalize(vec3(mapd(p+e.xyy)-mapd(p-e.xyy), mapd(p+e.yxy)-mapd(p-e.yxy), mapd(p+e.yyx)-mapd(p-e.yyx))); }',
+    'vec3 aces(vec3 x){ return clamp((x*(2.51*x + .03))/(x*(2.43*x + .59) + .14), 0., 1.); }',
+    // Material por esfera: x = es cromo, y = rugosidad de la base, z = laca
+    'vec3 mat(int i){ if (i == 1) return vec3(1., .04, 0.); if (i == 2) return vec3(0., .42, .55); return vec3(0., .2, 1.); }',
+    'vec3 shade(int id, vec3 p, vec3 n, vec3 rd){',
+    '  vec3 m = mat(id);',
+    '  vec3 r = reflect(rd, n);',
+    '  float nv = clamp(dot(n, -rd), 0., 1.);',
+    '  float ao = 1.; float bt = 1e9; vec3 rc = vec3(0.); float rh = 0.;',
+    '  for (int j = 0; j < 4; j++){',
+    '    if (j == id) continue;',
+    '    vec3 dc = cen(j) - p; float l = length(dc), rj = rad(j);',
+    '    ao *= 1. - clamp(dot(n, dc/l), 0., 1.)*rj*rj/(l*l);',
+    '    float b = dot(dc, r), h = b*b - (l*l - rj*rj);',
+    '    if (h > 0. && b > 0.){',
+    '      float tt = b - sqrt(h);',
+    '      if (tt < bt){ bt = tt; vec3 q = p + r*tt; vec3 nq = normalize(q - cen(j)); vec3 r2 = reflect(r, nq);',
+    '        rc = ORL*env(r2, .35)*.9 + env(r2, .02)*(.04 + .96*pow(1. - clamp(dot(nq, -r), 0., 1.), 5.)); rh = 1.; }',
+    '    }',
+    '  }',
+    '  vec3 eRough = mix(env(r, m.y), rc, rh);',
+    '  vec3 eSharp = mix(env(r, .0), rc, rh);',
+    // laca naranja: difuso con luces de estudio + reflejo metálico suave, y encima la laca brillante
+    '  vec3 L1 = normalize(vec3(-.15, .5, .85)), L2 = normalize(vec3(-.85, .05, -.5)), L3 = normalize(vec3(.9, -.05, -.45));',
+    '  float wrap1 = pow(max(dot(n, L1)*.75 + .25, 0.), 1.6);',
+    '  vec3 dif = vec3(1., .95, .9)*1.25*wrap1 + ORL*1.2*pow(max(dot(n, L2), 0.), 2.) + ORL*.8*pow(max(dot(n, L3), 0.), 2.) + vec3(.03, .03, .035) + vec3(.35, .2, .1)*max(-n.y, 0.)*.4;',
+    '  vec3 base = m.x > .5 ? vec3(.92, .9, .88)*eSharp : ORL*dif*.32 + ORL*eRough*.35;',
+    '  float F = .04 + .96*pow(1. - nv, 5.);',
+    '  vec3 col = base*(1. - F*m.z) + eSharp*F*m.z;',
+    '  col += ORL*.18*pow(1. - nv, 3.);', // brillo de borde, sutil
+    '  return col*mix(.35, 1., ao);',
+    '}',
+    'void layer(int i, vec3 ro, vec3 rd, float pxa, inout vec3 col, inout float a){',
+    '  vec3 c = cen(i); float r = rad(i);',
+    '  vec3 oc = c - ro; float b = dot(oc, rd); if (b <= 0.) return;',
+    '  vec3 perp = oc - rd*b; float dp = length(perp);',
+    '  float cov = clamp((r - dp)/(b*pxa) + .5, 0., 1.);',
+    '  if (cov <= 0.) return;',
+    '  vec3 n;',
+    '  if (dp < r){ float tt = b - sqrt(r*r - dp*dp); n = (ro + rd*tt - c)/r; }',
+    '  else n = -perp/dp;',
+    '  vec3 s = aces(shade(i, c + n*r, n, rd));',
+    '  col = col*(1. - cov) + s*cov; a = a*(1. - cov) + cov;',
+    '}',
+    'float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)))*43758.5453); }',
     'void main(){',
     '  vec2 uv = (gl_FragCoord.xy - .5*R) / R.y;',
     '  float A = R.x / R.y;',
-    '  float port = step(A, 1.);', // 1 en vertical (móvil)
+    '  float port = step(A, 1.);',
     '  vec3 up = vec3(0., S*1.6, 0.);',
-    '  c1 = vec3(mix(A*1.12, A*1.0, port) + .06*sin(T*.31), mix(.12, 1.3, port) + .09*sin(T*.43), 0.) + up;',
-    '  c2 = c1 + vec3(cos(T*.47)*1.05, sin(T*.47)*.32, sin(T*.47)*.9 - .2);',
-    '  c3 = vec3(mix(-A*1.05, -A*1.1, port) + .08*sin(T*.27), mix(-1.0, -1.6, port) + .12*sin(T*.36), -1.) + up*.6;',
-    '  c4 = vec3(A*.5 + .25*sin(T*.21), 1.05 + .1*cos(T*.33), -.6) + up*1.3;',
+    '  C0 = vec3(mix(A*1.12, A*1.0, port) + .06*sin(T*.31), mix(.12, 1.3, port) + .09*sin(T*.43), 0.) + up;',
+    '  C1 = C0 + vec3(cos(T*.47)*1.05, sin(T*.47)*.32, sin(T*.47)*.9 - .2);',
+    '  C2 = vec3(mix(-A*1.05, -A*1.1, port) + .08*sin(T*.27), mix(-1.0, -1.6, port) + .12*sin(T*.36), -1.) + up*.6;',
+    '  C3 = vec3(A*.5 + .25*sin(T*.21), 1.05 + .1*cos(T*.33), -.6) + up*1.3;',
     '  vec3 ro = vec3(M.x*.35, -M.y*.22, 4.2);',
-    '  vec3 ta = vec3(0.);',
-    '  vec3 ww = normalize(ta-ro), uu = normalize(cross(ww, vec3(0.,1.,0.))), vv = cross(uu, ww);',
+    '  vec3 ww = normalize(-ro), uu = normalize(cross(ww, vec3(0., 1., 0.))), vv = cross(uu, ww);',
     '  vec3 rd = normalize(uv.x*uu + uv.y*vv + 1.6*ww);',
-    '  float t = 0., m = 1e3, id = 0., d;',
-    '  bool hit = false;',
-    '  for (int i = 0; i < STEPS; i++){',
-    '    vec3 p = ro + rd*t;',
-    '    d = map(p, id);',
-    '    m = min(m, d);',
-    '    if (d < .0015){ hit = true; break; }',
-    '    t += d;',
-    '    if (t > 12.) break;',
+    '  float pxa = 1.15/(R.y*1.6);',
+    // halo suave alrededor (premultiplicado), detrás de todo
+    '  vec3 col = vec3(0.); float a = 0.;',
+    '  for (int i = 0; i < 4; i++){',
+    // aura viva: un resplandor que respira y unas lenguas de luz que giran alrededor
+    '    vec3 oc = cen(i) - ro; float b = max(dot(oc, rd), 0.);',
+    '    vec3 pp = rd*b - oc; float dp = length(pp);',
+    '    float e = max(dp - rad(i), 0.)/rad(i), fi = float(i);',
+    '    float ang = atan(dot(pp, vv), dot(pp, uu));',
+    '    float br = 1. + .18*sin(T*1.1 + fi*2.1);',
+    '    float w = .5 + .28*sin(ang*3. + T*.9 + fi*1.7) + .22*sin(ang*5. - T*1.35 + fi*.8);',
+    '    w = max(w, 0.); w *= w*1.6;',
+    '    float g = exp(-e*4.6/br)*(.25 + w*.75)*(i == 0 ? .42 : .3) + exp(-e*1.5/br)*.06;',
+    '    vec3 ac = mix(vec3(.9, .2, .03), vec3(1., .5, .12), .5 + .5*sin(ang*2. + T*.6 + fi));',
+    '    col += ac*g; a += g;',
     '  }',
-    '  float glow = exp(-m*5.5);',
-    '  if (!hit){',
-    '    float a = glow*.42;',
-    '    gl_FragColor = vec4(mix(OR, OR2, .3)*a, a);',
-    '    return;',
+    '  a = min(a, .8); col = min(col, vec3(.8));',
+    // pintar de atrás hacia adelante (orden por profundidad)
+    '  float last = 1e9;',
+    '  for (int k = 0; k < 4; k++){',
+    '    float best = -1e9; int sel = -1;',
+    '    for (int j = 0; j < 4; j++){ float dj = dot(cen(j) - ro, ww) + float(j)*1e-4; if (dj < last && dj > best){ best = dj; sel = j; } }',
+    '    if (sel < 0) break;',
+    '    last = best;',
+    '    for (int j = 0; j < 4; j++){ if (j == sel) layer(j, ro, rd, pxa, col, a); }',
     '  }',
-    '  vec3 p = ro + rd*t, n = nrm(p);',
-    '  vec3 L = normalize(vec3(.8, .9, .6));',
-    '  vec3 r = reflect(rd, n);',
-    '  float dif = max(dot(n, L), 0.);',
-    '  float fre = pow(1. - max(dot(n, -rd), 0.), 3.);',
-    '  vec3 col = vec3(.035, .045, .06);',
-    '  col += OR*dif*.3;',
-    '  col += OR*smoothstep(.0, 1., r.y)*.28;',
-    '  col += BLU*smoothstep(.1, 1., -r.x)*.22;',
-    '  col += mix(OR, OR2, .45)*fre*1.15;',
-    '  col += vec3(1., .93, .85)*pow(max(dot(r, L), 0.), 48.)*1.1;',
-    // anillos de "escaneo" en la esfera grande: le dan el toque tech
-    '  if (id < 1.5){',
-    '    vec3 q = p - c1;',
-    '    float ring = smoothstep(.93, 1., abs(sin(q.y*11. - T*.8)));',
-    '    col += OR2*ring*.22*(1. - fre);',
-    '  }',
-    '  if (id > 3.5) col += OR*.35;', // la chiquita brilla más
-    '  gl_FragColor = vec4(col, 1.);',
+    '  a = clamp(a, 0., 1.);',
+    '  vec3 g = pow(max(col/max(a, 1e-4), 0.), vec3(1./2.2));',
+    '  g += (hash(gl_FragCoord.xy + fract(T)) - .5)/255.;',
+    '  gl_FragColor = vec4(clamp(g, 0., 1.)*a, a);',
     '}'
   ].join('\n');
 
   function Orbs(canvas) {
     var gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: 'low-power' });
     if (!gl) return null;
-    var steps = MOBILE ? 44 : 72;
     var hp = gl.getShaderPrecisionFormat && gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
-    var src = '#define STEPS ' + steps + '\n' + FRAG;
+    var src = FRAG;
     if (!hp || hp.precision === 0) src = src.replace('precision highp float;', 'precision mediump float;');
 
     function sh(type, s) {
@@ -137,7 +233,7 @@
     var U = { R: gl.getUniformLocation(pr, 'R'), T: gl.getUniformLocation(pr, 'T'), M: gl.getUniformLocation(pr, 'M'), S: gl.getUniformLocation(pr, 'S') };
 
     // Resolución interna: el shader es caro, se dibuja a menos píxeles y el CSS lo estira (queda suave).
-    var scale = MOBILE ? 0.45 : (DPR > 1.5 ? 0.6 : 0.85);
+    var scale = MOBILE ? 0.7 : (DPR > 1.5 ? 0.8 : 1);
     var w = 0, h = 0;
     function resize() {
       var r = canvas.getBoundingClientRect();
@@ -157,68 +253,7 @@
     };
   }
 
-  /* ════════════════════ 2. RED DE PARTÍCULAS (canvas 2D) ════════════════════ */
-  function Net(canvas, opt) {
-    var ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    var pts = [], w = 0, h = 0;
-    var link = opt.link || 130;
-    function resize() {
-      var r = canvas.getBoundingClientRect();
-      w = r.width; h = r.height;
-      canvas.width = Math.round(w * DPR); canvas.height = Math.round(h * DPR);
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      var n = Math.round(clamp((w * h) / (opt.density || 14000), 12, MOBILE ? (opt.maxMobile || 36) : (opt.max || 90)));
-      while (pts.length < n) pts.push({
-        x: Math.random() * w, y: Math.random() * h,
-        vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
-        r: Math.random() * 1.4 + .5, o: Math.random() < .28
-      });
-      pts.length = n;
-    }
-    resize();
-    function draw(moving) {
-      ctx.clearRect(0, 0, w, h);
-      var rect = canvas.getBoundingClientRect();
-      var mx = mouse.px - rect.left, my = mouse.py - rect.top;
-      var i, j, a, b, dx, dy, d2, L2 = link * link;
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        if (moving) {
-          a.x += a.vx; a.y += a.vy;
-          if (a.x < -10) a.x = w + 10; else if (a.x > w + 10) a.x = -10;
-          if (a.y < -10) a.y = h + 10; else if (a.y > h + 10) a.y = -10;
-          // el mouse empuja suavemente
-          dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
-          if (d2 < 14400 && d2 > 1) { var f = (1 - d2 / 14400) * .6; a.x += dx / Math.sqrt(d2) * f; a.y += dy / Math.sqrt(d2) * f; }
-        }
-      }
-      ctx.lineWidth = 1;
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        for (j = i + 1; j < pts.length; j++) {
-          b = pts[j]; dx = a.x - b.x; dy = a.y - b.y; d2 = dx * dx + dy * dy;
-          if (d2 < L2) {
-            var al = (1 - d2 / L2) * (opt.lineAlpha || .18);
-            ctx.strokeStyle = (a.o || b.o) ? 'rgba(242,107,31,' + al * 1.4 + ')' : 'rgba(200,207,215,' + al + ')';
-            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-          }
-        }
-        // líneas hacia el mouse: la red "te reconoce"
-        dx = a.x - mx; dy = a.y - my; d2 = dx * dx + dy * dy;
-        if (d2 < 32400) {
-          ctx.strokeStyle = 'rgba(255,162,101,' + (1 - d2 / 32400) * .35 + ')';
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke();
-        }
-      }
-      for (i = 0; i < pts.length; i++) {
-        a = pts[i];
-        ctx.fillStyle = a.o ? 'rgba(242,107,31,.9)' : 'rgba(255,255,255,.55)';
-        ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.2832); ctx.fill();
-      }
-    }
-    return { resize: resize, draw: draw };
-  }
+  /* 2. La red de partículas vive en /assets/fx-net.js (toda la página). */
 
   /* ════════════════════ 3. MONTAJE ════════════════════ */
   var hero = document.querySelector('.hero');
@@ -232,32 +267,20 @@
   if (hero) {
     var host = hero.querySelector('.hero-blobs') || hero;
     var cOrbs = document.createElement('canvas'); cOrbs.className = 'fx-orbs'; cOrbs.setAttribute('aria-hidden', 'true');
-    var cNet = document.createElement('canvas'); cNet.className = 'fx-net'; cNet.setAttribute('aria-hidden', 'true');
-    host.appendChild(cOrbs); host.appendChild(cNet);
+    // La red de partículas ya no va por sección: fx-net.js la pone fija detrás de toda la página.
+    host.appendChild(cOrbs);
     try { orbs = Orbs(cOrbs); } catch (e) { orbs = null; }
     if (orbs) hero.classList.add('fx-on'); else cOrbs.remove();
-    var heroNet = Net(cNet, { density: 15000, max: 85, maxMobile: 34, link: MOBILE ? 110 : 140, lineAlpha: .16 });
     heroH = hero.offsetHeight || 1;
     addLayer({
       el: hero,
       tick: function (t, moving) {
         var s = clamp(window.scrollY / Math.max(1, window.innerHeight), 0, 1.2);
         if (orbs) orbs.draw(moving ? t : 8.0, mouse.sx, mouse.sy, s);
-        if (heroNet) heroNet.draw(moving);
       },
-      resize: function () { if (orbs) orbs.resize(); if (heroNet) heroNet.resize(); heroH = hero.offsetHeight || 1; }
+      resize: function () { if (orbs) orbs.resize(); heroH = hero.offsetHeight || 1; }
     });
   }
-
-  ['.metrics', '.cta-final'].forEach(function (sel) {
-    var sec = document.querySelector(sel);
-    if (!sec) return;
-    var c = document.createElement('canvas'); c.className = 'fx-net fx-net-sec'; c.setAttribute('aria-hidden', 'true');
-    sec.insertBefore(c, sec.firstChild);
-    var n = Net(c, { density: 18000, max: 60, maxMobile: 22, link: 120, lineAlpha: .13 });
-    if (!n) return;
-    addLayer({ el: sec, tick: function (t, moving) { n.draw(moving); }, resize: n.resize });
-  });
 
   /* ════════════════════ 4. SCROLL ════════════════════ */
   var bar = document.createElement('div'); bar.id = 'fx-progress'; bar.setAttribute('aria-hidden', 'true');
@@ -456,7 +479,7 @@
       if (frames > 20) slowAcc += dt > (MOBILE ? 40 : 30) ? 1 : 0;
       if (frames === 120 && slowAcc > 60 && orbs) {
         degraded++;
-        if (degraded === 1) { orbs.setScale(MOBILE ? .3 : .4); frames = 0; slowAcc = 0; }
+        if (degraded === 1) { orbs.setScale(MOBILE ? .5 : .6); frames = 0; slowAcc = 0; }
         else { running = false; frame(now, false); return; }
       }
     }
