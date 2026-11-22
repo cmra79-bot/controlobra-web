@@ -214,8 +214,15 @@ export const MATERIALES = [
     // que Google la use si prefiere el <title>, pero ahora agrega "calculadora"
     // como gancho. El seoDesc promete la herramienta interactiva.
     h1: 'Calculadora de blocks: cuántos necesitas y cuánto te cuestan en RD',
-    seoTitle: '¿A cómo está el block en RD? Calculadora + precio por zona · {mes}',
-    seoDesc: 'Calcula cuántos blocks necesitas para tu pared y cuánto te sale en pesos dominicanos (RD$). Precio actualizado de 4", 6" y 8" por zona, con comparador. Datos de la comunidad.',
+    // 22-nov-2026 · plan Google Fase 6 (CTR), primera página de la lista.
+    // Base (Search Console, 20-ago a 19-nov): 55.332 impresiones, CTR 0,6%.
+    // El título anterior pasaba de 90 caracteres con la marca y Google lo
+    // cortaba: ahora entra entero (~60) y nombra los tres espesores, que es lo
+    // que la gente compara. La descripción promete lo que el resultado de
+    // Google no da: la cuenta de la pared y el precio por zona y suplidor.
+    // Medir 2–3 semanas sin tocar nada más de esta página (revisar ~12-dic).
+    seoTitle: 'Precio del block en RD: 4", 6" y 8" por zona | Precios Obra',
+    seoDesc: 'Cuánto cuesta el block de 4, 6 y 8 pulgadas hoy en cada zona de RD, cuántos lleva 1 m² de pared y cuánto te sale. Compara suplidores gratis. Actualizado {mes}.',
     intro: 'Precio del block de hormigón en RD por espesor (4", 6", 8") y por zona, según los reportes de la comunidad. El block es el material principal para levantar muros y paredes; se cotiza por unidad puesto en obra o en fábrica.',
     porque: 'El precio del block en RD varía por espesor (4", 6", 8"), por resistencia y por zona. El transporte pesa mucho porque es un material voluminoso; comprar en la bloquera más cercana suele salir más barato que traerlo de lejos.',
     // Consultas reales que traen el volumen (Search Console, 3 meses):
