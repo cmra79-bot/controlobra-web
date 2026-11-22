@@ -228,6 +228,7 @@ embebido. Decisión deliberada (ver §10).
 |---|---|---|---|
 | 1 | `.hero` | — | Titular + rotador de tipos de obra + preview del dashboard con tarjetas de datos |
 | 2 | `.metrics` | — | Franja oscura con contadores animados |
+| 2b | `.d3` | `#demo-3d` | **Demo 3D interactivo** (21-nov-2026): casa que se gira; pasos Plano → Modelo 3D → Medición → Presupuesto; las cantidades salen de la geometría y se recalculan con el área (60–200 m²) y 1 o 2 niveles. Motor en `public/assets/demo3d.js` (canvas 2D, sin librerías, ~11 KB gzip). Precios de ejemplo en RD$ dentro de `CATS` |
 | 3 | `.problem` | `#problem` | Split "ANTES / CON MANESTRO" |
 | 4 | `.modules` | `#modulos` | Bento grid de 8 módulos |
 | 5 | `.how` | `#flujo` | **Flujo de 5 pasos**: Ventas → Cronograma → Presupuesto → Obra → Entrega |
