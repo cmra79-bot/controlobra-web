@@ -1511,7 +1511,15 @@
   }
 
   /* «El problema» en celular: sin las tarjetas 01·ANTES…03 (pedido de Carlos 22-nov-2026); queda el antes/después */
-  @media (max-width:767px){ .problem .problem-grid{display:none !important} }
+  /* Más cosas que en celular no van (Carlos 22-nov-2026): ROI, «Qué puedes consultar»,
+     tarjetas NUEVO de Informes y las de Kubicar «Misiones» y «Memoria de medición» */
+  @media (max-width:767px){
+    .problem .problem-grid{display:none !important}
+    #roi, .nav-links a[href="#roi"]{display:none !important}
+    .po-sec .po-cats-block{display:none !important}
+    .rep-new{display:none !important}
+    .kb-cards .kb-card:nth-child(n+2){display:none !important}
+  }
 
   /* ═══════════ NARANJA CON MEDIDA (pedido de Carlos 22-nov-2026) ═══════════
      Mismo #F26B1F, pero solo en lo importante: botones de acción, cifras clave,
