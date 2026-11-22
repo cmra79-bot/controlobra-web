@@ -15,7 +15,7 @@ const GUIAS = [
     slug: 'cuanto-cuesta-construir-casa-republica-dominicana',
     titulo: 'Cuánto cuesta construir una casa en RD',
     resumen: `Precio por m² según terminación y ejemplos por tamaño. Desde RD$${fmt(g.porTerminacion[0].total)}/m² todo incluido.`,
-    emoji: '🏠',
+    img: 'casa',
   },
   {
     slug: 'cuanto-cuesta-una-pared-de-block',
@@ -23,7 +23,7 @@ const GUIAS = [
     resumen: pared.referencia
       ? `Costo por m² según el espesor y cuántos blocks lleva tu pared. Desde RD$${fmt(pared.referencia.costoM2)}/m² en material.`
       : 'Costo por m² según el espesor y cuántos blocks lleva tu pared.',
-    emoji: '🧱',
+    img: 'block',
   },
   {
     slug: 'cuanto-cuesta-pintar-una-casa',
@@ -31,7 +31,7 @@ const GUIAS = [
     resumen: Number.isFinite(pint.costoM2)
       ? `Precio del galón hoy, cuántos galones necesitás y cuánto pesa la mano de obra. Desde RD$${fmt(pint.costoM2)}/m² en pintura.`
       : 'Precio del galón, cuántos galones necesitás y cuánto pesa la mano de obra.',
-    emoji: '🎨',
+    img: 'pintura',
   },
   {
     slug: 'cuanto-cuesta-un-quintal-de-varilla',
@@ -39,7 +39,7 @@ const GUIAS = [
     resumen: Number.isFinite(var_.precioQq)
       ? `Precio del quintal hoy, cuánto sale la libra y cuánto pesa cada calibre. Desde RD$${fmt(var_.precioQq)}/qq.`
       : 'Precio del quintal, cuánto sale la libra y cuánto pesa cada calibre.',
-    emoji: '🔩',
+    img: 'varilla',
   },
   {
     slug: 'cuanto-cuesta-echar-el-plato',
@@ -47,7 +47,7 @@ const GUIAS = [
     resumen: plato.referencia
       ? `Precio real del subcontrato de losa de techo, por m² y según altura. Desde RD$${fmt(plato.referencia.precio)}/m².`
       : 'Precio real del subcontrato de losa de techo, por m² y según altura.',
-    emoji: '🏗️',
+    img: 'plato',
   },
 ]
 
@@ -63,7 +63,7 @@ const description = 'Guías prácticas sobre costos de construcción en RD: cuá
   <div class="list">
     {GUIAS.map((gu) => (
       <a class="card" href={`/guias/${gu.slug}/`}>
-        <span class="emoji">{gu.emoji}</span>
+        <img class="mini" src={`/assets/guias/${gu.img}-mini.webp`} alt="" width="96" height="72" loading="lazy" decoding="async" />
         <div>
           <div class="name">{gu.titulo}</div>
           <div class="res">{gu.resumen}</div>
@@ -84,7 +84,8 @@ const description = 'Guías prácticas sobre costos de construcción en RD: cuá
   .list { margin-top: 30px; display: flex; flex-direction: column; gap: 14px; }
   .card { display: flex; align-items: center; gap: 16px; border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; background: var(--paper); text-decoration: none; color: var(--ink); box-shadow: var(--shadow); transition: border-color .15s ease, transform .15s ease; }
   .card:hover { border-color: var(--brand); transform: translateY(-2px); }
-  .emoji { font-size: 30px; }
+  .mini { width: 96px; height: 72px; object-fit: contain; flex: none; }
+  @media (max-width: 660px) { .mini { width: 72px; height: 54px; } }
   .name { font-weight: 700; font-size: 17px; }
   .res { font-size: 13.5px; color: var(--muted); margin-top: 3px; }
   .go { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--brand-deep); white-space: nowrap; }

@@ -10,6 +10,7 @@
  * porque hace falta la cuenta.
  */
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import GuiaPortada from '../../components/GuiaPortada.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import { getVarilla, isoHoy, mesAno } from '../../lib/precios.js'
@@ -65,6 +66,7 @@ const jsonld = [
 ]
 ---
 <PrecioLayout
+  ogImage="/assets/guias/og-varilla.jpg"
   title={title}
   description={description}
   canonicalPath="/guias/cuanto-cuesta-un-quintal-de-varilla/"
@@ -78,6 +80,8 @@ const jsonld = [
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Quintal de varilla
   </nav>
+
+  <GuiaPortada clave="varilla" alt="Ilustración de un quintal de varillas amarradas" />
 
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta un quintal de varilla en RD?</h1>

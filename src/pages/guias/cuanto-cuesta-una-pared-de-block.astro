@@ -8,6 +8,7 @@
  * se hace acá. Todos los números salen del catálogo real en tiempo de build.
  */
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import GuiaPortada from '../../components/GuiaPortada.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import { getParedBlock, isoHoy, mesAno } from '../../lib/precios.js'
@@ -62,6 +63,7 @@ const jsonld = [
 ]
 ---
 <PrecioLayout
+  ogImage="/assets/guias/og-block.jpg"
   title={title}
   description={description}
   canonicalPath="/guias/cuanto-cuesta-una-pared-de-block/"
@@ -75,6 +77,8 @@ const jsonld = [
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Pared de block
   </nav>
+
+  <GuiaPortada clave="block" alt="Ilustración de una pared de block con un metro cuadrado marcado" />
 
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta una pared de block en RD?</h1>

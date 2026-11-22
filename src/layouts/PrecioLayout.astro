@@ -19,6 +19,8 @@ const {
   // tenga ya en otra URL. Van `noindex, follow`: no compiten por rastreo, pero
   // siguen pasando sus enlaces.
   noindex = false,
+  // Imagen al compartir (WhatsApp, Facebook…), 1200×630. Cada guía trae la suya.
+  ogImage: ogPath = '/assets/og-precios.jpg',
 } = Astro.props
 
 const site = 'https://controlobra.ai'
@@ -43,8 +45,7 @@ const bloques = [
   ...(migasLd ? [migasLd] : []),
 ]
 const jsonldFinal = bloques.length ? (bloques.length === 1 ? bloques[0] : bloques) : null
-// Imagen al compartir (WhatsApp, Facebook…): la de PreciosObra, 1200×630.
-const ogImage = `${site}/assets/og-precios.png`
+const ogImage = new URL(ogPath, site).href
 const APP = 'https://app.controlobra.ai'
 // Botón "compartir por WhatsApp": abre WhatsApp con el mensaje + link ya listos.
 const shareText = `${title}\n👉 ${canonical}\n\nPrecios reales de construcción en RD, gratis. Compartilo con quien esté construyendo 👷`

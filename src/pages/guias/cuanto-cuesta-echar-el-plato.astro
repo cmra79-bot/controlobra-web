@@ -15,6 +15,7 @@
  * comunidad, no una estimación armada en esta página.
  */
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import GuiaPortada from '../../components/GuiaPortada.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
 import { getLosaTecho, isoHoy, mesAno } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
@@ -68,6 +69,7 @@ const jsonld = [
 ]
 ---
 <PrecioLayout
+  ogImage="/assets/guias/og-plato.jpg"
   title={title}
   description={description}
   canonicalPath="/guias/cuanto-cuesta-echar-el-plato/"
@@ -81,6 +83,8 @@ const jsonld = [
   <nav class="crumb">
     <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Echar el plato
   </nav>
+
+  <GuiaPortada clave="plato" alt="Ilustración de una losa de techo a medio vaciar sobre columnas" />
 
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta echar el plato en RD?</h1>
