@@ -14,7 +14,6 @@ const FECHA_BUILD = new Date()
 // días le enseña a ignorar el lastmod de todo el sitio.
 const ESTATICAS = {
   '/': new Date('2026-11-22T00:00:00Z'),
-  '/manestro/': new Date('2026-11-22T00:00:00Z'),
 }
 
 // Provincias con directorio propio de ferreterías. Las demás se generan igual
@@ -40,6 +39,9 @@ function redireccionesAnalisis() {
         const cats = [...new Map((await getCategorias()).map((c) => [c.slug, c])).values()]
         const lineas = [
           '# Generado por astro.config.mjs en cada build. No editar a mano.',
+          // La página de Manestro volvió a la raíz (Carlos, 22-nov-2026).
+          '/manestro / 301',
+          '/manestro/ / 301',
           '/precios-obra/partidas.html /analisis/ 301',
           '/precios-obra/partidas /analisis/ 301',
           ...partidas.map((p) => `/precios-obra/partidas/${p.slug}.html /analisis/${p.slug}/ 301`),
