@@ -1,4 +1,5 @@
 ---
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import TablaPrecios from '../../components/TablaPrecios.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
@@ -57,7 +58,7 @@ const paginaLd = {
   description: data.seoDesc,
   dateModified: isoHoy(),
   inLanguage: 'es-DO',
-  isPartOf: { '@type': 'WebSite', name: 'PreciosObra', url: 'https://controlobra.ai/' },
+  isPartOf: { '@id': 'https://controlobra.ai/#sitio' },
 }
 
 const jsonldArr = [productLd, faqLd, paginaLd].filter(Boolean)
@@ -107,6 +108,7 @@ const CATALOGO = [
   <p class="eyebrow">Precios de construcción · República Dominicana</p>
   <h1>{data.h1}</h1>
   <p class="lead">{data.intro}</p>
+  <BotonApp href={`https://app.controlobra.ai/precios-obra?q=${encodeURIComponent(`block ${data.espesor}`)}`} texto={`Ver precios del block de ${data.espesor}" por zona y suplidor`} />
 
   <NotaMoneda />
   {data.nProductos > 0 ? (
@@ -180,7 +182,7 @@ const CATALOGO = [
     </section>
   )}
 
-  <CtaCalculadora />
+  <CtaCalculadora link={`https://app.controlobra.ai/precios-obra?q=${encodeURIComponent(`block ${data.espesor}`)}`} linkTexto={`o compara el block de ${data.espesor}" por zona ↗`} />
 
   {GUIAS_DEL_MATERIAL.length > 0 && (
     <section>

@@ -214,8 +214,15 @@ export const MATERIALES = [
     // que Google la use si prefiere el <title>, pero ahora agrega "calculadora"
     // como gancho. El seoDesc promete la herramienta interactiva.
     h1: 'Calculadora de blocks: cuántos necesitas y cuánto te cuestan en RD',
-    seoTitle: '¿A cómo está el block en RD? Calculadora + precio por zona · {mes}',
-    seoDesc: 'Calcula cuántos blocks necesitas para tu pared y cuánto te sale en pesos dominicanos (RD$). Precio actualizado de 4", 6" y 8" por zona, con comparador. Datos de la comunidad.',
+    // 22-nov-2026 · plan Google Fase 6 (CTR), primera página de la lista.
+    // Base (Search Console, 20-ago a 19-nov): 55.332 impresiones, CTR 0,6%.
+    // El título anterior pasaba de 90 caracteres con la marca y Google lo
+    // cortaba: ahora entra entero (~60) y nombra los tres espesores, que es lo
+    // que la gente compara. La descripción promete lo que el resultado de
+    // Google no da: la cuenta de la pared y el precio por zona y suplidor.
+    // Medir 2–3 semanas sin tocar nada más de esta página (revisar ~12-dic).
+    seoTitle: 'Precio del block en RD: 4", 6" y 8" por zona | Precios Obra',
+    seoDesc: 'Cuánto cuesta el block de 4, 6 y 8 pulgadas hoy en cada zona de RD, cuántos lleva 1 m² de pared y cuánto te sale. Compara suplidores gratis. Actualizado {mes}.',
     intro: 'Precio del block de hormigón en RD por espesor (4", 6", 8") y por zona, según los reportes de la comunidad. El block es el material principal para levantar muros y paredes; se cotiza por unidad puesto en obra o en fábrica.',
     porque: 'El precio del block en RD varía por espesor (4", 6", 8"), por resistencia y por zona. El transporte pesa mucho porque es un material voluminoso; comprar en la bloquera más cercana suele salir más barato que traerlo de lejos.',
     // Consultas reales que traen el volumen (Search Console, 3 meses):
@@ -686,7 +693,12 @@ const interpolarEspesor = (tpl, porEspesor) => {
 }
 
 // Devuelve todos los datos agregados de un material por su slug.
-export async function getMaterial(slug) {
+const _matMemo = new Map()
+export function getMaterial(slug) {
+  if (!_matMemo.has(slug)) _matMemo.set(slug, _getMaterial(slug))
+  return _matMemo.get(slug)
+}
+async function _getMaterial(slug) {
   const def = MATERIALES.find((m) => m.slug === slug)
   if (!def) return null
 
@@ -740,6 +752,9 @@ export async function getMaterial(slug) {
   return {
     ...def,
     productos,
+    // Ids de las filas (producto × zona): enlazan el material con los análisis
+    // que lo usan (plan Google, Fase 3).
+    itemIds: [...byId.keys()],
     zonaStats: statsPorZona(productos),
     ...base,
     nProductos: productos.length,
@@ -1026,8 +1041,11 @@ function titulizar(s) {
   return t.charAt(0).toUpperCase() + t.slice(1)
 }
 
-// Mínimo de productos para que una categoría tenga página propia.
-const MIN_CAT = 12
+// Mínimo de productos para que una categoría tenga página propia. Era 12;
+// bajó a 3 el 21-nov-2026 (plan Google, Fase 2): las categorías chicas que solo
+// tenían página en la app (excavaciones, pavimento…) se mudan acá, y las de la
+// app redirigen con 301 a estas.
+const MIN_CAT = 3
 
 // Memo del catálogo completo (una sola descarga por build).
 let _allPromise = null
@@ -1092,7 +1110,11 @@ export async function getCategorias() {
       nProductos: n,
     })
   }
-  return cats.sort((a, b) => b.nProductos - a.nProductos)
+  // Dos familias con el mismo nombre (distinto tipo) darían la misma URL: queda
+  // la de más productos, para no generar dos páginas con un mismo slug.
+  const porSlug = new Map()
+  for (const c of cats) if (!porSlug.has(c.slug) || porSlug.get(c.slug).nProductos < c.nProductos) porSlug.set(c.slug, c)
+  return [...porSlug.values()].sort((a, b) => b.nProductos - a.nProductos)
 }
 
 // Datos completos de una categoría por slug.
@@ -1108,6 +1130,7 @@ export async function getCategoria(slug) {
   const ordenados = [...todos].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
   return {
     ...def,
+    itemIds: filas.map((it) => it.id),
     productos: ordenados.slice(0, MAX),
     total: todos.length,
     truncado: todos.length > MAX,
@@ -1603,4 +1626,30 @@ export async function getCostoConstruccion() {
     tamanos,
     actualizado: fmtHoy(),
   }
+}
+
+// ---------------------------------------------------------------------------
+// Enlaces insumo → página de precio (plan Google, Fase 3)
+//
+// Cada fila del catálogo (id) → la página de este sitio donde está su precio:
+// la del material si la tiene (cemento, block…), si no la de su categoría. Lo
+// usan los análisis para enlazar sus insumos.
+// ---------------------------------------------------------------------------
+let _mapaItems = null
+export function paginaDeItems() {
+  _mapaItems ??= (async () => {
+    const mapa = new Map()
+    const [items, cats] = await Promise.all([fetchAll(), getCategorias()])
+    const catPorFam = new Map(cats.map((c) => [c.famId, c]))
+    for (const it of items) {
+      const c = catPorFam.get(it.familia_id)
+      if (c) mapa.set(it.id, { url: `/precios/categoria/${c.slug}/`, nombre: c.nombre })
+    }
+    for (const def of MATERIALES) {
+      const d = await getMaterial(def.slug)
+      for (const id of d?.itemIds || []) mapa.set(id, { url: `/precios/${def.slug}/`, nombre: def.nombre })
+    }
+    return mapa
+  })()
+  return _mapaItems
 }

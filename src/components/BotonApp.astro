@@ -1,0 +1,20 @@
+---
+// Botón de arriba de cada página (plan Google, Fase 4 «anzuelo»): lleva a la
+// parte EXACTA de la app que sigue a lo que la persona está leyendo (la
+// búsqueda del material, la categoría, la calculadora…). El de abajo es
+// CtaCalculadora con el mismo destino.
+interface Props { href: string; texto: string; nota?: string }
+const { href, texto, nota = 'Gratis, sin tarjeta' } = Astro.props
+---
+<p class="boton-app"><a href={href}>{texto} <span aria-hidden="true">→</span></a>{nota && <small>{nota}</small>}</p>
+
+<style>
+  .boton-app { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 10px 0 0 !important; }
+  .boton-app a {
+    display: inline-flex; align-items: center; gap: 6px; background: var(--brand); color: #fff; text-decoration: none;
+    font-weight: 700; font-size: 14.5px; padding: 8px 15px; border-radius: 11px;
+    box-shadow: 0 8px 18px -10px rgba(240,105,30,.6);
+  }
+  .boton-app a:hover { background: var(--brand-deep); color: #fff; }
+  .boton-app small { font-size: 12.5px; color: var(--muted); }
+</style>

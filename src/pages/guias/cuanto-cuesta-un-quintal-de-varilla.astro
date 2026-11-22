@@ -9,9 +9,12 @@
  * por libra, por calibre — y ahí es donde el buscador no puede resumir nada,
  * porque hace falta la cuenta.
  */
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
+import { analisisQueDicen } from '../../lib/analisis.js'
 import { getVarilla, isoHoy, mesAno } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
@@ -63,6 +66,8 @@ const jsonld = [
     inLanguage: 'es-DO',
   },
 ]
+// Plan Google, Fase 3: la guía enlaza a los análisis de su tema.
+const relacionados = await analisisQueDicen(/^acero/i)
 ---
 <PrecioLayout
   title={title}
@@ -82,6 +87,7 @@ const jsonld = [
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta un quintal de varilla en RD?</h1>
   <p class="lead">La varilla se vende por peso, no por unidad — y ahí está la confusión. Acá está el precio del quintal, cuánto sale la libra, y cuánto pesa (y cuesta) una varilla completa según el calibre.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra?q=varilla" texto="Ver precios de varilla por zona y suplidor" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
@@ -134,6 +140,8 @@ const jsonld = [
   </section>
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo="Análisis con acero de refuerzo" sub="Qué lleva cada partida, cómo se mide y su dibujo." lista={relacionados.lista} total={relacionados.total} />
 
   <section>
     <h2>Preguntas frecuentes</h2>

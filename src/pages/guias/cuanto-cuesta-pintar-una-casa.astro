@@ -13,9 +13,12 @@
  * respalda) y se dice explícitamente que la mano de obra va aparte y suele ser
  * la mitad o más del total.
  */
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CalculadoraInline from '../../components/CalculadoraInline.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
+import { analisisQueDicen } from '../../lib/analisis.js'
 import { getPintura, isoHoy, mesAno } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
@@ -87,6 +90,8 @@ const jsonld = [
     inLanguage: 'es-DO',
   },
 ]
+// Plan Google, Fase 3: la guía enlaza a los análisis de su tema.
+const relacionados = await analisisQueDicen(/^pintura/i)
 ---
 <PrecioLayout
   title={title}
@@ -106,6 +111,7 @@ const jsonld = [
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta pintar una casa en RD?</h1>
   <p class="lead">La cuenta tiene dos partes que conviene no mezclar: la pintura, que podés calcular con precisión, y la mano de obra, que se cotiza aparte y suele pesar más. Acá está la primera con precios de hoy, y qué esperar de la segunda.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra/analisis?q=pintura" texto="Ver los análisis de pintura con precio" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {p.actualizado} · {p.nGalones} pinturas del catálogo</div>
@@ -194,6 +200,8 @@ const jsonld = [
   </section>
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo="Análisis de pintura" sub="Qué lleva cada partida, cómo se mide y su dibujo." lista={relacionados.lista} total={relacionados.total} />
 
   <section>
     <h2>Preguntas frecuentes</h2>

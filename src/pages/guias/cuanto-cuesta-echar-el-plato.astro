@@ -14,8 +14,11 @@
  * (formaleta + desencofrado + malla + colocación) cotizado por la
  * comunidad, no una estimación armada en esta página.
  */
+import BotonApp from '../../components/BotonApp.astro'
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import AnalisisRelacionados from '../../components/AnalisisRelacionados.astro'
+import { analisisQueDicen } from '../../lib/analisis.js'
 import { getLosaTecho, isoHoy, mesAno } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
 
@@ -66,6 +69,8 @@ const jsonld = [
     inLanguage: 'es-DO',
   },
 ]
+// Plan Google, Fase 3: la guía enlaza a los análisis de su tema.
+const relacionados = await analisisQueDicen(/^losa (maciza|aligerada|inclinada|metaldeck)|^losa h\.a\./i)
 ---
 <PrecioLayout
   title={title}
@@ -85,6 +90,7 @@ const jsonld = [
   <p class="eyebrow">Guía · República Dominicana</p>
   <h1>¿Cuánto cuesta echar el plato en RD?</h1>
   <p class="lead">"Echar el plato" es vaciar la losa de techo — una de las partidas más caras y críticas de la obra. Acá está el precio real del subcontrato llave en mano, por m² y según la altura de la construcción.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra/analisis?q=losa" texto="Ver los análisis de losas con precio" />
 
   <NotaMoneda />
   <div class="badge"><span class="dot"></span> Actualizado {g.actualizado} · precios reales del catálogo</div>
@@ -138,6 +144,8 @@ const jsonld = [
   </section>
 
   <CtaCalculadora />
+
+  <AnalisisRelacionados titulo="Análisis de losas" sub="Qué lleva cada partida, cómo se mide y su dibujo." lista={relacionados.lista} total={relacionados.total} />
 
   <section>
     <h2>Preguntas frecuentes</h2>

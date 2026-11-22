@@ -1,44 +1,55 @@
 ---
-// CTA naranja a la app de Precios Obra: botón a la calculadora + enlace a la app completa.
+// CTA naranja de abajo de cada página (plan Google, Fase 4): por defecto la
+// calculadora de obra; cada página puede mandar a la parte exacta de la app
+// que le corresponde (la búsqueda del material, la categoría…).
 const CALC = 'https://app.controlobra.ai/precios-obra/calculadora'
 const APP = 'https://app.controlobra.ai/precios-obra'
+interface Props { titulo?: string; texto?: string; href?: string; boton?: string; link?: string; linkTexto?: string }
+const {
+  titulo = 'Calcula el costo completo de tu obra',
+  texto = 'Este precio es solo una parte del total. Estima materiales, mano de obra e indirectos de tu casa o edificio en segundos, con precios reales de República Dominicana.',
+  href = CALC,
+  boton = 'Abrir la calculadora de obra',
+  link = href === CALC ? APP : CALC,
+  linkTexto = href === CALC ? 'o explora todo Precios Obra ↗' : 'o calcula el costo de tu obra ↗',
+} = Astro.props
 ---
 <div class="cta">
   <div class="cta-body">
-    <h2>Calculá el costo completo de tu obra</h2>
-    <p>Este precio es solo una parte del total. Estimá materiales, mano de obra e indirectos de tu casa o edificio en segundos, con precios reales de República Dominicana.</p>
+    <h2>{titulo}</h2>
+    <p>{texto}</p>
     <div class="cta-actions">
-      <a class="cta-btn" href={CALC}>Abrir la calculadora de obra <span class="arrow">→</span></a>
-      <a class="cta-link" href={APP}>o explorá todo Precios Obra ↗</a>
+      <a class="cta-btn" href={href}>{boton} <span class="arrow">→</span></a>
+      <a class="cta-link" href={link}>{linkTexto}</a>
     </div>
   </div>
 </div>
 
 <style>
   .cta {
-    margin-top: 44px; padding: 32px 30px; border-radius: 20px;
+    margin-top: 26px; padding: 18px 22px; border-radius: 16px;
     position: relative; overflow: hidden; color: #fff;
     background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
-    box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--brand) 70%, transparent);
+    box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--brand) 70%, transparent);
   }
   .cta::after {
     content: ''; position: absolute; right: -60px; top: -70px; width: 230px; height: 230px;
     background: radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
   }
   .cta-body { position: relative; }
-  .cta h2 { margin: 0 0 8px; font-size: 25px; letter-spacing: -.02em; color: #fff; max-width: 22ch; }
-  .cta p { margin: 0 0 22px; font-size: 15px; color: rgba(255,255,255,.92); max-width: 48ch; }
-  .cta-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  main.wrap .cta h2 { margin: 0 0 4px; font-size: 20px; letter-spacing: -.02em; color: #fff; }
+  main.wrap .cta p { margin: 0 0 12px; font-size: 14.5px; color: rgba(255,255,255,.92); }
+  .cta-actions { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; }
   .cta-btn {
     display: inline-flex; align-items: center; gap: 10px; background: #fff; color: var(--brand-deep);
-    font-weight: 700; font-size: 16px; padding: 14px 26px; border-radius: 12px; text-decoration: none;
+    font-weight: 700; font-size: 15px; padding: 10px 20px; border-radius: 11px; text-decoration: none;
     box-shadow: 0 6px 16px -6px rgba(0,0,0,.35); transition: transform .15s ease;
   }
   .cta-btn:hover { transform: translateY(-2px); }
   .cta-btn .arrow { transition: transform .15s ease; }
   .cta-btn:hover .arrow { transform: translateX(4px); }
   .cta-link {
-    color: #fff; font-weight: 600; font-size: 14.5px; text-decoration: none;
+    color: #fff; font-weight: 600; font-size: 14px; text-decoration: none;
     border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 1px;
   }
   .cta-link:hover { border-bottom-color: #fff; }

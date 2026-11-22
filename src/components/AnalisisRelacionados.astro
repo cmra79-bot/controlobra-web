@@ -1,0 +1,22 @@
+---
+// «Análisis que usan …»: enlaces de una página de precios o de una guía a los
+// análisis de precio unitario (plan Google, Fase 3). Compacto: chips en línea.
+const { titulo, lista = [], total = 0, sub = null } = Astro.props
+---
+{lista.length > 0 && (
+  <section class="ar">
+    <h2>{titulo}</h2>
+    {sub && <p class="sub">{sub}</p>}
+    <ul>
+      {lista.map((p) => <li><a href={`/analisis/${p.slug}/`}>{p.descripcion}</a></li>)}
+    </ul>
+    <a class="todas" href="/analisis/">{total > lista.length ? `Ver los ${total} análisis →` : 'Ver todos los análisis →'}</a>
+  </section>
+)}
+
+<style>
+  ul { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  a:not(.todas) { display: inline-block; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 4px 10px; font-size: 13px; line-height: 1.35; text-decoration: none; color: var(--ink-2); }
+  a:not(.todas):hover { border-color: var(--brand); color: var(--brand-deep); }
+  .todas { display: inline-block; margin-top: 8px; font-size: 13.5px; font-weight: 600; color: var(--brand-deep); text-decoration: none; }
+</style>
