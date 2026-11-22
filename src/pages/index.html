@@ -1495,15 +1495,8 @@
   html[data-theme="dark"] .bento .card:hover .tag .arr{color: var(--accent, var(--orange))}
   html[data-theme="dark"] .b-1 .feat-list .l .c{background: rgba(255,255,255,.14); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18)}
   /* Flujo de 5 pasos: insignias y conectores en gris */
-  /* Títulos de fase del flujo: protagonistas (pedido de Carlos 22-nov-2026).
-     Píldora oscura con borde naranja, número en naranja y nombre en blanco. */
-  html[data-theme="dark"] .step .n-badge{display:inline-flex; align-items:center; gap:9px;
-    background: #0E1219; color:#fff; border:1px solid rgba(242,107,31,.7);
-    box-shadow: 0 0 0 4px rgba(14,18,25,.9), 0 0 24px -6px rgba(242,107,31,.55); font-weight:800}
-  html[data-theme="dark"] .step .n-badge .nb-n{color:#F26B1F; padding-right:9px; border-right:1px solid rgba(255,255,255,.18)}
-  html[data-theme="dark"] .step:hover .n-badge{background: var(--orange); border-color: var(--orange)}
-  html[data-theme="dark"] .step:hover .n-badge .nb-n{color:#fff; border-right-color: rgba(255,255,255,.4)}
-  @media (min-width: 1280px){ html[data-theme="dark"] .steps-5 .step .n-badge{font-size:13px; padding:8px 16px; top:-17px; letter-spacing:.1em} }
+  html[data-theme="dark"] .step .n-badge{background: rgba(255,255,255,.08); color:#E8EAEE; box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); backdrop-filter: blur(6px)}
+  html[data-theme="dark"] .step:hover .n-badge{background: var(--orange); color:#fff; box-shadow:none}
   html[data-theme="dark"] .step::after{background: linear-gradient(90deg, rgba(255,255,255,.25), transparent)}
   /* Íconos y números en chips grises */
   html[data-theme="dark"] :is(.ai-l .c, .po-l .c){background: var(--tone-soft) !important; color: var(--tone-txt) !important; box-shadow: inset 0 0 0 1px var(--tone-line) !important}
@@ -2089,7 +2082,7 @@ const html = `
 
     <div class="steps steps-5 reveal-stagger reveal">
       <div class="step">
-        <div class="n-badge"><span class="nb-n">01</span>VENTAS</div>
+        <div class="n-badge">01 · VENTAS</div>
         <h3>Cierras la venta</h3>
         <p>Cotizas desde el brief del cliente con la IA, negocias y conviertes la oferta aprobada en proyecto — sin recapturar nada.</p>
         <div class="ill">
@@ -2099,7 +2092,7 @@ const html = `
         </div>
       </div>
       <div class="step">
-        <div class="n-badge"><span class="nb-n">02</span>CRONOGRAMA</div>
+        <div class="n-badge">02 · CRONOGRAMA</div>
         <h3>Planificas el tiempo</h3>
         <p>Armas la ruta crítica con hitos, cuadrillas y entregables. Cada partida ya sabe cuándo le toca entrar a obra.</p>
         <div class="ill">
@@ -2109,7 +2102,7 @@ const html = `
         </div>
       </div>
       <div class="step">
-        <div class="n-badge"><span class="nb-n">03</span>PRESUPUESTO</div>
+        <div class="n-badge">03 · PRESUPUESTO</div>
         <h3>Fijas el costo meta</h3>
         <p>La IA completa capítulos, aplica APU vivo y precios vigentes. Ese presupuesto queda como la línea base que todos miden.</p>
         <div class="ill">
@@ -2119,7 +2112,7 @@ const html = `
         </div>
       </div>
       <div class="step">
-        <div class="n-badge"><span class="nb-n">04</span>OBRA</div>
+        <div class="n-badge">04 · OBRA</div>
         <h3>Ejecutas y controlas</h3>
         <p>Compras, almacén, pedidos y bitácora móvil en un flujo. La IA detecta la desviación antes de que se convierta en pérdida.</p>
         <div class="ill">
@@ -2129,7 +2122,7 @@ const html = `
         </div>
       </div>
       <div class="step">
-        <div class="n-badge"><span class="nb-n">05</span>ENTREGA</div>
+        <div class="n-badge">05 · ENTREGA</div>
         <h3>Cierras y cobras</h3>
         <p>Cubicas, la IA redacta el acta con retención y anticipo, y el cliente firma por link. Entrega documentada y factura emitida.</p>
         <div class="ill">
