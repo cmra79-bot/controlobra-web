@@ -1,0 +1,19 @@
+---
+// Ilustración de cada guía (isométrica, terminada en VectorCraft, 22-nov-2026).
+// En PC va a la derecha del título; en el celular se oculta para no empujar
+// el contenido (diseño compacto, WEB.md §8). La misma imagen, con el título,
+// es la que sale al compartir la guía (public/assets/guias/og-<clave>.jpg).
+const { clave, alt } = Astro.props
+---
+<img class="guia-portada" src={`/assets/guias/${clave}.webp`} alt={alt} width="720" height="540" fetchpriority="high" decoding="async" />
+
+<style>
+  .guia-portada { display: none; }
+  @media (min-width: 900px) {
+    .guia-portada {
+      display: block; float: right; width: 340px; height: auto;
+      margin: 4px 0 8px 24px; shape-outside: margin-box;
+      filter: drop-shadow(0 0 36px rgba(242,107,31,.16));
+    }
+  }
+</style>

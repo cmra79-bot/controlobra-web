@@ -59,7 +59,7 @@ const CALC = 'https://app.controlobra.ai/precios-obra/calculadora'
 <style>
   .mc {
     margin-top: 34px; border: 1px solid var(--line); border-radius: 18px;
-    padding: 24px 24px 20px; background: color-mix(in srgb, var(--brand-soft) 35%, var(--paper));
+    padding: 24px 24px 20px; background: var(--paper); box-shadow: var(--shadow);
   }
   .mc h2 { margin: 0 0 16px; font-size: 20px; letter-spacing: -.01em; }
   .mc-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
@@ -70,13 +70,13 @@ const CALC = 'https://app.controlobra.ai/precios-obra/calculadora'
   .mc-in:focus-within { border-color: var(--brand); }
   .mc-in input {
     width: 100%; border: none; outline: none; background: transparent; color: var(--ink);
-    font: 700 22px/1.2 'Archivo', sans-serif; min-width: 0;
+    font: 700 22px/1.2 'Manrope', sans-serif; min-width: 0;
   }
   .mc-u { color: var(--muted); font-size: 14px; white-space: nowrap; }
   .mc-out { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
   .mc-cant { font-size: 15px; color: var(--ink-2); }
-  .mc-cant .v { font: 700 22px 'Archivo', sans-serif; color: var(--ink); }
-  .mc-tot { font: 800 24px 'Archivo', sans-serif; color: var(--brand-deep); }
+  .mc-cant .v { font: 700 22px 'Manrope', sans-serif; color: var(--ink); }
+  .mc-tot { font: 800 24px 'Manrope', sans-serif; color: var(--brand-deep); }
   .mc-nota { margin: 14px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
   .mc-cta {
     display: inline-block; margin-top: 14px; font-weight: 700; font-size: 14.5px;

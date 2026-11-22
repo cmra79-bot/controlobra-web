@@ -348,6 +348,17 @@ porque `Product`/`Offer` **bajó el CTR** en ago-2026 y se retiró del resto
 
 ## 8. Diseño y marca
 
+> **21-nov-2026 — precios, análisis y guías en modo oscuro.** Las páginas de
+> `PrecioLayout.astro` usan el mismo modo oscuro futurista de la portada
+> (fondo negro con rejilla y auroras, Manrope/JetBrains Mono, vidrio oscuro),
+> siempre en oscuro. Textos y precios sin cambios. Imágenes al compartir
+> (1200×630, JPG de menos de 100 KB para que WhatsApp las muestre):
+> `public/assets/og-image.jpg` (portada, con la casa 3D), `og-precios.jpg`
+> (precios) y `public/assets/guias/og-<guía>.jpg` (una por guía, prop `ogImage`
+> de `PrecioLayout`). Las ilustraciones de las guías (`guias/<guía>.webp` y
+> `-mini.webp`) se dibujaron en isométrico y se terminaron en VectorCraft
+> (sombra y brillo); los fuentes quedan en `C:\controlobra-web-preview\_arte`.
+
 ### Densidad: compacto (pedido de Carlos, 21-nov-2026)
 Textos ajustados y **sin espacio perdido**: que en una pantalla, en PC y en el celular, se vea
 lo más posible. Reglas:
@@ -472,11 +483,8 @@ no pertenece a la paleta.
    DigitalOcean + crear en Cloudflare un Redirect Rule 301 de `www` al apex.
    Requiere acceso a los paneles → **lo hace el usuario**.
 
-2. **`og:image` apunta a un archivo que no existe.**
-   `index.html` declara `https://controlobra.ai/assets/og-image.png` en `og:image`
-   y `twitter:image`, pero `public/assets/og-image.png` **no está**. Compartir el
-   link en WhatsApp o LinkedIn sale sin imagen de preview. Hace falta un PNG de
-   1200×630.
+2. ~~**`og:image` apunta a un archivo que no existe.**~~ Resuelto el 22-nov-2026:
+   `public/assets/og-image.jpg` (1200×630) y una imagen por página de precios y guía.
 
 ### 🟡 Media — crecimiento
 
