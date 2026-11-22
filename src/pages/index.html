@@ -1363,6 +1363,16 @@
       linear-gradient(180deg, rgba(10,13,18,.45) 0%, rgba(20,24,31,.6) 100%)}
   html[data-theme="dark"] footer{background: rgba(8,10,14,.72)}
 
+  /* Botón de la cabecera para entrar a Precios Obra (pedido de Carlos 22-nov-2026) */
+  .nav .btn.po-nav{background: rgba(242,107,31,.10); color:#fff; border:1px solid rgba(242,107,31,.55);
+    box-shadow: inset 0 0 0 1px rgba(242,107,31,.08), 0 0 22px -8px rgba(242,107,31,.55); gap:8px;
+    transition: background .22s ease, border-color .22s ease, box-shadow .22s ease}
+  .nav .btn.po-nav:hover{background: rgba(242,107,31,.2); border-color:#F26B1F; box-shadow: 0 0 26px -6px rgba(242,107,31,.7)}
+  .nav .btn.po-nav .po-ic{width:7px; height:7px; border-radius:99px; background:#F26B1F; box-shadow:0 0 8px #F26B1F; flex:none}
+  .nav .nav-cta .btn{white-space:nowrap}
+  @media (max-width: 767px){ .nav .nav-cta{gap:6px} .nav .nav-cta .btn{padding:8px 11px; font-size:12.5px} .nav .btn.po-nav .po-ic{display:none} }
+  @media (max-width: 380px){ .nav .nav-cta .btn{padding:7px 9px; font-size:11.5px} }
+
   /* ═══════════════ FX · capa futurista (ver /assets/fx.js) ═══════════════ */
   .fx-orbs{position:absolute; left:0; top:0; width:100%; height:100vh; max-height:100%; display:block;
     -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent); mask-image: linear-gradient(180deg, #000 72%, transparent)}
@@ -1564,6 +1574,7 @@ const html = `
     </div>
     <div class="nav-cta">
       <a class="btn ghost" href="https://app.controlobra.ai/login" rel="noopener">Iniciar sesión</a>
+      <a class="btn po-nav" href="https://app.controlobra.ai/login" rel="noopener" aria-label="Entrar a Precios Obra"><span class="po-ic" aria-hidden="true"></span>Precios Obra</a>
       <button class="btn primary shimmer" data-demo>Demo gratis</button>
     </div>
   </div>
