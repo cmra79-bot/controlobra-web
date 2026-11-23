@@ -2,6 +2,7 @@
 import PrecioLayout from '../../layouts/PrecioLayout.astro'
 import { MATERIALES, getMaterial, getCategorias, getStats, getProvincias, TIPOS, ORDEN_TIPOS, TIPO_RESUMEN, ZONAS } from '../../lib/precios.js'
 import NotaMoneda from '../../components/NotaMoneda.astro'
+import VideoPreciosObra from '../../components/VideoPreciosObra.astro'
 
 const [cats, stats, provincias, destacadosRaw] = await Promise.all([
   getCategorias(),
@@ -44,6 +45,8 @@ const description =
       </aside>
     )}
   </section>
+
+  <VideoPreciosObra />
 
   <section>
     <h2>Precios por tipo</h2>
