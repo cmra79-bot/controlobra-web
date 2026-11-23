@@ -1,0 +1,38 @@
+---
+// Video de Precios Obra (50 s, sin sonido). Usa el marco/capítulos/JS compartidos
+// con la portada: /assets/video-demo.css y /assets/video-demo.js.
+const { titulo = true } = Astro.props
+---
+<link rel="stylesheet" href="/assets/video-demo.css" />
+<section class="vpo" aria-label="Video de Precios Obra">
+  {titulo && (
+    <div class="vpo-h">
+      <h2>Míralo en un minuto: <span class="or">gratis</span>, de la consulta al presupuesto</h2>
+      <p>Precios por zona, el análisis de cada partida, presupuestos, proveedores y cuánto cuesta tu casa.</p>
+    </div>
+  )}
+  <div class="dv-frame" id="dvFramePo" data-dv-base="/assets/video/precios-obra-v2-">
+    <div class="dv-bar" aria-hidden="true"><i></i><i></i><i></i><span>app.controlobra.ai/precios-obra</span></div>
+    <video muted loop playsinline preload="none" poster="/assets/video/precios-obra-v2-poster.webp"
+           aria-label="Recorrido por Precios Obra: precios de materiales, análisis de cada partida, presupuestos gratis, proveedores y calcula tu casa" width="1280" height="800"></video>
+    <button class="dv-play" aria-label="Reproducir video de Precios Obra"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+  </div>
+  <div class="dv-chaps" data-dv-chaps="dvFramePo">
+    <button class="dv-chap on" data-t="0"><b>1</b>Precios de materiales</button>
+    <button class="dv-chap" data-t="9.45"><b>2</b>Análisis de cada partida</button>
+    <button class="dv-chap" data-t="21.95"><b>3</b>Presupuestos gratis</button>
+    <button class="dv-chap" data-t="30.15"><b>4</b>Proveedores</button>
+    <button class="dv-chap" data-t="48.05"><b>5</b>Calcula tu casa</button>
+  </div>
+  <div class="dv-note">Video sin sonido · 58 segundos</div>
+</section>
+<script is:inline src="/assets/video-demo.js" defer></script>
+
+<style>
+  .vpo { margin-top: 40px; }
+  .vpo-h { text-align: center; max-width: 720px; margin: 0 auto; }
+  .vpo-h h2 { font-size: clamp(20px, 3vw, 28px); font-weight: 700; letter-spacing: -.02em; margin: 0; text-wrap: balance; line-height: 1.15; }
+  .vpo-h p { color: var(--muted); font-size: 14.5px; margin: 8px 0 0; }
+  .or { color: var(--brand); }
+  .vpo :global(.dv-frame) { margin-top: 22px; }
+</style>
