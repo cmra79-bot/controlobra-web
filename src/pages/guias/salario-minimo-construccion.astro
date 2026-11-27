@@ -1,0 +1,186 @@
+---
+import BotonApp from '../../components/BotonApp.astro'
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import NotaMoneda from '../../components/NotaMoneda.astro'
+import { RESOLUCION_SALARIOS as R, CATEGORIAS, DESTAJO, LISTADO_OFICIAL, NOTA_OFICIAL, fechaRevisado } from '../../lib/manoDeObraOficial.js'
+
+const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'
+const revisado = fechaRevisado()
+const APP_MO = 'https://app.controlobra.ai/precios-obra?q=mano%20de%20obra'
+
+const tnc = CATEGORIAS[0]
+const maestro = CATEGORIAS[CATEGORIAS.length - 1]
+
+const title = 'Salario mínimo de la construcción en RD 2026 y tarifas a destajo'
+const description = `Salario mínimo de la construcción en República Dominicana (Resolución ${R.numero}): desde RD$${fmt(tnc.vigente)} el trabajador no calificado hasta RD$${fmt(maestro.vigente)} el maestro, y las tarifas oficiales a destajo de albañiles, plomeros, electricistas y más.`
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuál es el salario mínimo de la construcción en República Dominicana en 2026?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Según la Resolución ${R.numero} del Comité Nacional de Salarios, la tarifa mínima va de RD$${fmt(tnc.vigente)} para el trabajador no calificado a RD$${fmt(maestro.vigente)} para el maestro de cada área. Subió 12 % al entrar en vigor y llega al 20 % el 1 de junio de 2027.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Existen tarifas oficiales a destajo para albañiles, plomeros y electricistas?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sí. El Comité Nacional de Salarios fija tarifas mínimas por trabajo hecho para albañiles (CNS-05-2026), varilleros (CNS-06), pintores (CNS-07), plomeros (CNS-08), electricistas (CNS-09) y carpinteros (CNS-10). Se publican en el portal de transparencia del Ministerio de Trabajo.',
+      },
+    },
+  ],
+}
+---
+<PrecioLayout title={title} description={description} canonicalPath="/guias/salario-minimo-construccion/" jsonld={jsonld} breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Guías', path: '/guias/' },
+  { nombre: 'Salario mínimo de la construcción', path: '/guias/salario-minimo-construccion/' },
+]}>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Salario mínimo de la construcción
+  </nav>
+
+  <p class="eyebrow">Guía · Mano de obra oficial</p>
+  <h1>Salario mínimo de la construcción en República Dominicana</h1>
+  <p class="lead">Lo mínimo que se le puede pagar a cada categoría de trabajador de la construcción y las tarifas oficiales a destajo de cada oficio, según las resoluciones del Comité Nacional de Salarios. Cada valor lleva el enlace a la resolución oficial y la fecha en que la revisamos.</p>
+  <BotonApp href={APP_MO} texto="Ver precios de mano de obra del mercado" />
+
+  <NotaMoneda />
+  <div class="badge"><span class="dot"></span> Revisado con las resoluciones oficiales el {revisado}</div>
+
+  <div class="hero">
+    <div class="hlabel">Resolución {R.numero} · vigente</div>
+    <div class="big tnum">RD${fmt(tnc.vigente)} <small>a</small> RD${fmt(maestro.vigente)}</div>
+    <div class="hnote">Del trabajador no calificado al maestro de cada área. Subió 12 % al entrar en vigor y sube otra vez el 1 de junio de 2027, hasta completar 20 %.</div>
+  </div>
+
+  <section>
+    <h2>Tarifa mínima por categoría</h2>
+    <p class="sub">Resolución <a href={R.url} target="_blank" rel="noopener">{R.numero} ↗</a>, del {R.fecha}.</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Categoría</th><th class="num">Antes</th><th class="num">Vigente (+12 %)</th><th class="num">Desde jun. 2027 (+20 %)</th></tr>
+        </thead>
+        <tbody>
+          {CATEGORIAS.map((c) => (
+            <tr>
+              <td class="pn">{c.nombre}</td>
+              <td class="num tnum muted">RD${fmt(c.antes)}</td>
+              <td class="num price tnum">RD${fmt(c.vigente)}</td>
+              <td class="num tnum">RD${fmt(c.jun2027)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+    <p class="mini">Tarifa por jornada de trabajo. No incluye a los maestros generales de obra. Quien ya gana más que el mínimo conserva su salario. «Antes» es la Resolución 03/2024.</p>
+  </section>
+
+  <section>
+    <h2>Tarifas oficiales a destajo por oficio</h2>
+    <p class="sub">Lo mínimo que se paga por trabajo hecho (por m², metro lineal, unidad o salida). Cada resolución trae su tabla completa; abajo, una partida de muestra.</p>
+    <div class="oficios">
+      {DESTAJO.map((d) => (
+        <div class="oficio">
+          <div class="otop">
+            <b>{d.oficio}</b>
+            <a class="fuente" href={d.url} target="_blank" rel="noopener">{d.numero} ↗</a>
+          </div>
+          <p class="trae">{d.trae}</p>
+          {d.ejemplo
+            ? <div class="ej"><span>{d.ejemplo.partida}</span><b class="tnum">RD${fmt(d.ejemplo.vigente)} <small>/ {d.ejemplo.unidad}</small></b></div>
+            : <div class="ej"><span>Tabla completa en la resolución</span></div>}
+        </div>
+      ))}
+    </div>
+    <p class="mini">Las tarifas a destajo también suben en dos tramos: la vigente y otra desde el 1 de junio de 2027. Todas las resoluciones están en el <a href={LISTADO_OFICIAL} target="_blank" rel="noopener">portal de transparencia del Ministerio de Trabajo ↗</a> (<a href={NOTA_OFICIAL} target="_blank" rel="noopener">nota oficial ↗</a>).</p>
+  </section>
+
+  <section>
+    <h2>Mínimo legal y precio de mercado</h2>
+    <p>Estas tarifas son el piso legal: nadie puede cobrar ni pagar menos. En la práctica, la mano de obra se cotiza más alto, sobre todo en el Este y en obras pequeñas. En <a href={APP_MO}>Precios Obra</a> están los precios de mano de obra que reporta la comunidad por zona, y en los <a href="/analisis/">análisis de precio unitario</a> cuánto pesa la mano de obra en cada partida.</p>
+  </section>
+
+  <CtaCalculadora titulo="Calcula el costo de tu obra con mano de obra incluida" texto="Estima materiales, mano de obra e indirectos de tu casa con precios reales de República Dominicana." />
+
+  <section>
+    <h2>Otras guías de costos</h2>
+    <div class="chips">
+      <a class="chip" href="/guias/cuanto-cuesta-el-permiso-de-construccion/">📋 Permiso de construcción</a>
+      <a class="chip" href="/guias/cuanto-cuesta-construir-casa-republica-dominicana/">🏠 Construir una casa</a>
+      <a class="chip" href="/guias/cuanto-cuesta-una-pared-de-block/">🧱 Pared de block</a>
+      <a class="chip" href="/guias/cuanto-cuesta-pintar-una-casa/">🎨 Pintar una casa</a>
+    </div>
+  </section>
+
+  <p class="disc">Resumen hecho por Precios Obra con las resoluciones oficiales enlazadas, revisadas el {revisado}. Ante cualquier diferencia vale la resolución del Comité Nacional de Salarios.</p>
+</PrecioLayout>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .crumb a { text-decoration: none; }
+  .crumb span { color: var(--line-2); }
+
+  .eyebrow { margin-top: 22px; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-deep); }
+  h1 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: clamp(28px, 5.5vw, 42px); line-height: 1.1; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 16px 0 0; text-align: justify; text-align-last: left; hyphens: auto; }
+
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px; background: var(--fresh-soft); color: var(--fresh); font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .hero { margin-top: 22px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px; box-shadow: var(--shadow); }
+  .hlabel { font-size: 12.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .big { font-size: clamp(28px, 6vw, 44px); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; margin-top: 8px; }
+  .big small { font-size: .5em; font-weight: 600; color: var(--muted); }
+  .hnote { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+
+  section { margin-top: 38px; }
+  h2 { font-size: 21px; letter-spacing: -.02em; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+  .mini { color: var(--muted); font-size: 12.5px; margin-top: 10px; }
+  p { margin: 0 0 14px; text-align: justify; text-align-last: left; hyphens: auto; }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 11px 14px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  .pn { font-weight: 600; }
+  .muted { color: var(--muted); }
+  .price { font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 13px; white-space: nowrap; color: var(--brand); }
+  td.num { white-space: nowrap; }
+  @media (max-width: 660px) {
+    table { font-size: 13px; }
+    thead th, tbody td { padding: 9px 8px; }
+    th:nth-child(2), td:nth-child(2) { display: none; }
+  }
+
+  .oficios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .oficios { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .oficios { grid-template-columns: 1fr; } }
+  .oficio { display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .otop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .otop b { font-size: 16px; }
+  .fuente { white-space: nowrap; font-size: 12.5px; font-weight: 600; color: var(--brand-deep); text-decoration: none; }
+  .fuente:hover { text-decoration: underline; }
+  .trae { font-size: 13px; color: var(--muted); margin: 6px 0 10px; text-align: left; }
+  .ej { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-top: 1px solid var(--line); padding-top: 9px; font-size: 13px; color: var(--ink-2); }
+  .ej b { white-space: nowrap; font-size: 14px; color: var(--ink); }
+  .ej small { font-weight: 500; color: var(--muted); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); border-radius: 999px; padding: 8px 15px; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--ink); background: var(--paper); }
+  .chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
+</style>

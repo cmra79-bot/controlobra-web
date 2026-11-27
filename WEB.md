@@ -216,6 +216,10 @@ que anunciarlas solo gasta presupuesto de rastreo.
    (página de licencia + PDF de tasas de jun-2026); `REVISADO` es la fecha de la última
    revisión. Para actualizar: abrir cada `url`, comparar, cambiar valor y fecha. Esta guía
    **no** usa precios del catálogo (solo el costo/m² de la calculadora para el ejemplo).
+7. `salario-minimo-construccion` *(27-nov-2026)* — tarifa mínima por categoría (Res.
+   CNS-04-2026) y las 6 resoluciones a destajo (CNS-05 a 10-2026) con su PDF oficial y una
+   partida de muestra. Datos en `src/lib/manoDeObraOficial.js`, mismo patrón que permisos.
+   CNS-05 (albañiles) y CNS-06 (varilleros) son PDF escaneados: sus tablas no se pudieron leer.
 
 Cada guía usa **los precios reales del catálogo**, no números inventados, y
 enlaza a las páginas de material correspondientes (interlinking completado el

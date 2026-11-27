@@ -55,6 +55,13 @@ const GUIAS = [
     resumen: 'Ayuntamiento 2,5 %, CODIA 2 %, tasas e inspecciones del MIVHED, con el enlace a cada fuente oficial.',
     img: null,
   },
+  {
+    slug: 'salario-minimo-construccion',
+    titulo: 'Salario mínimo de la construcción',
+    resumen: 'Tarifa mínima por categoría (Resolución CNS-04-2026) y las tarifas oficiales a destajo de cada oficio, con enlace a cada resolución.',
+    img: null,
+    ico: '👷',
+  },
 ]
 
 const title = 'Guías de costos de construcción en República Dominicana'
@@ -71,7 +78,7 @@ const description = 'Guías prácticas sobre costos de construcción en RD: cuá
       <a class="card" href={`/guias/${gu.slug}/`}>
         {gu.img
           ? <img class="mini" src={`/assets/guias/${gu.img}-mini.webp`} alt="" width="96" height="72" loading="lazy" decoding="async" />
-          : <span class="mini ico" aria-hidden="true">📋</span>}
+          : <span class="mini ico" aria-hidden="true">{gu.ico || '📋'}</span>}
         <div>
           <div class="name">{gu.titulo}</div>
           <div class="res">{gu.resumen}</div>
