@@ -203,13 +203,19 @@ que anunciarlas solo gasta presupuesto de rastreo.
 | Guías | `/guias/<slug>/` | 5 + índice | Long-tail de intención real |
 | Análisis | `/analisis/` y `/analisis/<codigo>-<slug>/` | ~1.191 + índice | Análisis de precio unitario con dibujo e insumos solo por nombre (contenido «b»). Datos de `app.controlobra.ai/precios-obra/analisis-publico.json`, que publica el build de la app (`src/lib/analisis.js`). Plan Google, Fase 2 (`PRECIOS_OBRA.md` §10) |
 
-### Las 5 guías
+### Las guías
 
 1. `cuanto-cuesta-construir-casa-republica-dominicana`
 2. `cuanto-cuesta-una-pared-de-block`
 3. `cuanto-cuesta-pintar-una-casa`
 4. `cuanto-cuesta-un-quintal-de-varilla`
 5. `cuanto-cuesta-echar-el-plato` *(losa de techo)*
+6. `cuanto-cuesta-el-permiso-de-construccion` *(27-nov-2026)* — permisos y trámites con
+   **enlace a la fuente oficial** de cada valor (mismo patrón que los enlaces a ferreterías
+   de la app). Los valores salen de `src/lib/permisos.js`, cargados a mano desde el MIVHED
+   (página de licencia + PDF de tasas de jun-2026); `REVISADO` es la fecha de la última
+   revisión. Para actualizar: abrir cada `url`, comparar, cambiar valor y fecha. Esta guía
+   **no** usa precios del catálogo (solo el costo/m² de la calculadora para el ejemplo).
 
 Cada guía usa **los precios reales del catálogo**, no números inventados, y
 enlaza a las páginas de material correspondientes (interlinking completado el

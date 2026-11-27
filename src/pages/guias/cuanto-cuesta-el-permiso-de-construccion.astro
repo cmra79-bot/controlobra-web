@@ -1,0 +1,237 @@
+---
+import BotonApp from '../../components/BotonApp.astro'
+import PrecioLayout from '../../layouts/PrecioLayout.astro'
+import CtaCalculadora from '../../components/CtaCalculadora.astro'
+import NotaMoneda from '../../components/NotaMoneda.astro'
+import { getCostoConstruccion } from '../../lib/precios.js'
+import { FUENTES, TASAS, OTRAS, REQUISITOS, PLAZOS, costoPermisos, fechaRevisado } from '../../lib/permisos.js'
+
+const g = await getCostoConstruccion()
+const fmt = (v) => Number.isFinite(v) ? v.toLocaleString('es-DO', { maximumFractionDigits: 0 }) : '—'
+const revisado = fechaRevisado()
+
+// Ejemplo: casa de 150 m² de 1 nivel, terminación estándar (mismo modelo que la guía de la casa).
+const m2Ej = 150
+const costoM2 = Math.round(g.estandar.total)
+const valorEj = costoM2 * m2Ej
+const ej = costoPermisos(valorEj, 1)
+
+const tasaTexto = (t) => t.tipo === 'pct' ? `${String(t.valor).replace('.', ',')} %` : `RD$${fmt(t.valor)}`
+
+const title = 'Cuánto cuesta el permiso de construcción en RD 2026'
+const description = `Licencia de construcción en República Dominicana: ayuntamiento 2,5 %, CODIA 2 %, MIVHED y las inspecciones. Una casa de ${m2Ej} m² paga cerca de RD$${fmt(ej.total)}. Con enlace a cada fuente oficial.`
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuánto cuesta el permiso de construcción en República Dominicana?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `La mayor parte son dos arbitrios sobre el valor de la construcción: 2,5 % para el ayuntamiento y 2 % para el CODIA. A eso se suman la solicitud de licencia del MIVHED (RD$6,000), las inspecciones por etapa (RD$3,300 cada una) y la inspección final (RD$11,000). Una casa de ${m2Ej} m² valorada en RD$${fmt(valorEj)} paga cerca de RD$${fmt(ej.total)}.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Dónde se solicita la licencia de construcción?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'En línea, por la Ventanilla Única de Construcción (vuc.gob.do). La emite el Ministerio de Vivienda, Hábitat y Edificaciones (MIVHED). Para una casa el plazo es de hasta 60 días laborables.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿La vivienda de bajo costo paga licencia?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Según la tabla de tasas del MIVHED, la licencia de vivienda de bajo costo, el permiso de inicio de obra y la autorización de trabajo previo están exentos de pago.',
+      },
+    },
+  ],
+}
+---
+<PrecioLayout title={title} description={description} canonicalPath="/guias/cuanto-cuesta-el-permiso-de-construccion/" jsonld={jsonld} breadcrumbs={[
+  { nombre: 'Inicio', path: '/' },
+  { nombre: 'Guías', path: '/guias/' },
+  { nombre: 'Permiso de construcción', path: '/guias/cuanto-cuesta-el-permiso-de-construccion/' },
+]}>
+  <nav class="crumb">
+    <a href="/">Inicio</a> <span>›</span> <a href="/guias/">Guías</a> <span>›</span> Permiso de construcción
+  </nav>
+
+  <p class="eyebrow">Guía · Permisos y trámites</p>
+  <h1>¿Cuánto cuesta el permiso de construcción en República Dominicana?</h1>
+  <p class="lead">Lo que se paga para sacar la licencia de construcción de una casa: los arbitrios del ayuntamiento y del CODIA, las tasas del MIVHED y las inspecciones. Cada valor lleva el enlace a su fuente oficial y la fecha en que lo revisamos.</p>
+  <BotonApp href="https://app.controlobra.ai/precios-obra/calculadora" texto="Calcular el costo de mi casa" />
+
+  <NotaMoneda />
+  <div class="badge"><span class="dot"></span> Revisado con las fuentes oficiales el {revisado}</div>
+
+  <div class="hero">
+    <div class="hlabel">Ejemplo · casa de {m2Ej} m², 1 nivel</div>
+    <div class="big tnum">RD${fmt(ej.total)}</div>
+    <div class="hnote">Permisos y tasas para una obra valorada en RD${fmt(valorEj)} (RD${fmt(costoM2)}/m², terminación estándar). El 4,5 % del valor de la obra se va en ayuntamiento y CODIA.</div>
+  </div>
+
+  <section>
+    <h2>Calcula los permisos de tu obra</h2>
+    <p class="sub">Cambia los metros, los niveles o el costo por m². El valor de la obra lo fija el MIVHED al tasar; esto es una estimación.</p>
+    <div class="calc" id="calc-permisos" data-costo={costoM2}>
+      <label>Metros construidos<input type="number" inputmode="decimal" min="1" value={m2Ej} data-k="m2" /></label>
+      <label>Niveles<select data-k="niveles"><option value="1">1</option><option value="2">2</option></select></label>
+      <label>Costo por m² (RD$)<input type="number" inputmode="decimal" min="1" value={costoM2} data-k="costo" /></label>
+      <div class="res">
+        <span>Valor de la obra <b class="tnum" data-out="valor">RD${fmt(valorEj)}</b></span>
+        <span>Permisos y tasas <b class="tnum big2" data-out="total">RD${fmt(ej.total)}</b></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Qué se paga y a quién</h2>
+    <p class="sub">Para una vivienda de hasta 2 niveles. En la última columna, la fuente oficial de cada valor.</p>
+    <div class="table-card"><div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Concepto</th><th>Lo cobra</th><th class="num">Tarifa</th><th class="num">Casa de {m2Ej} m²</th><th>Fuente</th></tr>
+        </thead>
+        <tbody>
+          {ej.filas.map((f) => (
+            <tr>
+              <td class="pn">{f.nombre}{f.nota && <small>{f.nota}</small>}</td>
+              <td class="cobra">{f.cobra}</td>
+              <td class="num tnum tarifa">{tasaTexto(f)}</td>
+              <td class="num price tnum">{f.monto ? `RD$${fmt(f.monto)}` : 'No aplica'}</td>
+              <td class="src"><span class="tm">{f.cobra} · {tasaTexto(f)} · </span><a class="fuente" href={FUENTES[f.fuente].url} target="_blank" rel="noopener">{f.fuente === 'tasas' ? 'Tasas MIVHED' : 'MIVHED'} ↗</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+    <p class="mini">Inspecciones del ejemplo: una vertical y una horizontal por nivel, más las zapatas. La inspección final lleva además un cargo por m² que depende del tipo de proyecto. No incluye lo que cobran aparte el ayuntamiento (uso de suelo, no objeción), Medio Ambiente, el estudio de suelo ni los planos.</p>
+  </section>
+
+  <section>
+    <h2>Otros trámites del MIVHED</h2>
+    <div class="grid">
+      {OTRAS.map((o) => (
+        <div class="item">
+          <span>{o.nombre}</span>
+          <b class="tnum">{o.valor ? `RD$${fmt(o.valor)}` : 'Exento'}</b>
+        </div>
+      ))}
+    </div>
+    <p class="mini">Fuente: <a href={FUENTES.tasas.url} target="_blank" rel="noopener">{FUENTES.tasas.nombre} ↗</a></p>
+  </section>
+
+  <section>
+    <h2>Requisitos para la licencia</h2>
+    <ul class="lista">
+      {REQUISITOS.map((r) => <li>{r}</li>)}
+    </ul>
+    <p class="mini">Lista completa y requisitos por tipo de proyecto en <a href={FUENTES.licencia.url} target="_blank" rel="noopener">la página del MIVHED ↗</a>. Para el estudio de suelo y los cálculos, mira el <a href={FUENTES.profesionales.url} target="_blank" rel="noopener">listado de profesionales habilitados ↗</a>.</p>
+  </section>
+
+  <section>
+    <h2>Cómo se solicita y cuánto tarda</h2>
+    <p>Todo se hace en línea por la <a href={FUENTES.vuc.url} target="_blank" rel="noopener">Ventanilla Única de Construcción ↗</a>: creas el trámite «Licencia de Construcción», subes los documentos en PDF y recibes un número de expediente. El MIVHED revisa, tasa la obra y te pide los pagos; el del ayuntamiento y el del CODIA se pagan directo en cada institución y se sube el comprobante. La licencia vale un año.</p>
+    <div class="grid">
+      {PLAZOS.map((p) => (
+        <div class="item"><span>{p.nombre}</span><b>{p.dias}</b></div>
+      ))}
+    </div>
+  </section>
+
+  <CtaCalculadora titulo="Suma los permisos al costo de tu casa" texto="Los permisos son una parte. Estima materiales, mano de obra e indirectos de tu obra con precios reales de República Dominicana." />
+
+  <p class="disc">Resumen hecho por Precios Obra con las fuentes oficiales enlazadas, revisadas el {revisado}. Las tasas pueden cambiar: antes de pagar, confirma en la página del MIVHED, del ayuntamiento y del CODIA.</p>
+</PrecioLayout>
+
+<script>
+  const box = document.getElementById('calc-permisos')
+  if (box) {
+    const fmt = (v) => v.toLocaleString('es-DO', { maximumFractionDigits: 0 })
+    const val = (k) => Number(box.querySelector(`[data-k="${k}"]`).value) || 0
+    const calc = () => {
+      const valor = val('m2') * val('costo')
+      const niveles = val('niveles') || 1
+      const total = 6000 + valor * 0.025 + valor * 0.02 + (valor > 6_000_000 ? valor * 0.001 : 0) + 3300 * (2 * niveles + 1) + 11000
+      box.querySelector('[data-out="valor"]').textContent = `RD$${fmt(valor)}`
+      box.querySelector('[data-out="total"]').textContent = `RD$${fmt(total)}`
+    }
+    box.addEventListener('input', calc)
+    box.addEventListener('change', calc)
+  }
+</script>
+
+<style>
+  .crumb { font-size: 12.5px; color: var(--muted); padding-top: 26px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .crumb a { text-decoration: none; }
+  .crumb span { color: var(--line-2); }
+
+  .eyebrow { margin-top: 22px; font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-deep); }
+  h1 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: clamp(28px, 5.5vw, 42px); line-height: 1.1; margin: 10px 0 0; text-wrap: balance; }
+  .lead { font-size: 17px; color: var(--ink-2); margin: 16px 0 0; text-align: justify; text-align-last: left; hyphens: auto; }
+
+  .badge { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px; background: var(--fresh-soft); color: var(--fresh); font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fresh); }
+
+  .hero { margin-top: 22px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px; box-shadow: var(--shadow); }
+  .hlabel { font-size: 12.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .big { font-size: clamp(36px, 8vw, 52px); font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-top: 8px; }
+  .hnote { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+
+  section { margin-top: 38px; }
+  h2 { font-size: 21px; letter-spacing: -.02em; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+  .mini { color: var(--muted); font-size: 12.5px; margin-top: 10px; }
+  p { margin: 0 0 14px; text-align: justify; text-align-last: left; hyphens: auto; }
+
+  .calc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+  .calc label { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .calc input, .calc select { font: inherit; font-size: 16px; color: var(--ink); background: var(--paper-2); border: 1px solid var(--line-2); border-radius: 10px; padding: 9px 11px; }
+  .calc .res { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 14px; color: var(--ink-2); }
+  .calc .res b { display: block; font-size: 18px; color: var(--ink); }
+  .calc .res b.big2 { font-size: 26px; color: var(--brand); }
+  @media (max-width: 660px) { .calc { grid-template-columns: 1fr 1fr; } .calc label:last-of-type { grid-column: 1 / -1; } }
+
+  .table-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .tscroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 620px; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 11px 14px; background: color-mix(in srgb, var(--bg) 60%, var(--paper)); border-bottom: 1px solid var(--line); }
+  th.num, td.num { text-align: right; }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  .pn { font-weight: 600; }
+  .tm { display: none; font-size: 12px; color: var(--muted); }
+  @media (max-width: 660px) { .tm { display: inline; } }
+  .pn small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .price { font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 13px; white-space: nowrap; }
+  .fuente { white-space: nowrap; font-size: 13px; font-weight: 600; color: var(--brand-deep); text-decoration: none; }
+  .fuente:hover { text-decoration: underline; }
+  /* Celular: cada concepto en un renglón compacto, sin tabla ancha. */
+  @media (max-width: 660px) {
+    table { min-width: 0; }
+    thead { display: none; }
+    tbody tr { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 0; border: none; }
+    td.pn { grid-column: 1; }
+    td.price { grid-column: 2; grid-row: 1; }
+    td.cobra, td.tarifa { display: none; }
+    td.src { grid-column: 1 / -1; }
+  }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px; }
+  @media (max-width: 660px) { .grid { grid-template-columns: 1fr; } }
+  .item { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding: 8px 2px; font-size: 14px; }
+  .item b { white-space: nowrap; }
+
+  .lista { margin: 0; padding-left: 20px; columns: 2; column-gap: 28px; font-size: 14.5px; color: var(--ink-2); }
+  .lista li { margin-bottom: 6px; break-inside: avoid; }
+  @media (max-width: 660px) { .lista { columns: 1; } }
+
+  .disc { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 26px; }
+</style>
