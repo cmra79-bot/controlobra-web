@@ -126,7 +126,9 @@ controlobra-web/
 │   └── rebuild-diario.yml          ← cron 06:00 RD → deploy hook de Cloudflare
 ├── public/
 │   ├── favicon.ico                 ← ICO multi-tamaño (16-256) en la RAÍZ
-│   ├── robots.txt                  ← Allow / + sitemap-index.xml
+│   ├── robots.txt                  ← cierra a robots que entrenan IA; Google/Bing/WhatsApp entran (SEGURIDAD.md)
+│   ├── _headers                    ← cabeceras de seguridad + CSP (SEGURIDAD.md)
+│   ├── .well-known/tdmrep.json     ← reserva legal: no entrenar IA
 │   └── assets/                     ← logos, favicons PNG, dashboard-hero.png
 ├── src/
 │   ├── components/
