@@ -1710,6 +1710,43 @@
   html[data-theme="dark"] .rn{transition: border-color .3s} html[data-theme="dark"] .rn:hover{border-color: rgba(242,107,31,.35)}
   html[data-theme="dark"] .rn .qr path{fill:#8A93A1}
   html[data-theme="dark"] .rn .fx span.on{background:#E8EAEE; border-color:#E8EAEE; color:#0B0E13}
+
+  /* ═══════════════ PIE DE PÁGINA v2 (28-nov-2026) ═══════════════
+     Solo enlaces que llevan a algo real. En celular: marca compacta,
+     enlaces en 2 columnas, contacto en una tarjeta corta y espacio
+     abajo para que el botón de WhatsApp no tape nada. */
+  footer.ft2{padding: 64px 0 32px}
+  .ft2-in{display:grid; grid-template-columns: 1.5fr 1fr 1fr 1.4fr; gap:36px; margin-bottom:36px; position:relative}
+  .ft2-brand p{margin:14px 0 0; font-size:13px; line-height:1.55; max-width:300px; color:#9AA3B2}
+  .ft2-col h4, .ft2-cta h4{margin:0 0 14px; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#fff; font-weight:800}
+  .ft2-col ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
+  .ft2-col a{font-size:13px; color:#9AA3B2; transition: color .15s}
+  .ft2-col a:hover{color:#fff}
+  .ft2-cta{align-self:start; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:14px; padding:18px}
+  .ft2-cta h4{margin-bottom:6px}
+  .ft2-cta p{margin:0 0 14px; font-size:12.5px; line-height:1.5; color:#9AA3B2}
+  .ft2-actions{display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px}
+  .ft2-btn{height:36px; padding:0 16px; border-radius:9px; background: var(--orange); color:#fff; font-size:12.5px; font-weight:800; border:0; cursor:pointer; font-family:inherit}
+  .ft2-btn:hover{filter:brightness(1.08)}
+  .ft2-mail{font-size:12.5px; color:#C8CFD7; text-decoration:underline; text-decoration-color: rgba(255,255,255,.2); text-underline-offset:3px}
+  .ft2-mail:hover{color:#fff}
+  .ft2-bottom{padding-top:20px; border-top:1px solid #15181E; font-size:11.5px; color:#6B7280; font-family:'JetBrains Mono', monospace; position:relative}
+  @media (max-width: 1100px){
+    .ft2-in{grid-template-columns: 1fr 1fr; gap:32px 24px}
+  }
+  @media (max-width: 640px){
+    footer.ft2{padding: 40px 0 calc(96px + env(safe-area-inset-bottom))}
+    .ft2-in{grid-template-columns: 1fr 1fr; gap:28px 16px; margin-bottom:24px}
+    .ft2-brand, .ft2-cta{grid-column: 1 / -1}
+    .ft2-brand p{font-size:13px; margin-top:10px}
+    .ft2-col h4{margin-bottom:10px}
+    .ft2-col ul{gap:4px}
+    .ft2-col a{display:block; padding:6px 0; font-size:14px}
+    .ft2-cta{padding:16px}
+    .ft2-actions{gap:10px}
+    .ft2-btn{height:40px}
+    .ft2-bottom{padding-top:16px; text-align:center}
+  }
 </style>
 <script>
   /* Anti scroll-restoration. Bombardea scroll=0 cada 20ms durante 1.2s o hasta
@@ -3455,62 +3492,47 @@ const html = `
   </div>
 </div>
 
-<!-- ─── FOOTER ─── -->
-<footer>
+<!-- ─── FOOTER ─── (rediseño 28-nov-2026: compacto en celular, solo enlaces reales) -->
+<footer class="ft2">
   <div class="container">
-    <div class="ft-in">
-      <div class="ft-brand">
+    <div class="ft2-in">
+      <div class="ft2-brand">
         <div class="brand">
           <div class="lg"><img src="/assets/logo-icon-128.webp" alt="Manestro" width="36" height="34" loading="lazy" decoding="async"/></div>
           <div class="nm" style="color:#fff">MANESTRO<small>P · R · O</small></div>
         </div>
-        <p>El ERP profesional con IA para constructoras LATAM. Diseñado en República Dominicana por constructores que vivieron el problema.</p>
-        <p style="margin-top:10px; font-size:12px"><a href="mailto:soporte@controlobra.ai" style="color:#C8CFD7">soporte@controlobra.ai</a></p>
+        <p>El ERP con IA para constructoras. Hecho en República Dominicana por constructores.</p>
       </div>
-      <div class="ft-col">
+      <nav class="ft2-col" aria-label="Producto">
         <h4>Producto</h4>
         <ul>
-          <li><a href="#">Presupuestos</a></li>
-          <li><a href="#">Control de costos</a></li>
-          <li><a href="#">Cubicaciones</a></li>
-          <li><a href="#">Gestión de obra</a></li>
-          <li><a href="#">IA · Asistente</a></li>
+          <li><a href="#modulos">Módulos</a></li>
+          <li><a href="#kubicar">Kubicar</a></li>
+          <li><a href="#informes">Informes</a></li>
+          <li><a href="#ia">Asistente IA</a></li>
+          <li><a href="#faq">Preguntas</a></li>
         </ul>
-      </div>
-      <div class="ft-col">
-        <h4>Empresa</h4>
+      </nav>
+      <nav class="ft2-col" aria-label="Precios de obra">
+        <h4>Precios de obra</h4>
         <ul>
-          <li><a href="#">Quiénes somos</a></li>
-          <li><a href="#">Clientes</a></li>
-          <li><a href="#">Carreras</a></li>
-          <li><a href="#">Prensa</a></li>
+          <li><a href="/precios/">Materiales</a></li>
+          <li><a href="/guias/">Guías de costos</a></li>
+          <li><a href="/analisis/">Análisis de partidas</a></li>
+          <li><a href="/metodologia">Metodología</a></li>
         </ul>
-      </div>
-      <div class="ft-col">
-        <h4>Recursos</h4>
-        <ul>
-          <li><a href="#">Centro de ayuda</a></li>
-          <li><a href="#">Blog del constructor</a></li>
-          <li><a href="#">Documentación API</a></li>
-          <li><a href="#">Estado del servicio</a></li>
-        </ul>
-      </div>
-      <div class="ft-news">
-        <h4>Newsletter del constructor</h4>
-        <p>Tips de control de costos, casos reales y novedades de Manestro — 1 email al mes, sin spam.</p>
-        <div class="form">
-          <input type="email" placeholder="tu@constructora.com"/>
-          <button>Suscribirme</button>
+      </nav>
+      <div class="ft2-cta">
+        <h4>¿Hablamos?</h4>
+        <p>Te mostramos Manestro con una obra tuya en 30 minutos.</p>
+        <div class="ft2-actions">
+          <button class="ft2-btn" type="button" data-demo>Pedir demo</button>
+          <a class="ft2-mail" href="mailto:soporte@controlobra.ai">soporte@controlobra.ai</a>
         </div>
       </div>
     </div>
-    <div class="ft-bottom">
-      <span>© 2026 Manestro · Construido con cuidado en República Dominicana</span>
-      <div class="links">
-        <a href="#">Términos</a>
-        <a href="#">Privacidad</a>
-        <a href="#">Aviso legal</a>
-      </div>
+    <div class="ft2-bottom">
+      <span>© 2026 Manestro · República Dominicana</span>
     </div>
   </div>
 </footer>
