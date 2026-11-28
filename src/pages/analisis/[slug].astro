@@ -33,7 +33,7 @@ const description = `Análisis de precio unitario de ${p.descripcion.toLowerCase
 const canonicalPath = `/analisis/${p.slug}/`
 const url = enApp(p)
 ---
-<PrecioLayout title={title} description={description} canonicalPath={canonicalPath} breadcrumbs={[
+<PrecioLayout ogImage="/assets/og-analisis.jpg" title={title} description={description} canonicalPath={canonicalPath} breadcrumbs={[
   { nombre: 'Inicio', path: '/' },
   { nombre: 'Análisis', path: '/analisis/' },
   { nombre: capNombre, path: `/analisis/#${p.capitulo || ''}` },

@@ -24,6 +24,11 @@
 <meta property="og:image:alt" content="Manestro Pro — El ERP profesional con IA para constructoras"/>
 
 <!-- Twitter Card -->
+<meta property="og:video" content="https://controlobra.ai/assets/video/manestro-demo-v3-1080.mp4"/>
+<meta property="og:video:secure_url" content="https://controlobra.ai/assets/video/manestro-demo-v3-1080.mp4"/>
+<meta property="og:video:type" content="video/mp4"/>
+<meta property="og:video:width" content="1080"/>
+<meta property="og:video:height" content="676"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Manestro Pro — ERP con IA para constructoras"/>
 <meta name="twitter:description" content="Presupuesto, control, cubicaciones y flujo de caja con IA."/>
@@ -36,22 +41,75 @@
 <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180.png"/>
+<!-- Guardar en la pantalla de inicio del teléfono: abre como una app con el logo. -->
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="apple-mobile-web-app-title" content="Manestro"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
+<!-- Datos para Google: quién es la empresa (logo y contacto en el panel de
+     resultados), el sitio, el producto y el video de la portada. -->
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Manestro Pro",
-  "alternateName": "ControlObra",
-  "url": "https://controlobra.ai/",
-  "logo": "https://controlobra.ai/assets/logo-cmp.png",
-  "description": "ERP profesional con IA para constructoras de LATAM: presupuesto, control de costos, cubicaciones, compras, almacén y flujo de caja.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "DO"
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://controlobra.ai/#organizacion",
+    "name": "Manestro Pro",
+    "alternateName": ["Manestro", "ControlObra"],
+    "url": "https://controlobra.ai/",
+    "logo": { "@type": "ImageObject", "url": "https://controlobra.ai/assets/logo-manestro-512.png", "width": 512, "height": 512 },
+    "image": "https://controlobra.ai/assets/og-manestro-v2.jpg",
+    "description": "ERP profesional con IA para constructoras de LATAM: presupuesto, control de costos, cubicaciones, compras, almacén y flujo de caja.",
+    "email": "soporte@controlobra.ai",
+    "telephone": "+1-809-637-6377",
+    "address": { "@type": "PostalAddress", "addressCountry": "DO" },
+    "areaServed": [
+      { "@type": "Country", "name": "República Dominicana" },
+      { "@type": "Place", "name": "Latinoamérica" }
+    ],
+    "contactPoint": [
+      { "@type": "ContactPoint", "contactType": "sales", "telephone": "+1-809-637-6377", "url": "https://wa.me/18096376377", "availableLanguage": "es", "areaServed": "DO" },
+      { "@type": "ContactPoint", "contactType": "customer support", "email": "soporte@controlobra.ai", "availableLanguage": "es" }
+    ]
   },
-  "areaServed": "República Dominicana"
-}
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://controlobra.ai/#sitio",
+    "name": "Manestro Pro",
+    "alternateName": ["Manestro", "ControlObra", "controlobra.ai"],
+    "url": "https://controlobra.ai/",
+    "inLanguage": "es",
+    "publisher": { "@id": "https://controlobra.ai/#organizacion" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Manestro Pro",
+    "applicationCategory": "BusinessApplication",
+    "applicationSubCategory": "ERP de construcción",
+    "operatingSystem": "Web, Android, iOS",
+    "url": "https://controlobra.ai/",
+    "image": "https://controlobra.ai/assets/og-manestro-v2.jpg",
+    "description": "Presupuesto, APU, control de obra, cubicaciones desde planos, compras, almacén, cronograma, ventas de viviendas y flujo de caja, con asistente de IA.",
+    "inLanguage": "es",
+    "publisher": { "@id": "https://controlobra.ai/#organizacion" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "Manestro Pro: del plano al presupuesto con IA",
+    "description": "Recorrido de Manestro Pro, el ERP con IA para constructoras: del plano al presupuesto, control de costos, obra y flujo de caja con precios reales de RD.",
+    "thumbnailUrl": ["https://controlobra.ai/assets/og-manestro-v2.jpg", "https://controlobra.ai/assets/video/manestro-demo-v3-poster.webp"],
+    "uploadDate": "2026-11-22T12:00:00-04:00",
+    "duration": "PT57S",
+    "contentUrl": "https://controlobra.ai/assets/video/manestro-demo-v3-1920.mp4",
+    "inLanguage": "es",
+    "publisher": { "@id": "https://controlobra.ai/#organizacion" }
+  }
+]
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
