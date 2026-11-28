@@ -112,9 +112,20 @@
 ]
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<!-- Fuentes desde el propio sitio (antes Google Fonts, que frenaba el primer pintado ~0,9 s en celular).
+     Mismas familias y pesos; el @font-face va en línea para no pedir otro archivo. Ver public/assets/fonts/. -->
+<link rel="preload" href="/assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- La captura del dashboard es lo más grande que se ve al abrir (LCP), pero la pinta el
+     script de la página: sin esto el navegador la descubre tarde. -->
+<link rel="preload" as="image" type="image/avif" fetchpriority="high" imagesrcset="/assets/hero/dashboard-640.avif 640w, /assets/hero/dashboard-960.avif 960w, /assets/hero/dashboard-1280.avif 1280w, /assets/hero/dashboard-1920.avif 1920w, /assets/hero/dashboard-2560.avif 2560w" imagesizes="(max-width: 1236px) calc(100vw - 56px), 1180px">
+<style>
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:300 600;font-display:swap;src:url(/assets/fonts/fraunces-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:300 600;font-display:swap;src:url(/assets/fonts/fraunces-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 700;font-display:swap;src:url(/assets/fonts/jetbrainsmono-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 700;font-display:swap;src:url(/assets/fonts/jetbrainsmono-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:300 800;font-display:swap;src:url(/assets/fonts/manrope-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:300 800;font-display:swap;src:url(/assets/fonts/manrope-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+</style>
 
 <style>
   :root{
@@ -1395,7 +1406,11 @@
     -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent); mask-image: linear-gradient(180deg, #000 72%, transparent)}
   .fx-net{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none}
   .fx-net-sec{z-index:0; opacity:.8}
-  .hero.fx-on .blob{display:none}
+  /* Las esferas llegan cuando la página ya cargó (fx.js): los blobs se apagan suave y luego se quitan. */
+  .hero.fx-on .blob{opacity:0; transition: opacity .9s ease}
+  .hero.fx-on.fx-on-done .blob{display:none}
+  .fx-orbs.fx-wait{opacity:0 !important; transition:none !important}
+  .fx-orbs.fx-fade{transition: opacity .9s ease !important}
   @media (max-width: 767px){ .fx-orbs{opacity:.7} }
   #fx-progress{position:fixed; left:0; top:0; height:2px; width:100%; z-index:300; pointer-events:none;
     transform-origin:0 50%; transform:scaleX(0);
@@ -1771,7 +1786,8 @@
   gtag('js', new Date());
   gtag('config', 'G-ZH0W9FS496');
 </script>
-<link rel="stylesheet" href="/assets/video-demo.css">
+<link rel="stylesheet" href="/assets/video-demo.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/assets/video-demo.css"></noscript>
 </head>
 <body>
 <div id="root"></div>
@@ -1848,7 +1864,7 @@ const html = `
 <nav class="nav">
   <div class="container nav-in">
     <a class="brand" href="#">
-      <div class="lg"><img src="/assets/logo-icon-hd.png" alt="Manestro Pro"/></div>
+      <div class="lg"><img src="/assets/logo-icon-128.webp" alt="Manestro Pro" width="36" height="34"/></div>
       <div class="nm">MANESTRO<small>P · R · O</small></div>
     </a>
     <div class="nav-links">
@@ -1979,16 +1995,20 @@ const html = `
           <div class="url"><span class="dot"></span>app.controlobra.ai/<b>dashboard</b></div>
         </div>
         <div class="preview-canvas">
-          <img
-            class="hero-shot"
-            src="/assets/dashboard-hero.png"
-            alt="Dashboard de gerencia de Manestro — KPIs, curva S, salud del proyecto y avance por capítulo"
-            width="3280"
-            height="2230"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
+          <picture>
+            <source type="image/avif" srcset="/assets/hero/dashboard-640.avif 640w, /assets/hero/dashboard-960.avif 960w, /assets/hero/dashboard-1280.avif 1280w, /assets/hero/dashboard-1920.avif 1920w, /assets/hero/dashboard-2560.avif 2560w" sizes="(max-width: 1236px) calc(100vw - 56px), 1180px">
+            <source type="image/webp" srcset="/assets/hero/dashboard-640.webp 640w, /assets/hero/dashboard-960.webp 960w, /assets/hero/dashboard-1280.webp 1280w, /assets/hero/dashboard-1920.webp 1920w, /assets/hero/dashboard-2560.webp 2560w" sizes="(max-width: 1236px) calc(100vw - 56px), 1180px">
+            <img
+              class="hero-shot"
+              src="/assets/hero/dashboard-1280.webp"
+              alt="Dashboard de gerencia de Manestro — KPIs, curva S, salud del proyecto y avance por capítulo"
+              width="3280"
+              height="2230"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
     </div>
@@ -2071,7 +2091,7 @@ const html = `
     </div>
     <div class="dv-frame reveal" id="dvFrame" data-dv-base="/assets/video/manestro-demo-v3-">
       <div class="dv-bar" aria-hidden="true"><i></i><i></i><i></i><span>app.controlobra.ai</span></div>
-      <video id="dvVideo" muted loop playsinline preload="none" poster="/assets/video/manestro-demo-v3-poster.webp"
+      <video id="dvVideo" muted loop playsinline preload="none" poster="/assets/video/manestro-demo-v3-poster-1600.webp"
              aria-label="Recorrido por Manestro Pro: inicio, Kubicar, presupuesto, recursos, control de obra y modelo 3D" width="1280" height="800"></video>
       <button class="dv-play" id="dvPlay" aria-label="Reproducir video"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
     </div>
@@ -2097,7 +2117,7 @@ const html = `
     </div>
     <div class="dv-frame reveal" id="dvFramePo" data-dv-base="/assets/video/precios-obra-v2-">
       <div class="dv-bar" aria-hidden="true"><i></i><i></i><i></i><span>app.controlobra.ai/precios-obra</span></div>
-      <video muted loop playsinline preload="none" poster="/assets/video/precios-obra-v2-poster.webp"
+      <video muted loop playsinline preload="none" poster="/assets/video/precios-obra-v2-poster-1600.webp"
              aria-label="Recorrido por Precios Obra: precios de materiales, análisis de cada partida, presupuestos gratis, proveedores y calcula tu casa" width="1280" height="800"></video>
       <button class="dv-play" aria-label="Reproducir video de Precios Obra"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
     </div>
@@ -3478,7 +3498,7 @@ const html = `
     <div class="ft2-in">
       <div class="ft2-brand">
         <div class="brand">
-          <div class="lg"><img src="/assets/logo-icon-hd.png" alt="Manestro"/></div>
+          <div class="lg"><img src="/assets/logo-icon-128.webp" alt="Manestro" width="36" height="34" loading="lazy" decoding="async"/></div>
           <div class="nm" style="color:#fff">MANESTRO<small>P · R · O</small></div>
         </div>
         <p>El ERP con IA para constructoras. Hecho en República Dominicana por constructores.</p>

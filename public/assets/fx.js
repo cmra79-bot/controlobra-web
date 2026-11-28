@@ -212,6 +212,15 @@
   function Orbs(canvas) {
     var gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: 'low-power' });
     if (!gl) return null;
+    // Sin tarjeta gráfica (WebGL por software: SwiftShader, llvmpipe…) compilar el shader y
+    // dibujar UN cuadro ya congela la página más de medio segundo. Ahí no se usa WebGL y
+    // quedan los blobs CSS del hero (equipos muy viejos, máquinas virtuales, robots).
+    var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    var gpu = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) || '');
+    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(gpu)) {
+      var lose = gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+      return null;
+    }
     var hp = gl.getShaderPrecisionFormat && gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
     var src = FRAG;
     if (!hp || hp.precision === 0) src = src.replace('precision highp float;', 'precision mediump float;');
@@ -269,8 +278,6 @@
     var cOrbs = document.createElement('canvas'); cOrbs.className = 'fx-orbs'; cOrbs.setAttribute('aria-hidden', 'true');
     // La red de partículas ya no va por sección: fx-net.js la pone fija detrás de toda la página.
     host.appendChild(cOrbs);
-    try { orbs = Orbs(cOrbs); } catch (e) { orbs = null; }
-    if (orbs) hero.classList.add('fx-on'); else cOrbs.remove();
     heroH = hero.offsetHeight || 1;
     addLayer({
       el: hero,
@@ -371,7 +378,7 @@
     pre.id = 'fx-pre'; pre.setAttribute('aria-hidden', 'true');
     // Logo y wordmark tal cual los de la marca (no se estilizan).
     pre.innerHTML = '<div class="fx-pre-in"><div class="fx-pre-brand">' +
-      '<div class="lg"><img src="/assets/logo-icon-hd.png" alt=""/></div>' +
+      '<div class="lg"><img src="/assets/logo-icon-256.webp" alt=""/></div>' +
       '<div class="nm">MANESTRO<small>P · R · O</small></div>' +
       '</div><div class="fx-pre-row"><span class="fx-pre-n">000</span><span class="fx-pre-bar"><i></i></span><span class="fx-pre-t">ERP · IA · OBRA</span></div></div>';
     document.body.appendChild(pre);
@@ -473,14 +480,20 @@
     skip = MOBILE ? !skip : false;
     if (!skip) frame(now, true);
     // Autoajuste: si los cuadros vienen lentos, bajar resolución; si siguen lentos, quieto.
+    // Se mide el tiempo medio entre cuadros (en un equipo lento, 120 cuadros eran
+    // muchos segundos trabado antes de reaccionar). 24 cuadros bastan para decidir.
     var dt = now - last; last = now;
-    if (frames < 240 && layers[0] && layers[0].visible) {
+    if (degraded < 2 && orbs && layers[0] && layers[0].visible) {
       frames++;
-      if (frames > 20) slowAcc += dt > (MOBILE ? 40 : 30) ? 1 : 0;
-      if (frames === 120 && slowAcc > 60 && orbs) {
-        degraded++;
-        if (degraded === 1) { orbs.setScale(MOBILE ? .5 : .6); frames = 0; slowAcc = 0; }
-        else { running = false; frame(now, false); return; }
+      if (frames > 4) slowAcc += dt;
+      if (frames === 28) {
+        var avg = slowAcc / 24, lim = MOBILE ? 48 : 34; // 30 fps en móvil (va a cuadro por medio), 30 en PC
+        frames = 0; slowAcc = 0;
+        if (avg > lim) {
+          degraded++;
+          if (degraded === 1 && avg < lim * 3) orbs.setScale(MOBILE ? .5 : .6);
+          else { degraded = 2; running = false; frame(now, false); return; }
+        } else degraded = 2; // va bien: no se vuelve a medir
       }
     }
     requestAnimationFrame(loop);
@@ -496,12 +509,35 @@
     }, 150);
   });
 
-  if (RM) {
-    // Un cuadro quieto: se ve igual de bonito, sin movimiento.
-    frame(performance.now(), false);
-    // Las esferas reaccionan al scroll solo redibujando en el scroll (sin animación continua).
-    window.addEventListener('scroll', function () { if (layers[0]) layers[0].tick(8.0, false); }, { passive: true });
-  } else {
-    requestAnimationFrame(loop);
+  /* Las esferas (lo más pesado de la página) arrancan cuando la página ya cargó:
+     así no le quitan tiempo al primer pintado, a la imagen del dashboard ni a las
+     fuentes. Mientras tanto se ven los blobs CSS del hero, que es lo mismo en suave. */
+  function startOrbs() {
+    if (hero && cOrbs) {
+      cOrbs.classList.add('fx-wait');
+      try { orbs = Orbs(cOrbs); } catch (e) { orbs = null; }
+      if (orbs) {
+        // Primer cuadro dibujado y recién ahí aparecen (fundido), mientras los blobs se apagan.
+        requestAnimationFrame(function () { requestAnimationFrame(function () {
+          cOrbs.classList.add('fx-fade'); cOrbs.classList.remove('fx-wait'); hero.classList.add('fx-on');
+          setTimeout(function () { hero.classList.add('fx-on-done'); cOrbs.classList.remove('fx-fade'); }, 1000);
+        }); });
+      } else cOrbs.remove();
+    }
+    if (RM) {
+      // Un cuadro quieto: se ve igual de bonito, sin movimiento.
+      running = false;
+      frame(performance.now(), false);
+      // Las esferas reaccionan al scroll solo redibujando en el scroll (sin animación continua).
+      if (RM) window.addEventListener('scroll', function () { if (layers[0]) layers[0].tick(8.0, false); }, { passive: true });
+    } else if (orbs) {
+      last = performance.now();
+      requestAnimationFrame(loop);
+    }
   }
+  function whenIdle(fn) {
+    var go = function () { (window.requestIdleCallback || function (f) { setTimeout(f, 200); })(fn, { timeout: 1500 }); };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true });
+  }
+  whenIdle(startOrbs);
 })();

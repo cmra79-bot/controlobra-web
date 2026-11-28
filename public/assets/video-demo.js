@@ -2,10 +2,14 @@
    Cada <div class="dv-frame" data-dv-base="/assets/video/NOMBRE-"> se maneja solo:
    preload="none" (no baja nada hasta que la sección está cerca), archivo según
    ancho × devicePixelRatio (<1300 → 1080, <2200 → 1920, si no 2560), se pausa
-   fuera de pantalla y con "reducir movimiento" no arranca solo. Los capítulos
+   fuera de pantalla y con "reducir movimiento" o "ahorro de datos" no arranca solo. Los capítulos
    son los .dv-chap dentro de [data-dv-chaps="<id del frame>"]. */
 (function(){
   const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Con "ahorro de datos" o conexión lenta no arranca solo: el póster y el botón de play
+  // quedan, y el video baja solo si la persona lo pide (son 2-4 MB).
+  const cx = navigator.connection || {};
+  const ahorro = cx.saveData === true || /(^|-)2g|3g/.test(cx.effectiveType || '');
   function iniciar(frame){
     const v = frame.querySelector('video'), play = frame.querySelector('.dv-play');
     if(!v || !play) return;
@@ -25,10 +29,12 @@
       if(v.readyState >= 1) ir(); else v.addEventListener('loadedmetadata', ir, {once:true}); }));
     v.addEventListener('timeupdate', ()=>{ let k = 0; chaps.forEach((c,i)=>{ if(v.currentTime >= +c.dataset.t - .05) k = i; });
       chaps.forEach((c,i)=>c.classList.toggle('on', i===k)); });
-    if(quieto){ frame.classList.add('paused'); return; }
-    new IntersectionObserver(es=>es.forEach(e=>{
+    if(quieto || ahorro){ frame.classList.add('paused'); return; }
+    // El video no compite con lo primero que se ve: espera a que la página termine de cargar.
+    const vigilar = ()=>new IntersectionObserver(es=>es.forEach(e=>{
       if(e.isIntersecting){ if(!usuarioPauso) intentar(); } else if(!v.paused){ v.pause(); }
     }), {rootMargin:'200px 0px', threshold:.35}).observe(frame);
+    if(document.readyState === 'complete') vigilar(); else window.addEventListener('load', vigilar, {once:true});
   }
   document.querySelectorAll('.dv-frame[data-dv-base]').forEach(iniciar);
 })();
