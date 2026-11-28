@@ -359,7 +359,7 @@ porque `Product`/`Offer` **bajó el CTR** en ago-2026 y se retiró del resto
 > (fondo negro con rejilla y auroras, Manrope/JetBrains Mono, vidrio oscuro),
 > siempre en oscuro. Textos y precios sin cambios. Imágenes al compartir
 > (1200×630, JPG de menos de 100 KB para que WhatsApp las muestre):
-> `public/assets/og-image.jpg` (portada, con la casa 3D), `og-precios.jpg`
+> `public/assets/og-manestro-v2.jpg` (portada, con la casa 3D), `og-precios-v2.jpg`
 > (precios) y `public/assets/guias/og-<guía>.jpg` (una por guía, prop `ogImage`
 > de `PrecioLayout`). Las ilustraciones de las guías (`guias/<guía>.webp` y
 > `-mini.webp`) se dibujaron en isométrico y se terminaron en VectorCraft
@@ -490,7 +490,7 @@ no pertenece a la paleta.
    Requiere acceso a los paneles → **lo hace el usuario**.
 
 2. ~~**`og:image` apunta a un archivo que no existe.**~~ Resuelto el 22-nov-2026:
-   `public/assets/og-image.jpg` (1200×630) y una imagen por página de precios y guía.
+   `public/assets/og-manestro-v2.jpg` (1200×630) y una imagen por página de precios y guía.
 
 ### 🟡 Media — crecimiento
 
