@@ -7,7 +7,10 @@
 <meta name="description" content="Manestro es el ERP profesional con IA para constructoras LATAM: presupuesto, control de costos, cubicaciones, compras, almacén y flujo de caja en una sola plataforma."/>
 <meta name="theme-color" content="#07090D"/>
 <link rel="canonical" href="https://controlobra.ai/"/>
+<link rel="alternate" hreflang="es" href="https://controlobra.ai/"/>
 <link rel="alternate" hreflang="es-do" href="https://controlobra.ai/"/>
+<link rel="alternate" hreflang="en" href="https://controlobra.ai/en/"/>
+<link rel="alternate" hreflang="x-default" href="https://controlobra.ai/"/>
 
 <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
 <meta property="og:type" content="website"/>
@@ -968,6 +971,7 @@
   .ft-news button{height:34px; padding:0 12px; border-radius:8px; background: var(--orange); color:#fff; font-size:11.5px; font-weight:800}
   .ft-bottom{padding-top: 24px; border-top: 1px solid #15181E; display:flex; align-items:center; justify-content:space-between; gap:16px; font-size:11.5px; color:#6B7280; font-family:'JetBrains Mono', monospace; position:relative}
   .ft-bottom .links{display:flex; gap:22px}
+  @media (max-width: 640px){ .ft-bottom{flex-direction:column; align-items:flex-start} .ft-bottom .links{flex-wrap:wrap; gap:12px 20px} }
 
   /* responsive */
   @media (max-width: 1100px){
@@ -1387,6 +1391,14 @@
   .nav .btn.po-nav:hover{background: rgba(242,107,31,.2); border-color:#F26B1F; box-shadow: 0 0 26px -6px rgba(242,107,31,.7)}
   .nav .btn.po-nav .po-ic{width:7px; height:7px; border-radius:99px; background:#F26B1F; box-shadow:0 0 8px #F26B1F; flex:none}
   .nav .nav-cta .btn{white-space:nowrap}
+  /* Selector de idioma ES ↔ EN (la página en inglés la genera scripts/generar-en.mjs) */
+  .nav-links{gap:20px} .nav .nav-cta{gap:8px} /* deja sitio al selector sin que el menú se parta en dos líneas */
+  .nav .lang-sw{display:inline-flex; align-items:center; justify-content:center; height:32px; min-width:34px; padding:0 7px; border-radius:99px;
+    border:1px solid rgba(255,255,255,.16); color:#C8CFD7; font-size:11.5px; font-weight:800; letter-spacing:.08em; text-decoration:none;
+    transition:color .2s, border-color .2s, background .2s}
+  .nav .lang-sw:hover{color:#fff; border-color:rgba(255,255,255,.4); background:rgba(255,255,255,.06)}
+  /* En el celular no cabe junto a los botones: ahí el cambio de idioma está en el pie de página */
+  @media (max-width: 767px){ .nav .lang-sw{display:none} }
   @media (max-width: 767px){ .nav .nav-cta{gap:6px} .nav .nav-cta .btn{padding:8px 11px; font-size:12.5px} .nav .btn.po-nav .po-ic{display:none} }
   @media (max-width: 380px){ .nav .nav-cta .btn{padding:7px 9px; font-size:11.5px} }
 
@@ -1826,6 +1838,7 @@ const html = `
       <a href="#faq">FAQ</a>
     </div>
     <div class="nav-cta">
+      <a class="lang-sw" href="/en/" hreflang="en" lang="en" title="English version">EN</a>
       <a class="btn ghost" href="https://app.controlobra.ai/login" rel="noopener">Iniciar sesión</a>
       <a class="btn po-nav" href="https://app.controlobra.ai/login" rel="noopener" aria-label="Entrar a Precios Obra"><span class="po-ic" aria-hidden="true"></span>Precios Obra</a>
       <button class="btn primary shimmer" data-demo>Demo gratis</button>
@@ -3490,6 +3503,7 @@ const html = `
         <a href="#">Términos</a>
         <a href="#">Privacidad</a>
         <a href="#">Aviso legal</a>
+        <a href="/en/" hreflang="en" lang="en" style="color:#C8CFD7">English</a>
       </div>
     </div>
   </div>
