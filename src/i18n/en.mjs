@@ -58,8 +58,8 @@ export const RAW = [
   ['<a class="lang-sw" href="/en/" hreflang="en" lang="en" title="English version">EN</a>',
    '<a class="lang-sw" href="/" hreflang="es" lang="es" title="Versión en español">ES</a>'],
 
-  ['<a href="/en/" hreflang="en" lang="en" style="color:#C8CFD7">English</a>',
-   '<a href="/" hreflang="es" lang="es" style="color:#C8CFD7">Español</a>'],
+  ['<a class="ft2-lang" href="/en/" hreflang="en" lang="en">English</a>',
+   '<a class="ft2-lang" href="/" hreflang="es" lang="es">Español</a>'],
 
   // ─── Hero: el orden de las palabras cambia en inglés ───
   ['<span class="l1">El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b></span> <span class="l2">de <span class="rot" id="rot">',
@@ -121,7 +121,6 @@ export const RAW = [
   ['placeholder="Carlos Ramírez"', 'placeholder="John Smith"'],
   ['placeholder="Constructora MG"', 'placeholder="Smith Builders"'],
   ['placeholder="carlos@constructora.com"', 'placeholder="john@smithbuilders.com"'],
-  ['placeholder="tu@constructora.com"', 'placeholder="you@yourcompany.com"'],
   ['placeholder="+1 809 000 0000"', 'placeholder="+1 555 000 0000"'],
   ['Agendar demo gratuita', 'Book a free demo'],
   ['Enviando…', 'Sending…'],
@@ -621,6 +620,20 @@ export const TEXT = {
   'Recibirás un mensaje de WhatsApp en las próximas horas para agendar la sesión.': 'You’ll get a WhatsApp message within a few hours to schedule the session.',
   'Chatear con Manestro por WhatsApp': 'Chat with Manestro on WhatsApp',
   'Chatea con nosotros': 'Chat with us',
+
+
+  // Pie de página (nuevo, 28-nov-2026)
+  'El ERP con IA para constructoras. Hecho en República Dominicana por constructores.': 'The AI-powered ERP for builders. Made in the Dominican Republic by builders.',
+  'Precios de obra': 'DR construction prices',
+  'Guías de costos': 'Cost guides',
+  'Análisis de partidas': 'Line-item analyses',
+  'Metodología': 'Methodology',
+  '¿Hablamos?': 'Let’s talk',
+  'Te mostramos Manestro con una obra tuya en 30 minutos.': 'We’ll show you Manestro with one of your projects in 30 minutes.',
+  '© 2026 Manestro · República Dominicana': '© 2026 Manestro · Dominican Republic',
+  'Asistente IA': 'AI assistant',
+  'Preguntas': 'FAQ',
+  'Pedir demo': 'Request a demo',
 
   // Se quedan igual (para que el generador no los marque como pendientes)
   'EL': 'EL', // iniciales de «Eduardo L.»
