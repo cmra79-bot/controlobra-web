@@ -1,4 +1,49 @@
+# controlobra.ai — reglas para robots
+#
+# Buscadores (Google, Bing…) y vistas previas al compartir (WhatsApp,
+# Facebook, X, LinkedIn, Telegram) SIEMPRE entran: es lo que trae clientes.
+# Lo que se cierra son los robots que copian la web para entrenar IA.
+#
+# Ojo: robots.txt es un aviso, no un candado. Las empresas serias lo
+# respetan; los que no, se frenan en Cloudflare (ver SEGURIDAD.md).
+
+# ── Robots que entrenan IA: no ─────────────────────────────────────────
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: meta-externalagent
+User-agent: FacebookBot
+User-agent: Amazonbot
+User-agent: cohere-ai
+User-agent: cohere-training-data-crawler
+User-agent: Diffbot
+User-agent: Omgilibot
+User-agent: Omgili
+User-agent: ImagesiftBot
+User-agent: Timpibot
+User-agent: Kangaroo Bot
+User-agent: AI2Bot
+User-agent: Ai2Bot-Dolma
+User-agent: YouBot
+User-agent: PanguBot
+User-agent: Scrapy
+User-agent: img2dataset
+User-agent: DeepSeekBot
+Disallow: /
+
+# ── Todos los demás (Google, Bing, vistas previas, buscadores de IA que
+#    citan con enlace): adelante ─────────────────────────────────────────
+# Content-Signal (política de Cloudflare): search = aparecer en buscadores,
+# ai-input = citar la página en una respuesta con enlace,
+# ai-train = usarla para entrenar modelos → no.
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 Sitemap: https://controlobra.ai/sitemap-index.xml
