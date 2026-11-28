@@ -1,0 +1,29 @@
+# Cabeceras de Cloudflare Pages (se aplican a dist/ en cada deploy).
+# Por defecto Pages manda "max-age=0, must-revalidate": el celular vuelve a
+# preguntar por cada imagen, video y script en cada visita. Acá se guardan.
+# Ojo: si dos reglas tocan el mismo archivo, Cloudflare junta los valores con
+# coma, por eso ninguna regla se pisa con otra (":file" es un solo nivel).
+
+# Archivos de Astro con huella en el nombre (cambian de nombre si cambian): un año.
+/_assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fuentes: no cambian (si se actualizan, cambia el nombre del archivo).
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Imágenes y videos: pesados y casi nunca cambian (si cambian, nombre nuevo).
+/assets/hero/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+/assets/video/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+/assets/guias/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# Scripts, estilos y logos sueltos en /assets/: sin huella, así que solo un día,
+# para que un arreglo llegue rápido a quien ya visitó.
+/assets/:file
+  Cache-Control: public, max-age=86400, stale-while-revalidate=86400
+
+/favicon.ico
+  Cache-Control: public, max-age=604800
