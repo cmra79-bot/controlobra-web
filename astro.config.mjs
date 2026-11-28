@@ -73,6 +73,8 @@ export default defineConfig({
     redireccionesAnalisis(),
     sitemap({
       filter(url) {
+        // La presentación para reuniones con clientes no es para Google (va noindex).
+        if (new URL(url).pathname.startsWith('/presentacion')) return false
         const m = new URL(url).pathname.match(ES_PROVINCIA)
         return m ? INDEXABLES.has(m[1]) : true
       },

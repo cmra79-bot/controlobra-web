@@ -202,6 +202,7 @@ que anunciarlas solo gasta presupuesto de rastreo.
 | Resúmenes por tipo | `/precios/resumen/<tipo>/` | 4 | materiales, equipos, mano de obra, subcontratos |
 | Guías | `/guias/<slug>/` | 5 + índice | Long-tail de intención real |
 | Análisis | `/analisis/` y `/analisis/<codigo>-<slug>/` | ~1.191 + índice | Análisis de precio unitario con dibujo e insumos solo por nombre (contenido «b»). Datos de `app.controlobra.ai/precios-obra/analisis-publico.json`, que publica el build de la app (`src/lib/analisis.js`). Plan Google, Fase 2 (`PRECIOS_OBRA.md` §10) |
+| Presentación | `/presentacion/` | 1 | Modo presentación para reuniones con clientes (28-nov-2026): 12 diapositivas a pantalla completa, flechas/control/toque, QR final a WhatsApp, funciona sin internet (`public/presentacion/sw.js`). `noindex`, fuera del sitemap y sin enlace en el menú. Teclas: F pantalla completa, G índice, B pantalla en negro |
 
 ### Las guías
 
