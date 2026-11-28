@@ -422,7 +422,7 @@
 
   /* 7c. Botones magnéticos */
   if (FINE && !RM) {
-    document.querySelectorAll('.btn, .wa-fab').forEach(function (b) {
+    document.querySelectorAll('.btn').forEach(function (b) {
       b.classList.add('fx-mag');
       b.addEventListener('pointermove', function (e) {
         var r = b.getBoundingClientRect();

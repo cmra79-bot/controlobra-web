@@ -25,6 +25,9 @@ const {
   sinFranja = false,
   // Imagen al compartir (WhatsApp, Facebook…), 1200×630. Cada guía trae la suya.
   ogImage: ogPath = '/assets/og-precios-v2.jpg',
+  // Video al compartir ({ url, width, height }). Facebook, LinkedIn y Telegram
+  // lo pueden reproducir en la vista previa; WhatsApp sigue usando la imagen.
+  ogVideo = null,
 } = Astro.props
 
 const site = 'https://controlobra.ai'
@@ -39,24 +42,24 @@ const marcaLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    '@id': `${site}/#organizacion`,
+    '@id': `${site}/#precios-obra`,
     name: 'Precios Obra',
     alternateName: 'PreciosObra',
     url: `${site}/`,
-    logo: `${site}/assets/logo-icon-hd.png`,
+    logo: { '@type': 'ImageObject', url: `${site}/assets/logo-manestro-512.png`, width: 512, height: 512 },
     description: 'Precios de construcción de República Dominicana por zona, análisis de precios unitarios y calculadora de obra, gratis.',
     areaServed: { '@type': 'Country', name: 'República Dominicana' },
-    parentOrganization: { '@type': 'Organization', name: 'ControlObra', url: `${site}/` },
+    parentOrganization: { '@type': 'Organization', '@id': `${site}/#organizacion`, name: 'Manestro Pro', url: `${site}/` },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${site}/#sitio`,
+    '@id': `${site}/precios/#sitio`,
     name: 'Precios Obra',
     alternateName: ['PreciosObra', 'ControlObra'],
     url: `${site}/`,
     inLanguage: 'es-DO',
-    publisher: { '@id': `${site}/#organizacion` },
+    publisher: { '@id': `${site}/#precios-obra` },
   },
 ]
 
@@ -81,6 +84,7 @@ const bloques = [
 ]
 const jsonldFinal = bloques.length ? (bloques.length === 1 ? bloques[0] : bloques) : null
 const ogImage = new URL(ogPath, site).href
+const ogVideoUrl = ogVideo ? new URL(ogVideo.url, site).href : null
 const APP = 'https://app.controlobra.ai'
 // Botón "compartir por WhatsApp": abre WhatsApp con el mensaje + link ya listos.
 const shareText = `${title}\n👉 ${canonical}\n\nPrecios reales de construcción en RD, gratis. Compartilo con quien esté construyendo 👷`
@@ -110,6 +114,13 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <meta property="og:image:secure_url" content={ogImage} />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:alt" content={tituloFinal} />
+  {ogVideoUrl && <>
+    <meta property="og:video" content={ogVideoUrl} />
+    <meta property="og:video:secure_url" content={ogVideoUrl} />
+    <meta property="og:video:type" content="video/mp4" />
+    <meta property="og:video:width" content={String(ogVideo.width)} />
+    <meta property="og:video:height" content={String(ogVideo.height)} />
+  </>}
   <meta name="twitter:image" content={ogImage} />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={tituloFinal} />
@@ -118,6 +129,12 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-controlobra-192.png" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-controlobra.png" />
+  <!-- Guardar en la pantalla de inicio del teléfono: abre como una app. -->
+  <link rel="manifest" href="/precios-obra.webmanifest" />
+  <meta name="apple-mobile-web-app-title" content="Precios Obra" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <!-- Fuentes desde el propio sitio (antes Google Fonts, que frenaba el primer pintado). Ver public/assets/fonts/. -->
   <link rel="preload" href="/assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
@@ -131,6 +148,8 @@ const waShare = 'https://wa.me/?text=' + encodeURIComponent(shareText)
   <GoogleAnalytics />
   <!-- Red de partículas que se une al cursor, igual que en la portada. -->
   <script is:inline src="/assets/fx-net.js" defer></script>
+  <!-- Botón flotante de WhatsApp (el mismo de la portada; el mensaje dice qué página está viendo). -->
+  <script is:inline src="/assets/wa-widget.js" defer></script>
 </head>
 <body>
   <header class="topbar">

@@ -1,3 +1,27 @@
+# Cabeceras de seguridad de controlobra.ai (Cloudflare Pages las lee de acá).
+# Qué hace cada una y por qué, en SEGURIDAD.md. Resumen:
+#  - HSTS: el navegador solo entra por https (nadie puede «colarse» en medio).
+#  - frame-ancestors / X-Frame-Options: nadie puede meter la web dentro de su
+#    propia página (marco) para hacerla pasar por suya.
+#  - CSP: la página solo carga código de acá, de Google (fuentes y Analytics),
+#    del formulario (formsubmit) y del ERP. Si alguien logra inyectar un script
+#    de otro sitio, el navegador lo bloquea.
+#  - tdm-reservation: aviso legal de «no autorizo minería de datos ni
+#    entrenamiento de IA» (protocolo TDMRep, el que reconoce la ley europea).
+# NO tocan a Google, Bing ni a las vistas previas de WhatsApp/Facebook: esos
+# robots leen el HTML y las etiquetas og:, y nada de esto los frena.
+
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://app.controlobra.ai https://formsubmit.co https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://cloudflareinsights.com; frame-src 'self' https://app.controlobra.ai; worker-src 'self' blob:; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://formsubmit.co https://app.controlobra.ai; object-src 'none'; upgrade-insecure-requests
+  tdm-reservation: 1
+  tdm-policy: https://controlobra.ai/.well-known/tdmrep.json
+
 # Cabeceras de Cloudflare Pages (se aplican a dist/ en cada deploy).
 # Por defecto Pages manda "max-age=0, must-revalidate": el celular vuelve a
 # preguntar por cada imagen, video y script en cada visita. Acá se guardan.

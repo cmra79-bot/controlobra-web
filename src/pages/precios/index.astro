@@ -26,8 +26,24 @@ const porTipo = ORDEN_TIPOS
 const title = 'Precios de construcción en República Dominicana 2026 · catálogo por zona'
 const description =
   'Catálogo de precios de construcción en RD: materiales, mano de obra, equipos y más, por zona (Norte, Sur, Este). Datos abiertos de la comunidad de Precios Obra.'
+
+// Video de Precios Obra: va en la vista previa al compartir (og:video) y como
+// VideoObject para que Google pueda mostrarlo en los resultados de video.
+const video = { url: '/assets/video/precios-obra-v2-1080.mp4', width: 1080, height: 676 }
+const videoLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: 'Precios Obra: precios de construcción en República Dominicana',
+  description: 'Recorrido de Precios Obra: precios de materiales, mano de obra y equipos por zona en RD, análisis de precios unitarios y calculadora de obra, gratis.',
+  thumbnailUrl: ['https://controlobra.ai/assets/og-precios-v2.jpg', 'https://controlobra.ai/assets/video/precios-obra-v2-poster.webp'],
+  uploadDate: '2026-11-22T12:00:00-04:00',
+  duration: 'PT58S',
+  contentUrl: 'https://controlobra.ai/assets/video/precios-obra-v2-1920.mp4',
+  inLanguage: 'es-DO',
+  publisher: { '@id': 'https://controlobra.ai/#precios-obra' },
+}
 ---
-<PrecioLayout title={title} description={description} canonicalPath="/precios/">
+<PrecioLayout title={title} description={description} canonicalPath="/precios/" ogVideo={video} jsonld={videoLd}>
   <section class="hero">
     <div class="hero-tx">
       <span class="pill">Datos abiertos · Construcción RD</span>
