@@ -1,7 +1,8 @@
 /* sw.js · la presentación de Manestro (/presentacion/) funciona sin internet.
 
    La primera vez que se abre con señal, guarda en el equipo la página, el logo,
-   el demo 3D, los dos videos (versión 1920, unos 13 MB) y las fuentes. Desde ese
+   el demo 3D, los dos videos (versión 1920, unos 13 MB) y las fuentes
+   (las del propio sitio, /assets/fonts/). Desde ese
    momento abre igual en una obra sin señal. La página muestra un punto verde
    («Lista sin internet») cuando ya está todo guardado.
 
@@ -12,7 +13,6 @@
      archivo guardado, si no el navegador no los reproduce desde la caché.
    - Si se cambian los archivos de la lista, subir VERSION. */
 const VERSION = 'presentacion-v1';
-const FUENTES = 'https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap';
 const PAGINA = '/presentacion/';
 const ARCHIVOS = [
   PAGINA,
@@ -20,6 +20,13 @@ const ARCHIVOS = [
   '/assets/favicon-32.png',
   '/assets/logo-manestro-512.png',
   '/assets/fx-net.js',
+  '/assets/fonts/landing.css',
+  '/assets/fonts/manrope-latin.woff2',
+  '/assets/fonts/manrope-latin-ext.woff2',
+  '/assets/fonts/fraunces-latin.woff2',
+  '/assets/fonts/fraunces-latin-ext.woff2',
+  '/assets/fonts/jetbrainsmono-latin.woff2',
+  '/assets/fonts/jetbrainsmono-latin-ext.woff2',
   '/assets/demo3d.js',
   '/assets/video/manestro-demo-v3-poster.webp',
   '/assets/video/precios-obra-v2-poster.webp',
@@ -35,22 +42,7 @@ async function avisar(msg) {
 async function faltan(cache) {
   const r = [];
   for (const u of ARCHIVOS) if (!(await cache.match(u, { ignoreSearch: true }))) r.push(u);
-  if (!(await cache.match(FUENTES))) r.push(FUENTES);
   return r;
-}
-
-// Las fuentes: se guarda la hoja de Google Fonts y cada archivo .woff2 que nombra.
-async function guardarFuentes(cache) {
-  const res = await fetch(FUENTES, { mode: 'cors' });
-  if (!res.ok) throw new Error('fuentes');
-  const css = await res.clone().text();
-  const urls = [...new Set([...css.matchAll(/url\((https:[^)]+)\)/g)].map((m) => m[1]))];
-  await Promise.all(urls.map(async (u) => {
-    if (await cache.match(u)) return;
-    const f = await fetch(u, { mode: 'cors' });
-    if (f.ok) await cache.put(u, f);
-  }));
-  await cache.put(FUENTES, res);
 }
 
 let guardando = null;
@@ -59,15 +51,12 @@ function guardarTodo() {
   guardando = (async () => {
     const cache = await caches.open(VERSION);
     const lista = await faltan(cache);
-    let hechos = ARCHIVOS.length + 1 - lista.length;
-    const total = ARCHIVOS.length + 1;
+    let hechos = ARCHIVOS.length - lista.length;
+    const total = ARCHIVOS.length;
     for (const u of lista) {
       try {
-        if (u === FUENTES) await guardarFuentes(cache);
-        else {
-          const res = await fetch(u, { cache: 'reload' });
-          if (res.ok) await cache.put(u, res);
-        }
+        const res = await fetch(u, { cache: 'reload' });
+        if (res.ok) await cache.put(u, res);
       } catch (_) { /* sin señal: se reintenta la próxima vez que se abra */ }
       hechos++;
       avisar({ tipo: 'progreso', pct: Math.round(hechos / total * 100) });
@@ -145,12 +134,11 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(paginaRedPrimero(req));
     return;
   }
-  const esFuente = url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com';
-  if (!esFuente && !(mismo && (url.pathname.startsWith('/assets/') || url.pathname === '/favicon.ico'))) return;
+  if (!(mismo && (url.pathname.startsWith('/assets/') || url.pathname === '/favicon.ico'))) return;
 
   e.respondWith((async () => {
     const cache = await caches.open(VERSION);
-    const clave = esFuente ? req.url : url.pathname;
+    const clave = url.pathname;
     const hay = await cache.match(clave);
     if (hay) return url.pathname.endsWith('.mp4') ? pedazo(req, hay) : hay;
     // Un video que todavía no está guardado se pide normal (por pedazos) a la red;
