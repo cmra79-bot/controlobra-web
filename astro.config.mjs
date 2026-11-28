@@ -3,6 +3,11 @@ import sitemap from '@astrojs/sitemap'
 import { writeFile } from 'node:fs/promises'
 import { provinciasIndexables, getCategorias } from './src/lib/precios.js'
 import { getAnalisis } from './src/lib/analisis.js'
+import { generarEn } from './scripts/generar-en.mjs'
+
+// Portada en inglés: /en/ se genera de la portada en español + src/i18n/en.mjs
+// antes de que Astro lea las páginas (en dev y en build). Ver scripts/generar-en.mjs.
+await generarEn()
 
 // Fecha del build. El sitio se reconstruye a diario (.github/workflows/rebuild-diario.yml)
 // y en cada build se hornean los precios frescos del catálogo, así que para casi todas
@@ -14,6 +19,7 @@ const FECHA_BUILD = new Date()
 // días le enseña a ignorar el lastmod de todo el sitio.
 const ESTATICAS = {
   '/': new Date('2026-11-22T00:00:00Z'),
+  '/en/': new Date('2026-11-28T00:00:00Z'),
 }
 
 // Provincias con directorio propio de ferreterías. Las demás se generan igual
