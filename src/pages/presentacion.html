@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Manestro Pro — Presentación</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<!-- Página para mostrarle Manestro a un cliente en una reunión. No es para Google:
+     va noindex y fuera del sitemap (astro.config.mjs), y no está en el menú. -->
+<meta name="robots" content="noindex, nofollow"/>
+<meta name="description" content="Presentación de Manestro Pro para reuniones con clientes."/>
+<meta name="theme-color" content="#07090D"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Manestro"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180.png"/>
+<!-- Las mismas fuentes que la portada, servidas desde el sitio (también las guarda sw.js). -->
+<link rel="preload" href="/assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link href="/assets/fonts/landing.css" rel="stylesheet">
+<style>
+  :root{
+    --orange:#F26B1F; --orange-2:#FFA265; --orange-deep:#C5501A;
+    --bg:#07090D; --ink:#E8EAEE; --muted:#9AA1AB; --muted-2:#7C8290; --line:rgba(255,255,255,.08);
+    --card: linear-gradient(165deg, rgba(27,32,41,.78), rgba(10,13,18,.9));
+    --ok:#3DD68C;
+    /* Una "u" = 1% del ancho de un cuadro 16:9 que cabe en la pantalla.
+       Todo se mide en u, así se ve igual en la laptop y en un televisor. */
+    --u: min(1vw, 1.7778vh);
+  }
+  *{box-sizing:border-box}
+  html{background:var(--bg); color:var(--ink); height:100%; overflow:hidden}
+  body{margin:0; height:100%; overflow:hidden; background:transparent; color:var(--ink); font-family:Manrope, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none}
+  body.nocursor, body.nocursor *{cursor:none !important}
+  button{font:inherit; color:inherit}
+  .serif{font-family:'Fraunces', Georgia, serif; font-style:italic; font-weight:300}
+  .mono{font-family:'JetBrains Mono', ui-monospace, monospace}
+  b, strong{font-weight:800}
+
+  /* Fondo: dos auras naranja/azul quietas (las partículas las pone fx-net.js) */
+  .aura{position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background:
+      radial-gradient(ellipse 55% 50% at 85% 10%, rgba(242,107,31,.12), transparent 70%),
+      radial-gradient(ellipse 50% 45% at 8% 95%, rgba(73,112,201,.10), transparent 70%)}
+
+  /* ═══════════ Diapositivas ═══════════ */
+  .deck{position:fixed; inset:0; overflow:hidden}
+  .s{position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
+    padding: calc(var(--u)*4.2) calc(var(--u)*5.5) calc(var(--u)*5.2);
+    opacity:0; visibility:hidden; transform:translateX(100%);
+    transition: transform .85s cubic-bezier(.7,0,.2,1), opacity .6s ease, visibility 0s linear .85s}
+  .s.prev{transform:translateX(-100%)}
+  .s.on{opacity:1; visibility:visible; transform:none; transition: transform .85s cubic-bezier(.7,0,.2,1), opacity .6s ease .1s, visibility 0s}
+  .s-in{width:100%; max-width: calc(var(--u)*100); margin:0 auto}
+
+  /* Entrada escalonada de lo que hay en cada diapositiva */
+  .r{opacity:0; transform:translateY(calc(var(--u)*1.6))}
+  .s.on .r{animation: up .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(.25s + var(--i,0) * .09s)}
+  @keyframes up{from{opacity:0; transform:translateY(calc(var(--u)*1.6))} to{opacity:1; transform:none}}
+
+  .tag{display:inline-flex; align-items:center; gap:calc(var(--u)*.7); padding: calc(var(--u)*.45) calc(var(--u)*1.1);
+    border-radius:99px; background:rgba(242,107,31,.14); border:1px solid rgba(242,107,31,.28);
+    font-size:calc(var(--u)*.95); font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--orange-2); margin-bottom:calc(var(--u)*1.6)}
+  .tag i{width:calc(var(--u)*.45); height:calc(var(--u)*.45); border-radius:99px; background:var(--orange); box-shadow:0 0 10px var(--orange)}
+  h2{margin:0 0 calc(var(--u)*1.2); font-size:calc(var(--u)*3.6); font-weight:300; letter-spacing:-.025em; line-height:1.05; text-wrap:balance}
+  h2 .serif{color:var(--orange)}
+  .lead{margin:0; font-size:calc(var(--u)*1.35); line-height:1.5; color:var(--muted); max-width:calc(var(--u)*62); text-wrap:pretty}
+  .lead b{color:#fff; font-weight:700}
+  .center{text-align:center} .center .lead{margin-left:auto; margin-right:auto}
+  .card{background:var(--card); border-radius:calc(var(--u)*1.6);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.07), inset 0 1px 0 rgba(255,255,255,.06), 0 calc(var(--u)*3) calc(var(--u)*6) calc(var(--u)*-3) rgba(0,0,0,.8)}
+
+  /* ── 1 · Portada ── */
+  .cover{align-items:center; text-align:center}
+  .cv-logo{width:calc(var(--u)*11); height:calc(var(--u)*11); margin:0 auto calc(var(--u)*1.2); position:relative}
+  .cv-logo::before{content:''; position:absolute; inset:-60%; border-radius:50%; background: radial-gradient(circle, rgba(242,107,31,.35), transparent 62%); animation: breathe 5s ease-in-out infinite}
+  .cv-logo img{position:relative; width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 calc(var(--u)*1.2) calc(var(--u)*3) rgba(242,107,31,.45))}
+  @keyframes breathe{50%{transform:scale(1.12); opacity:.75}}
+  .cv-name{font-size:calc(var(--u)*2.2); font-weight:900; letter-spacing:.32em; padding-left:.32em; color:#fff}
+  .cv-name small{display:block; font-size:calc(var(--u)*.8); letter-spacing:.6em; padding-left:.6em; color:var(--orange); margin-top:calc(var(--u)*.4); font-weight:800}
+  .cover h1{margin: calc(var(--u)*3) auto calc(var(--u)*1.6); max-width:calc(var(--u)*78); font-size:calc(var(--u)*5); font-weight:300; letter-spacing:-.03em; line-height:1.02; text-wrap:balance}
+  .cover h1 .serif{color:var(--orange)}
+  .cover .lead{font-size:calc(var(--u)*1.5); margin:0 auto}
+  .cv-go{margin-top:calc(var(--u)*3.4); display:flex; gap:calc(var(--u)*1.2); justify-content:center; align-items:center; flex-wrap:wrap}
+  .btn{display:inline-flex; align-items:center; gap:calc(var(--u)*.7); height:calc(var(--u)*3.6); padding:0 calc(var(--u)*2); border-radius:99px; cursor:pointer;
+    font-size:calc(var(--u)*1.15); font-weight:800; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.05); color:#fff; text-decoration:none; transition: transform .2s, box-shadow .2s, background .2s}
+  .btn:hover{transform:translateY(-2px); background:rgba(255,255,255,.09)}
+  .btn.orange{border-color:transparent; background: linear-gradient(135deg, #F26B1F, #FFA265);
+    box-shadow: 0 calc(var(--u)*1) calc(var(--u)*2.4) calc(var(--u)*-.6) rgba(242,107,31,.6), inset 0 -2px 0 rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.22)}
+  .btn svg{width:calc(var(--u)*1.3); height:calc(var(--u)*1.3)}
+  .keys{font-size:calc(var(--u)*.95); color:var(--muted-2)}
+  kbd{display:inline-grid; place-items:center; min-width:calc(var(--u)*2); height:calc(var(--u)*2); padding:0 calc(var(--u)*.5); margin:0 .2em; border-radius:calc(var(--u)*.45);
+    border:1px solid rgba(255,255,255,.16); border-bottom-width:2px; font: 700 calc(var(--u)*.9)/1 'JetBrains Mono', monospace; color:#C8CFD7}
+
+  /* ── 2 · Problema ── */
+  .ba{display:grid; grid-template-columns:1fr 1fr; gap:calc(var(--u)*2); margin-top:calc(var(--u)*2.6)}
+  .ba .card{padding:calc(var(--u)*2.2) calc(var(--u)*2.4)}
+  .ba h3{margin:0 0 calc(var(--u)*1.4); display:flex; align-items:center; gap:calc(var(--u)*.8); font-size:calc(var(--u)*1); letter-spacing:.18em; text-transform:uppercase; font-weight:800; color:var(--muted)}
+  .ba .after h3{color:var(--orange-2)}
+  .ba ul{list-style:none; margin:0; padding:0; display:grid; gap:calc(var(--u)*1.05)}
+  .ba li{display:flex; gap:calc(var(--u)*1); align-items:flex-start; font-size:calc(var(--u)*1.28); line-height:1.35; color:#C8CFD7}
+  .ba li span{color:var(--muted-2)}
+  .ba .ic{flex:none; width:calc(var(--u)*2); height:calc(var(--u)*2); border-radius:calc(var(--u)*.6); display:grid; place-items:center; margin-top:calc(var(--u)*-.15)}
+  .ba .before .ic{background:rgba(194,69,69,.14); color:#F08A8A}
+  .ba .after .ic{background:rgba(61,214,140,.13); color:var(--ok)}
+  .ba .ic svg{width:55%; height:55%}
+  .ba .after{box-shadow: 0 0 0 1px rgba(242,107,31,.35), inset 0 1px 0 rgba(255,255,255,.06), 0 calc(var(--u)*3) calc(var(--u)*7) calc(var(--u)*-3) rgba(242,107,31,.35)}
+  .ba .after li{color:#fff}
+
+  /* ── 3 · Resultados ── */
+  .mx{display:grid; grid-template-columns:repeat(4,1fr); gap:calc(var(--u)*1.6); margin-top:calc(var(--u)*3.4)}
+  .mx .card{padding:calc(var(--u)*2.6) calc(var(--u)*2) calc(var(--u)*2.2)}
+  .mx .v{font-size:calc(var(--u)*5.4); font-weight:800; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums;
+    background: linear-gradient(135deg, #fff 30%, #FFA265); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+  .mx .v small{font-size:.45em; letter-spacing:-.01em}
+  .mx .l{margin-top:calc(var(--u)*1.2); font-size:calc(var(--u)*1.2); line-height:1.4; color:var(--muted)}
+  .mx-note{margin-top:calc(var(--u)*2); font-size:calc(var(--u)*.95); color:var(--muted-2)}
+
+  /* ── 4 · Módulos ── */
+  .mods{display:grid; grid-template-columns:repeat(5,1fr); gap:calc(var(--u)*1.2); margin-top:calc(var(--u)*2.6)}
+  .mod{padding:calc(var(--u)*1.6) calc(var(--u)*1.4) calc(var(--u)*1.5); position:relative}
+  .mod svg{width:calc(var(--u)*4.6); height:calc(var(--u)*4.6); display:block; margin-bottom:calc(var(--u)*1); filter: drop-shadow(0 calc(var(--u)*.8) calc(var(--u)*1.4) rgba(242,107,31,.28))}
+  .mod h4{margin:0 0 calc(var(--u)*.45); font-size:calc(var(--u)*1.3); font-weight:800; letter-spacing:-.01em; color:#fff}
+  .mod p{margin:0; font-size:calc(var(--u)*1); line-height:1.4; color:var(--muted)}
+  .mod .new{position:absolute; top:calc(var(--u)*1.2); right:calc(var(--u)*1.2); font: 800 calc(var(--u)*.7)/1 'JetBrains Mono', monospace; letter-spacing:.1em;
+    padding:calc(var(--u)*.35) calc(var(--u)*.6); border-radius:99px; background:rgba(242,107,31,.18); color:var(--orange-2)}
+
+  /* ── 5 · Flujo ── */
+  .flow{display:grid; grid-template-columns:repeat(5,1fr); gap:calc(var(--u)*1.2); margin-top:calc(var(--u)*3); position:relative}
+  .flow::before{content:''; position:absolute; left:6%; right:6%; top:calc(var(--u)*2.1); height:2px;
+    background: linear-gradient(90deg, rgba(242,107,31,.0), rgba(242,107,31,.7), rgba(242,107,31,.0))}
+  .st{position:relative}
+  .st .n{width:calc(var(--u)*4.2); height:calc(var(--u)*4.2); border-radius:99px; display:grid; place-items:center; margin:0 auto calc(var(--u)*1.6);
+    background:#0E1218; border:2px solid rgba(242,107,31,.6); font: 800 calc(var(--u)*1.2)/1 'JetBrains Mono', monospace; color:var(--orange-2);
+    box-shadow: 0 0 0 calc(var(--u)*.6) rgba(7,9,13,1), 0 0 calc(var(--u)*2.4) rgba(242,107,31,.4)}
+  .st .card{padding:calc(var(--u)*1.6) calc(var(--u)*1.5); min-height:calc(var(--u)*19); display:flex; flex-direction:column}
+  .st .k{font-size:calc(var(--u)*.82); letter-spacing:.16em; font-weight:800; text-transform:uppercase; color:var(--orange-2)}
+  .st h4{margin:calc(var(--u)*.6) 0 calc(var(--u)*.7); font-size:calc(var(--u)*1.45); font-weight:800; letter-spacing:-.01em}
+  .st p{margin:0; font-size:calc(var(--u)*1); line-height:1.45; color:var(--muted)}
+  .st .kpi{margin-top:auto; padding-top:calc(var(--u)*1.2); border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+  .st .kpi span{font-size:calc(var(--u)*.9); color:var(--muted-2)}
+  .st .kpi b{font: 800 calc(var(--u)*1.5)/1 'JetBrains Mono', monospace; color:#fff}
+
+  /* ── 6 · Kubicar ── */
+  .split{display:grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap:calc(var(--u)*4); align-items:center}
+  .pts{display:grid; gap:calc(var(--u)*1.4); margin-top:calc(var(--u)*2.4)}
+  .pt{display:flex; gap:calc(var(--u)*1.2)}
+  .pt .c{flex:none; width:calc(var(--u)*2.8); height:calc(var(--u)*2.8); border-radius:calc(var(--u)*.8); display:grid; place-items:center;
+    background:rgba(242,107,31,.14); box-shadow: inset 0 0 0 1px rgba(242,107,31,.3); font: 800 calc(var(--u)*.95)/1 'JetBrains Mono', monospace; color:var(--orange-2)}
+  .pt h4{margin:0 0 calc(var(--u)*.3); font-size:calc(var(--u)*1.35); font-weight:800}
+  .pt p{margin:0; font-size:calc(var(--u)*1.05); line-height:1.45; color:var(--muted)}
+  .fmts{display:flex; gap:calc(var(--u)*.6); flex-wrap:wrap; margin-top:calc(var(--u)*2.2)}
+  .fmts span{padding:calc(var(--u)*.45) calc(var(--u)*.9); border-radius:99px; border:1px solid rgba(242,107,31,.3); font-size:calc(var(--u)*.9); color:var(--muted)}
+  .fmts b{color:#fff; font-family:'JetBrains Mono', monospace; font-weight:700; margin-right:.3em}
+  .kb{overflow:hidden}
+  .kb-bar{display:flex; align-items:center; gap:calc(var(--u)*1); padding:calc(var(--u)*1) calc(var(--u)*1.4); border-bottom:1px solid var(--line); font-size:calc(var(--u)*.95); color:var(--muted)}
+  .kb-bar b{color:#fff}
+  .kb-bar .ok{margin-left:auto; color:var(--ok); font-family:'JetBrains Mono', monospace; font-size:calc(var(--u)*.85)}
+  .kb-body{display:grid; grid-template-columns: calc(var(--u)*13) minmax(0,1fr); min-height:calc(var(--u)*25)}
+  .kb-side{padding:calc(var(--u)*1.3); border-right:1px solid var(--line); display:flex; flex-direction:column; gap:calc(var(--u)*.75)}
+  .kb-go{height:calc(var(--u)*2.6); border-radius:calc(var(--u)*.7); display:grid; place-items:center; font-size:calc(var(--u)*1); font-weight:800; color:#fff;
+    background: linear-gradient(135deg, #F26B1F, #FFA265); margin-bottom:calc(var(--u)*.4)}
+  .kb-ck{display:flex; align-items:center; gap:calc(var(--u)*.6); font-size:calc(var(--u)*.95); color:#C8CFD7}
+  .kb-ck i{width:calc(var(--u)*1.2); height:calc(var(--u)*1.2); border-radius:calc(var(--u)*.3); background:#E8EAEE; display:grid; place-items:center; color:#0B0E13}
+  .kb-ck i svg{width:75%; height:75%}
+  .kb-plan{position:relative; padding:calc(var(--u)*1.2)}
+  .kb-plan svg{width:100%; height:100%; display:block}
+  .kb-plan .room{fill:rgba(242,107,31,.0); stroke:rgba(255,162,101,.0); stroke-width:.5; stroke-dasharray:2 1.4}
+  .s.on .kb-plan .room{animation: room .7s ease both; animation-delay: calc(1.1s + var(--i) * .35s)}
+  @keyframes room{to{fill:rgba(242,107,31,.22); stroke:rgba(255,162,101,.95)}}
+  .kb-rows{border-top:1px solid var(--line); padding:calc(var(--u)*.8) calc(var(--u)*1.4) calc(var(--u)*1.2); display:grid; gap:calc(var(--u)*.5)}
+  .kb-row{display:grid; grid-template-columns: minmax(0,1fr) auto auto; gap:calc(var(--u)*1.4); align-items:baseline; font-size:calc(var(--u)*1)}
+  .kb-row .q{font: 800 calc(var(--u)*1.2)/1 'JetBrains Mono', monospace; color:#fff; text-align:right}
+  .kb-row .q small{font-size:.7em; color:var(--muted); margin-left:.3em}
+  .kb-row .to{font-size:calc(var(--u)*.88); color:var(--orange-2); font-family:'JetBrains Mono', monospace}
+  .kb-row .to em{font-style:normal; color:var(--muted-2)}
+
+  /* ── 7 · Demo 3D (CSS de la portada, ajustado a pantalla completa) ── */
+  .d3 .sec-h{max-width:780px}
+  .d3-grid{display:grid; grid-template-columns: minmax(0,1.55fr) minmax(0,1fr); gap:20px; align-items:stretch}
+  .d3-stage{position:relative; min-height:540px; border-radius:24px; overflow:hidden; isolation:isolate;
+    background:
+      radial-gradient(ellipse 60% 55% at 50% 62%, rgba(242,107,31,.13), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(73,112,201,.10), transparent 70%),
+      linear-gradient(180deg, rgba(14,18,26,.92), rgba(7,9,13,.96));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.07), inset 0 1px 0 rgba(255,255,255,.06), 0 50px 90px -40px rgba(242,107,31,.28), 0 30px 60px -30px rgba(0,0,0,.8)}
+  .d3-stage::after{content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit; z-index:3;
+    background: linear-gradient(90deg, transparent, rgba(242,107,31,.55), transparent) top/70% 1px no-repeat}
+  .d3-canvas{position:absolute; inset:0; width:100%; height:100%; display:block; touch-action: pan-y; cursor:grab; outline:none; z-index:1}
+  .d3-canvas:active{cursor:grabbing}
+  .d3-canvas:focus-visible{box-shadow: inset 0 0 0 2px rgba(255,162,101,.7)}
+  .d3-steps{position:absolute; left:16px; right:16px; top:16px; z-index:2; display:flex; gap:6px; flex-wrap:wrap; pointer-events:none}
+  .d3-steps button{pointer-events:auto; display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px 0 10px; border-radius:99px;
+    border:1px solid rgba(255,255,255,.1); background: rgba(10,13,19,.66); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color:#9AA1AB; font: 700 12.5px/1 Manrope, system-ui, sans-serif; cursor:pointer; transition: color .25s, border-color .25s, background .25s, box-shadow .25s}
+  .d3-steps button span{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:#6B7280; transition: color .25s}
+  .d3-steps button:hover{color:#fff; border-color: rgba(255,255,255,.22)}
+  .d3-steps button.done{color:#C8CFD7}
+  .d3-steps button.done span{color: var(--orange-2)}
+  .d3-steps button[aria-selected="true"]{color:#fff; border-color: rgba(242,107,31,.7); background: rgba(242,107,31,.16);
+    box-shadow: 0 0 0 1px rgba(242,107,31,.25), 0 0 22px -4px rgba(242,107,31,.6)}
+  .d3-steps button[aria-selected="true"] span{color: var(--orange-2)}
+  .d3-hint{position:absolute; left:50%; top:62px; transform:translateX(-50%); z-index:2; pointer-events:none;
+    display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:99px; font-size:12px; font-weight:700; color:#C8CFD7;
+    background: rgba(10,13,19,.6); border:1px solid rgba(255,255,255,.08); transition: opacity .5s; animation: d3Hint 2.6s ease-in-out infinite}
+  .d3-hint svg{color: var(--orange-2)}
+  .d3-hint.gone{opacity:0}
+  @keyframes d3Hint{0%,100%{transform:translateX(-50%)} 50%{transform:translateX(calc(-50% + 6px))}}
+  .d3-cap{position:absolute; left:18px; bottom:72px; z-index:2; pointer-events:none; max-width:70%;
+    font-size:13.5px; font-weight:600; color:#E8EAEE; text-shadow: 0 2px 12px rgba(0,0,0,.8)}
+  .d3-tip{position:absolute; left:0; top:0; z-index:4; pointer-events:none; max-width:260px;
+    padding:9px 12px 9px 26px; border-radius:12px; background: rgba(10,13,19,.92); border:1px solid rgba(255,255,255,.12);
+    box-shadow: 0 14px 30px -10px rgba(0,0,0,.8); font-size:12.5px; font-weight:800; color:#fff; line-height:1.35}
+  .d3-tip span{font-family:'JetBrains Mono', monospace; font-weight:500; font-size:11.5px; color:#C8CFD7}
+  .d3-tip i{position:absolute; left:11px; top:13px; width:8px; height:8px; border-radius:2px}
+  .d3-ctrls{position:absolute; left:14px; right:14px; bottom:14px; z-index:2; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:10px 12px; border-radius:16px; background: rgba(10,13,19,.7); border:1px solid rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px)}
+  .d3-area{flex:1; min-width:180px; display:flex; align-items:center; gap:10px; font-size:12.5px; font-weight:700; color:#9AA1AB}
+  .d3-area b{font-family:'JetBrains Mono', monospace; color:#fff; min-width:6.2ch}
+  .d3-area input{flex:1; min-width:80px; appearance:none; -webkit-appearance:none; height:5px; border-radius:99px; outline:none; cursor:pointer;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange) var(--p,14%), rgba(255,255,255,.12) var(--p,14%))}
+  .d3-area input::-webkit-slider-thumb{appearance:none; -webkit-appearance:none; width:20px; height:20px; border-radius:99px; background:#fff; border:3px solid var(--orange); box-shadow: 0 0 14px rgba(242,107,31,.6)}
+  .d3-area input::-moz-range-thumb{width:16px; height:16px; border-radius:99px; background:#fff; border:3px solid var(--orange)}
+  .d3-area input:focus-visible{box-shadow: 0 0 0 3px rgba(255,162,101,.4)}
+  .d3-seg{display:inline-flex; padding:3px; border-radius:99px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08)}
+  .d3-seg button{height:30px; padding:0 13px; border-radius:99px; border:0; background:transparent; color:#9AA1AB; font: 700 12.5px/1 Manrope, system-ui, sans-serif; cursor:pointer; transition: background .2s, color .2s}
+  .d3-seg button[aria-pressed="true"]{background:#F26B1F; color:#fff; box-shadow: 0 6px 18px -6px rgba(242,107,31,.7)}
+
+  .d3-panel{display:flex; flex-direction:column; padding:20px; border-radius:24px; color:#fff;
+    background: linear-gradient(165deg, rgba(27,32,41,.82), rgba(10,13,18,.92));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.07), inset 0 1px 0 rgba(255,255,255,.07), 0 40px 80px -40px rgba(0,0,0,.8)}
+  .d3-ph{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .d3-ph .t{font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#9AA3B2}
+  .d3-live{display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono', monospace; font-size:10.5px; color:#7DD3A8}
+  .d3-live b{width:6px; height:6px; border-radius:99px; background:#22C55E; box-shadow: 0 0 8px rgba(34,197,94,.8)}
+  .d3-dims{margin:12px 0 14px; font-size:14px; color:#C8CFD7}
+  .d3-dims b{color:#fff; font-family:'JetBrains Mono', monospace; font-weight:700}
+  .d3-head, .d3-row{display:grid; grid-template-columns: 12px minmax(0,1fr) 92px 104px; gap:10px; align-items:center}
+  .d3-head{grid-template-columns: minmax(0,1fr) 92px 104px; padding:0 10px 8px 32px; font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#6B7280; border-bottom:1px solid rgba(255,255,255,.07)}
+  .d3-head span:not(:first-child), .d3-row .q, .d3-row .m{text-align:right}
+  .d3-rows{display:flex; flex-direction:column; gap:2px; margin:6px 0 10px}
+  .d3-row{width:100%; padding:9px 10px; border:1px solid transparent; border-radius:11px; background:transparent; color:#E8EAEE; text-align:left; cursor:pointer;
+    font: 600 13px/1.25 Manrope, system-ui, sans-serif; transition: background .2s, border-color .2s}
+  .d3-row i{width:10px; height:10px; border-radius:3px; background: var(--c); box-shadow: 0 0 10px -1px var(--c)}
+  .d3-row .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .d3-row .q, .d3-row .m{font-family:'JetBrains Mono', monospace; font-size:12px; font-variant-numeric: tabular-nums; white-space:nowrap}
+  .d3-row .q{color:#C8CFD7}
+  .d3-row .m{color:#fff; font-weight:700}
+  .d3-row:hover, .d3-row.on{background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.1)}
+  .d3-row.on{border-color: color-mix(in srgb, var(--c) 55%, transparent)}
+  .d3-row:focus-visible{outline:2px solid rgba(255,162,101,.7); outline-offset:1px}
+  .d3-total{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-top:auto; padding:14px 10px 4px; border-top:1px solid rgba(255,255,255,.1)}
+  .d3-total span{font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#9AA1AB}
+  .d3-total b{font-family:'JetBrains Mono', monospace; font-size: clamp(20px, 2.2vw, 26px); font-weight:800; font-variant-numeric: tabular-nums; color:#fff; transition: text-shadow .4s, color .4s}
+  .d3.d3-priced .d3-total b{color:#FFA265; text-shadow: 0 0 26px rgba(242,107,31,.55)}
+  .d3-note{margin:8px 10px 14px; font-size:11.5px; color:#7C8290; line-height:1.45}
+  .d3-cta{align-self:stretch; justify-content:center; height:44px}
+  @media (max-width: 980px){
+    .d3-grid{grid-template-columns:1fr}
+    .d3-stage{min-height:0; height: clamp(420px, 108vw, 540px)}
+  }
+  @media (max-width: 560px){
+    .d3-stage{border-radius:18px}
+    .d3-steps{left:10px; right:10px; top:10px; gap:4px}
+    .d3-steps button{height:28px; padding:0 9px 0 8px; font-size:11.5px; gap:5px}
+    .d3-steps button span{display:none}
+    .d3-hint{top:50px}
+    .d3-cap{display:none}
+    .d3-ctrls{left:8px; right:8px; bottom:8px; padding:7px 8px 7px 12px; gap:8px; flex-wrap:nowrap}
+    .d3-area{min-width:0; gap:8px; font-size:0}
+    .d3-area b{font-size:12px; min-width:5.6ch}
+    .d3-seg button{height:28px; padding:0 10px; font-size:12px}
+    .d3-panel{padding:16px 12px; border-radius:18px}
+    .d3-head{grid-template-columns: minmax(0,1fr) auto; padding-left:28px}
+    .d3-head span:nth-child(2){display:none}
+    .d3-row{grid-template-columns: 10px minmax(0,1fr) auto; row-gap:2px; padding:8px 10px}
+    .d3-row i{grid-row: 1 / span 2}
+    .d3-row .q{grid-column:2; grid-row:2; text-align:left; font-size:11px; color:#9AA1AB}
+    .d3-row .m{grid-column:3; grid-row: 1 / span 2; font-size:12px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .d3-hint{animation:none}
+  }
+  .d3-head2{display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:calc(var(--u)*4); align-items:end; margin-bottom:calc(var(--u)*2)}
+  .d3-head2 .tag{margin-bottom:calc(var(--u)*1.2)}
+  .d3-head2 h2{font-size:calc(var(--u)*3); margin:0}
+  .d3-head2 .lead{font-size:calc(var(--u)*1.12)}
+  .s-d3 .d3-grid{grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap:calc(var(--u)*1.4)}
+  .s-d3 .d3-stage{min-height:0; height:calc(var(--u)*36)}
+  .s-d3 .d3-panel{height:calc(var(--u)*36); overflow:hidden}
+  .s-d3 .d3-cta{display:none}
+  .s-d3 .d3-row{padding-top:calc(var(--u)*.45); padding-bottom:calc(var(--u)*.45)}
+  .s-d3 .d3-rows{margin:4px 0 6px}
+  .s-d3 .d3-note{margin-bottom:4px}
+  .s-d3 .d3-canvas{touch-action:none}
+
+  /* ── 8 y 10 · Videos ── */
+  .vs{display:grid; grid-template-columns: calc(var(--u)*23) minmax(0,1fr); gap:calc(var(--u)*3); align-items:center}
+  .vs h2{font-size:calc(var(--u)*2.9)}
+  .vs .lead{font-size:calc(var(--u)*1.1)}
+  .vf{position:relative; border-radius:calc(var(--u)*1.4); overflow:hidden; background:#0B0E14; border:1px solid rgba(255,255,255,.1);
+    box-shadow: 0 calc(var(--u)*4) calc(var(--u)*9) calc(var(--u)*-3) rgba(0,0,0,.8), 0 calc(var(--u)*2) calc(var(--u)*8) calc(var(--u)*-4) rgba(242,107,31,.3);
+    width:min(100%, calc(var(--u)*72)); margin-left:auto}
+  .vf .bar{display:flex; align-items:center; gap:calc(var(--u)*.5); height:calc(var(--u)*2.2); padding:0 calc(var(--u)*1); background:rgba(255,255,255,.035); border-bottom:1px solid rgba(255,255,255,.07)}
+  .vf .bar i{width:calc(var(--u)*.7); height:calc(var(--u)*.7); border-radius:99px; background:rgba(255,255,255,.14)}
+  .vf .bar span{margin-left:calc(var(--u)*.8); font-size:calc(var(--u)*.85); color:#8B93A1}
+  .vf video{display:block; width:100%; aspect-ratio:16/10; background:#0B0E14; max-height:calc(var(--u)*44)}
+  .vf .play{position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:calc(var(--u)*6); height:calc(var(--u)*6); border-radius:99px; border:0; cursor:pointer;
+    background:var(--orange); color:#fff; display:none; place-items:center; box-shadow:0 12px 40px rgba(242,107,31,.5)}
+  .vf .play svg{width:40%; height:40%; margin-left:8%}
+  .vf.paused .play{display:grid}
+  .chaps{display:grid; gap:calc(var(--u)*.6); margin-top:calc(var(--u)*2)}
+  .chap{display:flex; align-items:center; gap:calc(var(--u)*.8); padding:calc(var(--u)*.6) calc(var(--u)*.9); border-radius:calc(var(--u)*.8); cursor:pointer; text-align:left;
+    font-size:calc(var(--u)*1.02); background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.08); color:#C7CCD4; transition: background .25s, border-color .25s, color .25s}
+  .chap b{flex:none; width:calc(var(--u)*1.8); height:calc(var(--u)*1.8); border-radius:calc(var(--u)*.5); display:grid; place-items:center; font-size:calc(var(--u)*.85); background:rgba(255,255,255,.08); color:#fff}
+  .chap.on{border-color:rgba(242,107,31,.55); background:rgba(242,107,31,.12); color:#fff}
+  .chap.on b{background:var(--orange)}
+
+  /* ── 9 · IA ── */
+  .chat{padding:calc(var(--u)*1.8); display:grid; gap:calc(var(--u)*1.2)}
+  .msg{display:flex; gap:calc(var(--u)*1); align-items:flex-start}
+  .av{flex:none; width:calc(var(--u)*2.8); height:calc(var(--u)*2.8); border-radius:99px; display:grid; place-items:center; font-weight:800; font-size:calc(var(--u)*.95); background:#262B35; color:#C8CFD7}
+  .av.m{background: linear-gradient(135deg, #F26B1F, #FFA265); color:#fff}
+  .who{font-size:calc(var(--u)*.85); color:var(--muted-2); margin-bottom:calc(var(--u)*.35)}
+  .bub{padding:calc(var(--u)*1) calc(var(--u)*1.3); border-radius:calc(var(--u)*1.1); font-size:calc(var(--u)*1.12); line-height:1.5; background:rgba(255,255,255,.05); border:1px solid var(--line)}
+  .msg.m .bub{background:rgba(242,107,31,.08); border-color:rgba(242,107,31,.25)}
+  .al{display:grid; gap:calc(var(--u)*.55); margin-top:calc(var(--u)*.7)}
+  .al div{display:flex; gap:calc(var(--u)*.7); align-items:baseline; font-size:calc(var(--u)*1.02); color:#C8CFD7}
+  .al .o{font-family:'JetBrains Mono', monospace; font-weight:800; color:var(--orange-2); min-width:calc(var(--u)*4)}
+  .al em{font-style:normal; color:#F08A8A; font-family:'JetBrains Mono', monospace; font-weight:700}
+  .typing{display:inline-flex; gap:4px} .typing i{width:6px; height:6px; border-radius:99px; background:var(--muted); animation: blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s} .typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{50%{opacity:.25}}
+  .claude{margin-top:calc(var(--u)*2.2); padding:calc(var(--u)*1.3) calc(var(--u)*1.5); display:flex; gap:calc(var(--u)*1.2); align-items:center}
+  .claude .ey{font: 800 calc(var(--u)*.75)/1 'JetBrains Mono', monospace; letter-spacing:.14em; color:var(--orange-2); text-transform:uppercase; margin-bottom:calc(var(--u)*.5)}
+  .claude p{margin:0; font-size:calc(var(--u)*1.02); line-height:1.45; color:#C8CFD7}
+
+  /* ── 11 · Cómo empezamos ── */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:calc(var(--u)*1.4); margin-top:calc(var(--u)*3)}
+  .stp{padding:calc(var(--u)*2) calc(var(--u)*1.8)}
+  .stp .w{font: 800 calc(var(--u)*.85)/1 'JetBrains Mono', monospace; letter-spacing:.12em; color:var(--orange-2); text-transform:uppercase}
+  .stp h4{margin:calc(var(--u)*1) 0 calc(var(--u)*.7); font-size:calc(var(--u)*1.5); font-weight:800; letter-spacing:-.01em; line-height:1.2}
+  .stp p{margin:0; font-size:calc(var(--u)*1.05); line-height:1.5; color:var(--muted)}
+  .trust{display:flex; justify-content:center; gap:calc(var(--u)*1); flex-wrap:wrap; margin-top:calc(var(--u)*2.6)}
+  .trust span{display:inline-flex; align-items:center; gap:calc(var(--u)*.6); padding:calc(var(--u)*.7) calc(var(--u)*1.2); border-radius:99px; background:rgba(255,255,255,.04); border:1px solid var(--line); font-size:calc(var(--u)*1); color:#C8CFD7}
+  .trust svg{width:calc(var(--u)*1.2); height:calc(var(--u)*1.2); color:var(--ok)}
+
+  /* ── 12 · Cierre con QR ── */
+  .end{display:grid; grid-template-columns: minmax(0,1fr) auto; gap:calc(var(--u)*5); align-items:center}
+  .end h2{font-size:calc(var(--u)*4.4)}
+  .end h2 .serif{color:var(--orange-2)}
+  .qr{padding:calc(var(--u)*2); text-align:center; width:calc(var(--u)*32)}
+  .qr .code{width:calc(var(--u)*26); height:calc(var(--u)*26); margin:0 auto; padding:calc(var(--u)*1.1); border-radius:calc(var(--u)*1.4); background:#fff; position:relative;
+    box-shadow: 0 0 0 calc(var(--u)*.4) rgba(242,107,31,.55), 0 0 calc(var(--u)*6) rgba(242,107,31,.45)}
+  .qr .code svg{width:100%; height:100%; display:block}
+  .qr .code img{position:absolute; left:50%; top:50%; width:20%; height:20%; transform:translate(-50%,-50%); background:#fff; border-radius:24%; padding:2.5%}
+  .qr .t{margin-top:calc(var(--u)*1.6); font-size:calc(var(--u)*1.45); font-weight:800}
+  .qr .t svg{width:1em; height:1em; vertical-align:-.12em; color:#25D366; margin-right:.25em}
+  .qr .p{margin-top:calc(var(--u)*.4); font: 700 calc(var(--u)*1.3)/1.3 'JetBrains Mono', monospace; color:var(--orange-2)}
+  .end-web{display:flex; align-items:center; gap:calc(var(--u)*1.4); margin-top:calc(var(--u)*3)}
+  .end-web .mini{width:calc(var(--u)*7.5); height:calc(var(--u)*7.5); padding:calc(var(--u)*.6); border-radius:calc(var(--u)*.8); background:#fff}
+  .end-web .mini svg{width:100%; height:100%; display:block}
+  .end-web b{display:block; font-size:calc(var(--u)*1.5); color:#fff}
+  .end-web span{font-size:calc(var(--u)*1.02); color:var(--muted)}
+  .micro{margin-top:calc(var(--u)*2.4); font: 700 calc(var(--u)*.85)/1 'JetBrains Mono', monospace; letter-spacing:.16em; color:var(--muted-2)}
+
+  /* ═══════════ Controles ═══════════ */
+  .prog{position:fixed; left:0; right:0; bottom:0; height:3px; background:rgba(255,255,255,.05); z-index:20}
+  .prog i{display:block; height:100%; width:0; background: linear-gradient(90deg, #C5501A, #F26B1F, #FFA265); box-shadow:0 0 12px rgba(242,107,31,.8); transition: width .6s cubic-bezier(.7,0,.2,1)}
+  .brand{position:fixed; left:calc(var(--u)*2.4); bottom:calc(var(--u)*1.6); z-index:20; display:flex; align-items:center; gap:calc(var(--u)*.7);
+    font-size:calc(var(--u)*.9); font-weight:900; letter-spacing:.28em; color:#fff; opacity:.75; transition: opacity .4s}
+  .brand img{width:calc(var(--u)*2); height:calc(var(--u)*2)}
+  .s0 ~ .brand{opacity:0}
+  .count{position:fixed; right:calc(var(--u)*2.4); bottom:calc(var(--u)*1.6); z-index:20; font: 700 calc(var(--u)*.95)/1 'JetBrains Mono', monospace; color:var(--muted-2); letter-spacing:.08em}
+  .count b{color:#fff}
+  .ctl{position:fixed; left:50%; bottom:calc(var(--u)*1.2); transform:translate(-50%, 0); z-index:21; display:flex; align-items:center; gap:4px; padding:5px;
+    border-radius:99px; background:rgba(15,19,24,.82); border:1px solid rgba(255,255,255,.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    transition: opacity .35s, transform .35s}
+  .idle .ctl{opacity:0; transform:translate(-50%, 12px); pointer-events:none}
+  .ctl button{height:38px; min-width:38px; padding:0 12px; border-radius:99px; border:0; background:transparent; color:#C8CFD7; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:700}
+  .ctl button:hover{background:rgba(255,255,255,.08); color:#fff}
+  .ctl svg{width:18px; height:18px}
+  .ctl .sep{width:1px; height:20px; background:rgba(255,255,255,.12); margin:0 2px}
+  .off{display:inline-flex; align-items:center; gap:6px; padding:0 12px 0 8px; font-size:12px; font-weight:700; color:var(--muted-2); white-space:nowrap}
+  .off i{width:8px; height:8px; border-radius:99px; background:#C58A1A; box-shadow:0 0 8px #C58A1A}
+  .off.ok{color:#9FE3C1} .off.ok i{background:var(--ok); box-shadow:0 0 8px var(--ok)}
+
+  /* Índice (tecla G o el botón de la barra) */
+  .idx{position:fixed; inset:0; z-index:30; display:grid; place-items:center; background:rgba(7,9,13,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    opacity:0; visibility:hidden; transition: opacity .3s, visibility 0s linear .3s}
+  .idx.on{opacity:1; visibility:visible; transition: opacity .3s}
+  .idx-in{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; width:min(1100px, 92vw)}
+  .idx button{text-align:left; padding:16px 18px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.04); cursor:pointer; color:#C8CFD7; font-size:15px; font-weight:700; line-height:1.3}
+  .idx button span{display:block; font: 700 12px/1 'JetBrains Mono', monospace; color:var(--muted-2); margin-bottom:8px}
+  .idx button:hover{border-color:rgba(242,107,31,.5); color:#fff}
+  .idx button.on{border-color:var(--orange); background:rgba(242,107,31,.12); color:#fff}
+  .idx-help{grid-column:1 / -1; margin-top:10px; text-align:center; font-size:13px; color:var(--muted-2); line-height:2}
+  .idx-help kbd{min-width:26px; height:24px; font-size:11px}
+
+  /* Pantalla en negro (tecla B o punto, como en PowerPoint) */
+  .black{position:fixed; inset:0; z-index:40; background:#000; opacity:0; pointer-events:none; transition: opacity .35s}
+  .black.on{opacity:1; pointer-events:auto}
+
+  @media (prefers-reduced-motion: reduce){
+    .s, .s.on{transition: opacity .3s, visibility 0s}
+    .s, .s.prev{transform:none}
+    .s.on .r{animation:none; opacity:1; transform:none}
+    .r{opacity:1; transform:none}
+    .s.on .kb-plan .room{animation:none; fill:rgba(242,107,31,.22); stroke:rgba(255,162,101,.95)}
+    .cv-logo::before{animation:none}
+  }
+
+  /* Teléfono o tableta en vertical: todo en una columna y la diapositiva se puede deslizar */
+  @media (max-aspect-ratio: 4/5){
+    :root{ --u: 1.9vw }
+    .s{justify-content:flex-start; overflow-y:auto; -webkit-overflow-scrolling:touch; padding: calc(var(--u)*8) calc(var(--u)*5) calc(var(--u)*14)}
+    .cover{justify-content:center}
+    .s-in{max-width:none}
+    h2, .d3-head2 h2, .vs h2, .end h2{font-size:calc(var(--u)*4.6)}
+    .cover h1{font-size:calc(var(--u)*6.4)}
+    .lead{font-size:calc(var(--u)*2)}
+    .ba, .split, .d3-head2, .vs, .end{grid-template-columns:1fr}
+    .mx, .steps{grid-template-columns:1fr 1fr}
+    .mods{grid-template-columns:1fr 1fr}
+    .flow{grid-template-columns:1fr; gap:calc(var(--u)*2)} .flow::before{display:none}
+    .st .n{margin:0 0 calc(var(--u)*1)} .st .card{min-height:0}
+    .s-d3 .d3-grid{grid-template-columns:1fr}
+    .s-d3 .d3-stage{height:calc(var(--u)*95)} .s-d3 .d3-panel{height:auto}
+    .vf{width:100%} .vf video{max-height:none}
+    .chaps{grid-template-columns:1fr 1fr}
+    .end{grid-template-columns:minmax(0,1fr)} .qr{width:auto} .qr .code{width:calc(var(--u)*40); height:calc(var(--u)*40)}
+    .kb-body{grid-template-columns:1fr} .kb-side{display:none}
+    .ctl .lbl{display:none}
+    .idx-in{grid-template-columns:1fr 1fr}
+    .ba li, .mod p, .st p, .pt p, .stp p, .bub, .al div, .chap{font-size:calc(var(--u)*2)}
+    .mod h4, .st h4, .pt h4, .stp h4{font-size:calc(var(--u)*2.4)}
+    .tag{font-size:calc(var(--u)*1.5)}
+    .count, .brand{bottom:auto; top:calc(var(--u)*3)}
+  }
+</style>
+</head>
+<body>
+<div class="aura" aria-hidden="true"></div>
+
+<main class="deck" id="deck" aria-live="polite">
+
+  <!-- 1 · PORTADA -->
+  <section class="s cover s0" data-t="Portada" aria-label="Portada">
+    <div class="s-in">
+      <div class="cv-logo r" style="--i:0"><img src="/assets/logo-manestro-512.png" alt="" width="512" height="512"/></div>
+      <div class="cv-name r" style="--i:1">MANESTRO<small>P · R · O</small></div>
+      <h1 class="r" style="--i:2">El ERP <span class="serif">profesional</span> con <b>IA</b> para constructoras <b>LATAM</b></h1>
+      <p class="lead r" style="--i:3">Toda tu obra en una sola mano: la dirección de proyectos ve <b>lo que pasa hoy</b> y decide <span class="serif" style="color:var(--orange-2)">en el momento justo</span>, no cuando ya es tarde.</p>
+      <div class="cv-go r" style="--i:4">
+        <button class="btn orange" type="button" data-start><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7L7 5Z"/></svg> Empezar la presentación</button>
+        <span class="keys">o usa <kbd>→</kbd> <kbd>←</kbd> · el control de presentaciones · desliza con el dedo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · EL PROBLEMA -->
+  <section class="s" data-t="El problema" aria-label="El problema">
+    <div class="s-in">
+      <div class="tag r"><i></i>El problema</div>
+      <h2 class="r" style="--i:1">Cada obra se gestiona con <b>5 herramientas distintas.</b> <span class="serif">Sin IA. Sin conexión.</span></h2>
+      <p class="lead r" style="--i:2">Excel para el presupuesto, WhatsApp para la bitácora, PDF para la cubicación. Mientras tanto, la competencia ya le delega trabajo a la IA.</p>
+      <div class="ba">
+        <div class="card before r" style="--i:3">
+          <h3>Antes · sin Manestro</h3>
+          <ul>
+            <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div>Presupuesto en Excel <span>· nadie sabe cuál es la versión vigente</span></div></li>
+            <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div>Cubicación a mano en libreta <span>· 3 días para enviarla al cliente</span></div></li>
+            <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div>Control de costos con 30 días de atraso <span>· el sobrecosto se descubre tarde</span></div></li>
+            <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div>Bitácora en un grupo de WhatsApp <span>· fotos perdidas, sin trazabilidad</span></div></li>
+            <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M6 18 18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div>Reportes mensuales hechos a mano <span>· 2 días de trabajo de un analista</span></div></li>
+          </ul>
+        </div>
+        <div class="card after r" style="--i:4">
+          <h3>Con Manestro · todo en un flujo</h3>
+          <ul>
+            <li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Presupuesto armado por IA desde un brief, con APU vivo</div></li>
+            <li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Cubicación cerrada en horas, con el acta redactada por IA</div></li>
+            <li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Control en tiempo real: la IA avisa antes del problema</div></li>
+            <li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>App móvil del residente, con fotos GPS que la IA analiza</div></li>
+            <li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div>Informes profesionales redactados por IA, 8 plantillas</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · RESULTADOS -->
+  <section class="s" data-t="Lo que cambia" aria-label="Lo que cambia">
+    <div class="s-in center">
+      <div class="tag r"><i></i>Lo que cambia</div>
+      <h2 class="r" style="--i:1">Menos tiempo en archivos. <b>Más margen</b> <span class="serif">en cada obra.</span></h2>
+      <div class="mx">
+        <div class="card r" style="--i:2"><div class="v" data-count="60" data-pre="−" data-suf="%">−60%</div><div class="l">de tiempo para elaborar un presupuesto completo</div></div>
+        <div class="card r" style="--i:3"><div class="v" data-count="4" data-pre="+" data-suf="%">+4%</div><div class="l">de margen recuperado al detectar las desviaciones a tiempo</div></div>
+        <div class="card r" style="--i:4"><div class="v" data-count="2" data-suf="<small> días</small>">2<small> días</small></div><div class="l">para cerrar una cubicación con el cliente</div></div>
+        <div class="card r" style="--i:5"><div class="v" data-count="100" data-suf="%">100%</div><div class="l">de trazabilidad entre presupuesto, obra y cobro</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · MÓDULOS -->
+  <section class="s" data-t="Los módulos" aria-label="Los módulos">
+    <div class="s-in">
+      <div class="tag r"><i></i>La plataforma con IA</div>
+      <h2 class="r" style="--i:1">Una sola herramienta que conecta <b>presupuesto, control, obra</b> <span class="serif">y flujo de caja.</span></h2>
+      <div class="mods">
+        <div class="card mod r" style="--i:2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="pre-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="pre-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="pre-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="pre-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="pre-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="pre-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="pre-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="pre-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="pre-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="pre-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(1.93 -2.25) scale(0.984)"><ellipse cx="32" cy="56" rx="21" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#pre-soft)"/><path d="M20.05 22.05 L39.97 33.55 L39.97 43.90 L20.05 32.40 Z" fill="url(#pre-gL)"/><path d="M49.93 27.80 L39.97 33.55 L39.97 43.90 L49.93 38.15 Z" fill="url(#pre-gR)"/><path d="M30.01 16.30 L49.93 27.80 L39.97 33.55 L20.05 22.05 Z" fill="url(#pre-gT)"/><path d="M30.01 16.30 L49.93 27.80 L39.97 33.55 L20.05 22.05 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M30.51 19.46 L36.48 22.91 L31.50 25.79 L25.53 22.34 Z" fill="#6E2604"/><path d="M38.47 24.06 L44.45 27.51 L39.47 30.39 L33.49 26.94 Z" fill="#6E2604"/><path d="M8.10 28.95 L28.02 40.45 L28.02 50.80 L8.10 39.30 Z" fill="url(#pre-gL)"/><path d="M37.98 34.70 L28.02 40.45 L28.02 50.80 L37.98 45.05 Z" fill="url(#pre-gR)"/><path d="M18.06 23.20 L37.98 34.70 L28.02 40.45 L8.10 28.95 Z" fill="url(#pre-gT)"/><path d="M18.06 23.20 L37.98 34.70 L28.02 40.45 L8.10 28.95 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M18.55 26.36 L24.53 29.81 L19.55 32.69 L13.58 29.24 Z" fill="#6E2604"/><path d="M26.52 30.96 L32.50 34.41 L27.52 37.29 L21.54 33.84 Z" fill="#6E2604"/><path d="M14.07 15.15 L33.99 26.65 L33.99 37.00 L14.07 25.50 Z" fill="url(#pre-gL)"/><path d="M43.95 20.90 L33.99 26.65 L33.99 37.00 L43.95 31.25 Z" fill="url(#pre-gR)"/><path d="M24.03 9.40 L43.95 20.90 L33.99 26.65 L14.07 15.15 Z" fill="url(#pre-gT)"/><path d="M24.03 9.40 L43.95 20.90 L33.99 26.65 L14.07 15.15 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M24.53 12.56 L30.51 16.01 L25.53 18.89 L19.55 15.44 Z" fill="#6E2604"/><path d="M32.50 17.16 L38.47 20.61 L33.49 23.49 L27.52 20.04 Z" fill="#6E2604"/></g></svg><h4>Presupuestos</h4><p>La IA lo arma desde un brief, con APU y versiones.</p></div>
+        <div class="card mod r" style="--i:3"><span class="new">NUEVO</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="kub-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="kub-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="kub-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="kub-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="kub-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="kub-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="kub-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="kub-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="kub-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="kub-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(3.13 -1.70) scale(0.902)"><ellipse cx="32" cy="55" rx="24" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#kub-soft)"/><path d="M4.29 29.50 L35.46 47.50 L35.46 50.00 L4.29 32.00 Z" fill="url(#kub-gL)"/><path d="M59.71 33.50 L35.46 47.50 L35.46 50.00 L59.71 36.00 Z" fill="url(#kub-gR)"/><path d="M28.54 15.50 L59.71 33.50 L35.46 47.50 L4.29 29.50 Z" fill="url(#kub-gT)"/><path d="M28.54 15.50 L59.71 33.50 L35.46 47.50 L4.29 29.50 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M28.54 20.50 L51.05 33.50 L35.46 42.50 L12.95 29.50 L28.54 20.50" fill="none" stroke="#7A2C05" stroke-width="1.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M39.79 27.00 L32.00 31.50" fill="none" stroke="#7A2C05" stroke-width="1.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.54 33.50 L24.21 36.00" fill="none" stroke="#7A2C05" stroke-width="1.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M30.27 32.50 L41.53 39.00" fill="none" stroke="#7A2C05" stroke-width="1.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M31.13 19.00 L53.65 32.00" fill="none" stroke="#FFFFFF" stroke-width="0.9" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M32.26 18.35 L30.01 19.65" fill="none" stroke="#FFFFFF" stroke-width="0.9" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M54.78 31.35 L52.52 32.65" fill="none" stroke="#FFFFFF" stroke-width="0.9" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M26.80 38.50 L40.66 46.50 L40.66 48.50 L26.80 40.50 Z" fill="url(#kub-gL)"/><path d="M42.39 45.50 L40.66 46.50 L40.66 48.50 L42.39 47.50 Z" fill="url(#kub-gR)"/><path d="M28.54 37.50 L42.39 45.50 L40.66 46.50 L26.80 38.50 Z" fill="url(#kub-gT)"/><path d="M28.54 37.50 L42.39 45.50 L40.66 46.50 L26.80 38.50 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/></g></svg><h4>Kubicar Pro</h4><p>Las cantidades salen solas del plano.</p></div>
+        <div class="card mod r" style="--i:4"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="con-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="con-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="con-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="con-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="con-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="con-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="con-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="con-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="con-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="con-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(-1.06 -5.19) scale(1.033)"><ellipse cx="32" cy="56" rx="24" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#con-soft)"/><path d="M8.10 15.40 L49.67 39.40 L49.67 47.80 L8.10 23.80 Z" fill="url(#con-gL)"/><path d="M55.90 35.80 L49.67 39.40 L49.67 47.80 L55.90 44.20 Z" fill="url(#con-gR)"/><path d="M14.33 11.80 L55.90 35.80 L49.67 39.40 L8.10 15.40 Z" fill="url(#con-gT)"/><path d="M14.33 11.80 L55.90 35.80 L49.67 39.40 L8.10 15.40 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M28.36 21.70 L38.75 27.70 L35.64 29.50 L25.25 23.50 Z" fill="#6E2604"/><ellipse cx="32.00" cy="25.60" rx="3.2" ry="1.6" fill="#FFF3EA"/><path d="M15.89 14.50 L17.97 15.70 L14.85 17.50 L12.77 16.30 Z" fill="#6E2604"/><path d="M49.15 33.70 L51.23 34.90 L48.11 36.70 L46.03 35.50 Z" fill="#6E2604"/><path d="M12.25 19.00 L12.25 20.80" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.41 21.40 L16.41 23.20" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.57 23.80 L20.57 25.60" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M24.73 26.20 L24.73 28.00" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.88 28.60 L28.88 30.40" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M33.04 31.00 L33.04 32.80" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.20 33.40 L37.20 35.20" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M41.35 35.80 L41.35 37.60" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M45.51 38.20 L45.51 40.00" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/></g></svg><h4>Control de costos</h4><p>Base, proyectado y real, con alertas de IA.</p></div>
+        <div class="card mod r" style="--i:5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="cub-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="cub-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="cub-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="cub-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="cub-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="cub-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="cub-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="cub-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="cub-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="cub-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(-0.10 3.11) scale(0.887)"><ellipse cx="32" cy="56" rx="24" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#cub-soft)"/><path d="M33.99 35.77 L57.89 49.57 L57.89 50.95 L33.99 37.15 Z" fill="url(#cub-gL)"/><path d="M63.87 46.12 L57.89 49.57 L57.89 50.95 L63.87 47.50 Z" fill="url(#cub-gR)"/><path d="M39.97 32.32 L63.87 46.12 L57.89 49.57 L33.99 35.77 Z" fill="url(#cub-gT)"/><path d="M39.97 32.32 L63.87 46.12 L57.89 49.57 L33.99 35.77 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M42.96 34.05 L39.97 35.77" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M45.94 35.77 L43.95 36.92" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M48.93 37.49 L45.94 39.22" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M51.92 39.22 L49.93 40.37" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M54.91 40.95 L51.92 42.67" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M57.89 42.67 L55.90 43.82" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M60.88 44.39 L57.89 46.12" fill="none" stroke="#7A2C05" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.07 10.70 L32.00 19.90 L32.00 38.30 L16.07 29.10 Z" fill="url(#cub-gL)"/><path d="M41.96 14.15 L32.00 19.90 L32.00 38.30 L41.96 32.55 Z" fill="url(#cub-gR)"/><path d="M26.02 4.95 L41.96 14.15 L32.00 19.90 L16.07 10.70 Z" fill="url(#cub-gT)"/><path d="M26.02 4.95 L41.96 14.15 L32.00 19.90 L16.07 10.70 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M30.01 27.95 L29.92 26.70 L29.65 25.38 L29.21 24.04 L28.61 22.71 L27.87 21.43 L27.02 20.25 L26.08 19.20 L25.07 18.30 L24.03 17.60 L22.99 17.11 L21.99 16.84 L21.04 16.80 L20.19 17.00 L19.46 17.42 L18.86 18.06 L18.42 18.90 L18.15 19.90 L18.06 21.05 L18.15 22.30 L18.42 23.62 L18.86 24.96 L19.46 26.29 L20.19 27.57 L21.04 28.75 L21.99 29.80 L22.99 30.70 L24.03 31.40 L25.07 31.89 L26.08 32.16 L27.02 32.20 L27.87 32.00 L28.61 31.58 L29.21 30.94 L29.65 30.10 L29.92 29.10 Z" fill="#B8460F" stroke="#FFD2B0" stroke-opacity=".6" stroke-width=".6"/><path d="M26.02 25.65 L25.96 25.02 L25.76 24.35 L25.44 23.69 L25.03 23.08 L24.55 22.58 L24.03 22.20 L23.52 21.98 L23.04 21.93 L22.62 22.06 L22.31 22.35 L22.11 22.79 L22.04 23.35 L22.11 23.98 L22.31 24.65 L22.62 25.31 L23.04 25.92 L23.52 26.42 L24.03 26.80 L24.55 27.02 L25.03 27.07 L25.44 26.94 L25.76 26.65 L25.96 26.21 Z" fill="#FFE3CF"/><path d="M29.01 30.59 L31.00 31.75 L31.00 35.42 L29.01 34.27 Z" fill="url(#cub-gL)"/><path d="M36.98 28.30 L31.00 31.75 L31.00 35.42 L36.98 31.98 Z" fill="url(#cub-gR)"/><path d="M34.99 27.15 L36.98 28.30 L31.00 31.75 L29.01 30.59 Z" fill="url(#cub-gT)"/><path d="M34.99 27.15 L36.98 28.30 L31.00 31.75 L29.01 30.59 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M55.40 46.64 L57.40 47.79 L57.40 51.24 L55.40 50.09 Z" fill="url(#cub-gL)"/><path d="M64.37 43.76 L57.40 47.79 L57.40 51.24 L64.37 47.21 Z" fill="url(#cub-gR)"/><path d="M62.38 42.61 L64.37 43.76 L57.40 47.79 L55.40 46.64 Z" fill="url(#cub-gT)"/><path d="M62.38 42.61 L64.37 43.76 L57.40 47.79 L55.40 46.64 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/></g></svg><h4>Cubicaciones</h4><p>Cierras el corte y mandas el acta en minutos.</p></div>
+        <div class="card mod r" style="--i:6"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="obr-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="obr-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="obr-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="obr-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="obr-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="obr-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="obr-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="obr-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="obr-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="obr-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(2.37 -4.92) scale(0.926)"><ellipse cx="32" cy="56" rx="22" ry="4" fill="#F26B1F" opacity=".25" filter="url(#obr-soft)"/><ellipse cx="32" cy="45" rx="27" ry="8.5" fill="url(#obr-gR)"/><ellipse cx="32" cy="43" rx="27" ry="8.5" fill="url(#obr-gL)"/><ellipse cx="32" cy="43" rx="27" ry="8.5" fill="none" stroke="#FFF3EA" stroke-opacity=".5" stroke-width=".6"/><path d="M12 42 A20 22 0 0 1 52 42 Q32 50 12 42Z" fill="url(#obr-gDome)"/><path d="M28 20.5 Q32 19 36 20.5 L35.5 46 Q32 47 28.5 46Z" fill="url(#obr-gRidge)"/><path d="M17 31 Q21 23 28 20.5" stroke="#FFF6EE" stroke-width="2" fill="none" stroke-linecap="round" opacity=".85"/></g></svg><h4>Gestión de obra</h4><p>Bitácora, fotos GPS e incidencias desde el móvil.</p></div>
+        <div class="card mod r" style="--i:7"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="com-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="com-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="com-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="com-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="com-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="com-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="com-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="com-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="com-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="com-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(1.31 -2.34) scale(0.965)"><ellipse cx="32" cy="56" rx="25" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#com-soft)"/><path d="M16.38 15.28 L54.48 37.28 L54.48 41.02 L16.38 19.02 Z" fill="url(#com-gL)"/><path d="M57.72 35.41 L54.48 37.28 L54.48 41.02 L57.72 39.15 Z" fill="url(#com-gR)"/><path d="M19.62 13.41 L57.72 35.41 L54.48 37.28 L16.38 15.28 Z" fill="url(#com-gT)"/><path d="M19.62 13.41 L57.72 35.41 L54.48 37.28 L16.38 15.28 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M21.52 14.51 L19.43 17.04" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.33 16.71 L23.24 19.24" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.14 18.91 L27.05 21.44" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M32.95 21.11 L30.86 23.64" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M36.76 23.31 L34.67 25.84" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M40.57 25.51 L38.48 28.04" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M44.38 27.71 L42.29 30.24" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M48.19 29.91 L46.10 32.44" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M52.01 32.11 L49.91 34.64" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M55.82 34.31 L53.72 36.84" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.14 18.30 L49.24 40.30 L49.24 44.05 L11.14 22.04 Z" fill="url(#com-gL)"/><path d="M52.48 38.44 L49.24 40.30 L49.24 44.05 L52.48 42.17 Z" fill="url(#com-gR)"/><path d="M14.38 16.43 L52.48 38.44 L49.24 40.30 L11.14 18.30 Z" fill="url(#com-gT)"/><path d="M14.38 16.43 L52.48 38.44 L49.24 40.30 L11.14 18.30 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M16.28 17.53 L14.19 20.06" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.09 19.73 L18.00 22.27" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.90 21.93 L21.81 24.46" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.71 24.13 L25.62 26.66" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M31.52 26.34 L29.43 28.86" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M35.33 28.54 L33.24 31.07" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M39.14 30.73 L37.05 33.27" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M42.96 32.94 L40.86 35.47" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M46.77 35.13 L44.67 37.66" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M50.58 37.34 L48.48 39.87" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.90 21.33 L44.00 43.33 L44.00 47.07 L5.90 25.07 Z" fill="url(#com-gL)"/><path d="M47.24 41.46 L44.00 43.33 L44.00 47.07 L47.24 45.20 Z" fill="url(#com-gR)"/><path d="M9.14 19.46 L47.24 41.46 L44.00 43.33 L5.90 21.33 Z" fill="url(#com-gT)"/><path d="M9.14 19.46 L47.24 41.46 L44.00 43.33 L5.90 21.33 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M11.04 20.56 L8.95 23.09" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.85 22.76 L12.76 25.29" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.66 24.96 L16.57 27.49" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M22.47 27.16 L20.38 29.69" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M26.28 29.36 L24.19 31.89" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M30.09 31.56 L28.00 34.09" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M33.91 33.76 L31.81 36.29" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.72 35.96 L35.62 38.49" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M41.53 38.16 L39.43 40.69" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M45.34 40.36 L43.24 42.89" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.71 12.86 L51.81 34.86 L51.81 38.60 L13.71 16.60 Z" fill="url(#com-gL)"/><path d="M55.05 32.99 L51.81 34.86 L51.81 38.60 L55.05 36.73 Z" fill="url(#com-gR)"/><path d="M16.95 10.99 L55.05 32.99 L51.81 34.86 L13.71 12.86 Z" fill="url(#com-gT)"/><path d="M16.95 10.99 L55.05 32.99 L51.81 34.86 L13.71 12.86 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M18.85 12.09 L16.76 14.62" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M22.66 14.29 L20.57 16.82" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M26.47 16.49 L24.38 19.02" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M30.29 18.69 L28.19 21.22" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.10 20.89 L32.00 23.42" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.91 23.09 L35.81 25.62" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M41.72 25.29 L39.62 27.82" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M45.53 27.49 L43.43 30.02" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M49.34 29.69 L47.24 32.22" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M53.15 31.89 L51.05 34.42" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.57 15.83 L46.67 37.83 L46.67 41.57 L8.57 19.57 Z" fill="url(#com-gL)"/><path d="M49.91 35.96 L46.67 37.83 L46.67 41.57 L49.91 39.70 Z" fill="url(#com-gR)"/><path d="M11.80 13.96 L49.91 35.96 L46.67 37.83 L8.57 15.83 Z" fill="url(#com-gT)"/><path d="M11.80 13.96 L49.91 35.96 L46.67 37.83 L8.57 15.83 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M13.71 15.06 L11.61 17.59" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.52 17.26 L15.42 19.79" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21.33 19.46 L19.23 21.99" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.14 21.66 L23.05 24.19" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.95 23.86 L26.86 26.39" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M32.76 26.06 L30.67 28.59" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M36.57 28.26 L34.48 30.79" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M40.38 30.46 L38.29 32.99" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M44.19 32.66 L42.10 35.19" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M48.00 34.86 L45.91 37.39" fill="none" stroke="#FFF3EA" stroke-width="0.7" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.71 22.32 L29.71 14.18 L15.23 22.54 L15.23 30.68" fill="none" stroke="#3B1603" stroke-width="1.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M46.86 32.22 L46.86 24.08 L32.38 32.44 L32.38 40.58" fill="none" stroke="#3B1603" stroke-width="1.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/></g></svg><h4>Compras</h4><p>Órdenes con aprobación y comparativos.</p></div>
+        <div class="card mod r" style="--i:8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="cro-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="cro-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="cro-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="cro-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="cro-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="cro-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="cro-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="cro-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="cro-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="cro-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(8.36 9.84) scale(0.810)"><ellipse cx="32" cy="54" rx="16" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#cro-soft)"/><path d="M14.68 40.00 L23.34 45.00 L23.34 47.00 L14.68 42.00 Z" fill="url(#cro-gL)"/><path d="M32.00 40.00 L23.34 45.00 L23.34 47.00 L32.00 42.00 Z" fill="url(#cro-gR)"/><path d="M23.34 35.00 L32.00 40.00 L23.34 45.00 L14.68 40.00 Z" fill="url(#cro-gT)"/><path d="M23.34 35.00 L32.00 40.00 L23.34 45.00 L14.68 40.00 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M19.88 6.00 L23.34 8.00 L23.34 42.00 L19.88 40.00 Z" fill="url(#cro-gL)"/><path d="M26.80 6.00 L23.34 8.00 L23.34 42.00 L26.80 40.00 Z" fill="url(#cro-gR)"/><path d="M23.34 4.00 L26.80 6.00 L23.34 8.00 L19.88 6.00 Z" fill="url(#cro-gT)"/><path d="M23.34 4.00 L26.80 6.00 L23.34 8.00 L19.88 6.00 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M19.88 38.00 L23.34 36.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 40.00 L26.80 34.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.88 33.00 L23.34 31.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 35.00 L26.80 29.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.88 28.00 L23.34 26.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 30.00 L26.80 24.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.88 23.00 L23.34 21.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 25.00 L26.80 19.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.88 18.00 L23.34 16.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 20.00 L26.80 14.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.88 13.00 L23.34 11.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 15.00 L26.80 9.00" fill="none" stroke="#7A2C05" stroke-width="0.7" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.78 -2.25 L41.96 15.75 L41.96 18.25 L10.78 0.25 Z" fill="url(#cro-gL)"/><path d="M44.12 14.50 L41.96 15.75 L41.96 18.25 L44.12 17.00 Z" fill="url(#cro-gR)"/><path d="M12.95 -3.50 L44.12 14.50 L41.96 15.75 L10.78 -2.25 Z" fill="url(#cro-gT)"/><path d="M12.95 -3.50 L44.12 14.50 L41.96 15.75 L10.78 -2.25 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M10.35 0.50 L15.55 3.50 L15.55 8.00 L10.35 5.00 Z" fill="url(#cro-gL)"/><path d="M18.58 1.75 L15.55 3.50 L15.55 8.00 L18.58 6.25 Z" fill="url(#cro-gR)"/><path d="M13.38 -1.25 L18.58 1.75 L15.55 3.50 L10.35 0.50 Z" fill="url(#cro-gT)"/><path d="M13.38 -1.25 L18.58 1.75 L15.55 3.50 L10.35 0.50 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M23.34 3.50 L23.34 -2.00 L43.26 15.00" fill="none" stroke="#7A2C05" stroke-width="1" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.34 -2.00 L13.81 -2.00" fill="none" stroke="#7A2C05" stroke-width="1" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M39.62 15.60 L39.62 29.60" fill="none" stroke="#FFD2B0" stroke-width="0.8" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M32.87 29.00 L41.53 34.00 L41.53 38.50 L32.87 33.50 Z" fill="url(#cro-gL)"/><path d="M46.72 31.00 L41.53 34.00 L41.53 38.50 L46.72 35.50 Z" fill="url(#cro-gR)"/><path d="M38.06 26.00 L46.72 31.00 L41.53 34.00 L32.87 29.00 Z" fill="url(#cro-gT)"/><path d="M38.06 26.00 L46.72 31.00 L41.53 34.00 L32.87 29.00 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/></g></svg><h4>Cronograma</h4><p>Gantt, ruta crítica, línea base y flujo de caja.</p></div>
+        <div class="card mod r" style="--i:9"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="ven-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="ven-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="ven-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="ven-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="ven-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="ven-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="ven-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="ven-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="ven-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="ven-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(1.02 -2.24) scale(0.968)"><ellipse cx="32" cy="57" rx="22" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#ven-soft)"/><path d="M11.99 24.25 L33.82 36.85 L33.82 51.55 L11.99 38.95 Z" fill="url(#ven-gL)"/><path d="M52.01 26.35 L33.82 36.85 L33.82 51.55 L52.01 41.05 Z" fill="url(#ven-gR)"/><path d="M30.18 13.75 L52.01 26.35 L33.82 36.85 L11.99 24.25 Z" fill="url(#ven-gT)"/><path d="M30.18 13.75 L52.01 26.35 L33.82 36.85 L11.99 24.25 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M11.99 24.25 L22.91 20.05 L41.09 9.55 L30.18 13.75 Z" fill="url(#ven-gT)"/><path d="M11.99 24.25 L22.91 20.05 L41.09 9.55 L30.18 13.75 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M11.99 24.25 L33.82 36.85 L22.91 20.05 Z" fill="url(#ven-gL)"/><path d="M41.09 9.55 L22.91 20.05 L33.82 36.85 L52.01 26.35 Z" fill="url(#ven-gR)"/><path d="M20.18 43.67 L25.63 46.83 L25.63 38.42 L20.18 35.27 Z" fill="#6E2604"/><path d="M47.46 37.38 L42.00 40.52 L42.00 36.33 L47.46 33.17 Z" fill="#6E2604"/></g></svg><h4>Ventas</h4><p>Unidades, contratos, plan de pagos y portal del comprador.</p></div>
+        <div class="card mod r" style="--i:10"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="rh-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="rh-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="rh-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="rh-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="rh-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="rh-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="rh-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="rh-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="rh-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="rh-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(1.58 -1.56) scale(0.951)"><ellipse cx="32" cy="58" rx="19" ry="3.6" fill="#F26B1F" opacity=".25" filter="url(#rh-soft)"/><path d="M21 9h6l5 15 5-15h6q2 13 10 17v29H36l-4-6-4 6H11V26q8-4 10-17z" transform="translate(1.5 1.5)" fill="#8E3507"/><path d="M21 9h6l5 15 5-15h6q2 13 10 17v29H36l-4-6-4 6H11V26q8-4 10-17z" fill="url(#rh-gVest)"/><path d="M21 9h6l5 15 5-15h6q2 13 10 17v29H36l-4-6-4 6H11V26q8-4 10-17z" fill="none" stroke="#FFF3EA" stroke-opacity=".5" stroke-width=".7" stroke-linejoin="round"/><path d="M11 35h17v6H11zM36 35h17v6H36z" fill="url(#rh-gStripe)"/><path d="M32 25v22" stroke="#8E3507" stroke-width="1.6"/><path d="M15 24 Q19 20 21 12" stroke="#FFF6EE" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"/></g></svg><h4>Recursos humanos</h4><p>Cuadrillas, nómina por destajo y seguridad.</p></div>
+        <div class="card mod r" style="--i:11"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><defs><linearGradient id="fac-gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#FF9A55"/></linearGradient><linearGradient id="fac-gL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E2560F"/></linearGradient><linearGradient id="fac-gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9520F"/><stop offset="1" stop-color="#8E3507"/></linearGradient><radialGradient id="fac-gDome" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0C8"/><stop offset=".35" stop-color="#FF8E45"/><stop offset=".8" stop-color="#D9520D"/><stop offset="1" stop-color="#9C3A08"/></radialGradient><linearGradient id="fac-gRidge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFC59A"/><stop offset="1" stop-color="#E2601A"/></linearGradient><radialGradient id="fac-gGlass" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD9BD" stop-opacity=".75"/><stop offset=".6" stop-color="#F26B1F" stop-opacity=".35"/><stop offset="1" stop-color="#B8460F" stop-opacity=".45"/></radialGradient><linearGradient id="fac-gVest" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB27A"/><stop offset=".45" stop-color="#F26B1F"/><stop offset="1" stop-color="#B8460F"/></linearGradient><linearGradient id="fac-gStripe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD7BC"/></linearGradient><linearGradient id="fac-gFlag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B0"/><stop offset="1" stop-color="#E2560F"/></linearGradient><filter id="fac-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="2"/></filter></defs><g transform="translate(4.83 3.04) scale(0.849)"><ellipse cx="32" cy="55" rx="24" ry="4.2" fill="#F26B1F" opacity=".25" filter="url(#fac-soft)"/><path d="M2.56 30.50 L37.20 50.50 L37.20 53.00 L2.56 33.00 Z" fill="url(#fac-gL)"/><path d="M61.44 36.50 L37.20 50.50 L37.20 53.00 L61.44 39.00 Z" fill="url(#fac-gR)"/><path d="M26.80 16.50 L61.44 36.50 L37.20 50.50 L2.56 30.50 Z" fill="url(#fac-gT)"/><path d="M26.80 16.50 L61.44 36.50 L37.20 50.50 L2.56 30.50 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M26.80 21.50 L52.78 36.50 L37.20 45.50 L11.22 30.50 L26.80 21.50" fill="none" stroke="#FFF3EA" stroke-width="0.8" stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M34.60 10.00 L36.33 11.00 L36.33 37.00 L34.60 36.00 Z" fill="url(#fac-gL)"/><path d="M38.06 10.00 L36.33 11.00 L36.33 37.00 L38.06 36.00 Z" fill="url(#fac-gR)"/><path d="M36.33 9.00 L38.06 10.00 L36.33 11.00 L34.60 10.00 Z" fill="url(#fac-gT)"/><path d="M36.33 9.00 L38.06 10.00 L36.33 11.00 L34.60 10.00 Z" fill="none" stroke="#FFF3EA" stroke-opacity=".65" stroke-width=".6" stroke-linejoin="round"/><path d="M37.20 10.50 L47.59 20.00 L37.20 17.50 Z" fill="url(#fac-gFlag)"/></g></svg><h4>Factibilidad</h4><p>De la servilleta a la entrega, con números vivos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · EL FLUJO -->
+  <section class="s" data-t="De cotización a cobro" aria-label="De cotización a cobro">
+    <div class="s-in">
+      <div class="tag r"><i></i>El flujo</div>
+      <h2 class="r" style="--i:1">De <span class="serif">cotización</span> a <span class="serif">cobro</span>, <b>sin perder un peso en el camino.</b></h2>
+      <p class="lead r" style="--i:2">Un dato se captura una sola vez y viaja por toda la plataforma: del presupuesto a la cubicación, del corte al acta y del acta a la factura.</p>
+      <div class="flow">
+        <div class="st r" style="--i:3"><div class="n">01</div><div class="card"><div class="k">Ventas</div><h4>Cierras la venta</h4><p>Cotizas con la IA desde el brief del cliente y la oferta aprobada se vuelve proyecto.</p><div class="kpi"><span>Oferta</span><b>$5.4 M</b></div></div></div>
+        <div class="st r" style="--i:4"><div class="n">02</div><div class="card"><div class="k">Cronograma</div><h4>Planificas el tiempo</h4><p>Ruta crítica con hitos y cuadrillas. Cada partida sabe cuándo entra a obra.</p><div class="kpi"><span>Duración</span><b>9 meses</b></div></div></div>
+        <div class="st r" style="--i:5"><div class="n">03</div><div class="card"><div class="k">Presupuesto</div><h4>Fijas el costo meta</h4><p>APU vivo y precios vigentes. Queda como la línea base que todos miden.</p><div class="kpi"><span>Margen base</span><b>24%</b></div></div></div>
+        <div class="st r" style="--i:6"><div class="n">04</div><div class="card"><div class="k">Obra</div><h4>Ejecutas y controlas</h4><p>Compras, almacén y bitácora móvil. La IA ve la desviación antes de la pérdida.</p><div class="kpi"><span>Alerta acero</span><b style="color:#FFA265">+4.6%</b></div></div></div>
+        <div class="st r" style="--i:7"><div class="n">05</div><div class="card"><div class="k">Entrega</div><h4>Cierras y cobras</h4><p>Cubicas, la IA redacta el acta y el cliente firma por un enlace.</p><div class="kpi"><span>Por cobrar</span><b>$4.79 M</b></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · KUBICAR -->
+  <section class="s" data-t="Kubicar Pro" aria-label="Kubicar Pro">
+    <div class="s-in split">
+      <div>
+        <div class="tag r"><i></i>Nuevo · Kubicar Pro</div>
+        <h2 class="r" style="--i:1">Mide el plano. <b>El presupuesto se llena solo.</b> <span class="serif">Tú apruebas.</span></h2>
+        <div class="pts">
+          <div class="pt r" style="--i:2"><div class="c">01</div><div><h4>«Medir todo» en un clic</h4><p>Pisos, muros, puertas, ventanas, sanitarios y plafones. Lee los muros del dibujo y encuentra cada cuarto solo.</p></div></div>
+          <div class="pt r" style="--i:3"><div class="c">02</div><div><h4>Directo a la partida</h4><p>Cada acabado va a su partida del presupuesto, una línea por nivel y por ambiente.</p></div></div>
+          <div class="pt r" style="--i:4"><div class="c">03</div><div><h4>Nada entra sin tu visto bueno</h4><p>Todo lo medido queda por aprobar. Solo lo que apruebas llega al presupuesto.</p></div></div>
+        </div>
+        <div class="fmts r" style="--i:5"><span><b>PDF</b>planos</span><span><b>DWG · DXF</b>CAD</span><span><b>Escaneados</b></span><span><b>IFC</b>modelo 3D</span></div>
+      </div>
+      <div class="card kb r" style="--i:3">
+        <div class="kb-bar"><b>Kubicar</b> Pro · Planta N1 <span class="ok">Escala 1:100 ✓</span></div>
+        <div class="kb-body">
+          <div class="kb-side">
+            <div class="kb-go">Medir todo</div>
+            <div class="kb-ck"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Pisos</div>
+            <div class="kb-ck"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Muros</div>
+            <div class="kb-ck"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Puertas y ventanas</div>
+            <div class="kb-ck"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Sanitarios</div>
+            <div class="kb-ck"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Plafones</div>
+            <div class="kb-ck"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Revestimiento</div>
+          </div>
+          <div class="kb-plan">
+            <svg viewBox="0 0 120 70" aria-hidden="true">
+              <defs><pattern id="kbg" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="rgba(255,255,255,.05)" stroke-width=".3"/></pattern></defs>
+              <rect x="0" y="0" width="120" height="70" fill="url(#kbg)"/>
+              <rect class="room" style="--i:0" x="11.5" y="6.5" width="45" height="30"/>
+              <rect class="room" style="--i:1" x="58.5" y="6.5" width="28" height="30"/>
+              <rect class="room" style="--i:2" x="88.5" y="6.5" width="20" height="16"/>
+              <rect class="room" style="--i:3" x="11.5" y="38.5" width="30" height="25"/>
+              <rect class="room" style="--i:4" x="43.5" y="38.5" width="43" height="25"/>
+              <rect class="room" style="--i:5" x="88.5" y="24.5" width="20" height="39"/>
+              <g fill="none" stroke="#C8CFD7" stroke-width="1.6" stroke-linecap="square">
+                <path d="M10 5H110V65H10Z"/>
+                <path d="M57.5 5V22M57.5 29V37.5M10 37.5H25M33 37.5H74M80 37.5H87.5M87.5 5V12M87.5 19V58M87.5 23.5H110M42.5 37.5V50M42.5 57V65"/>
+              </g>
+              <g fill="rgba(255,255,255,.55)" font-family="JetBrains Mono, monospace" font-size="2.6" text-anchor="middle">
+                <text x="34" y="22">SALA · COMEDOR</text><text x="72" y="22">COCINA</text><text x="98.5" y="15.5">BAÑO</text>
+                <text x="26.5" y="52">HAB. 2</text><text x="65" y="52">HAB. PRINCIPAL</text><text x="98.5" y="45">HAB. 3</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="kb-rows">
+          <div class="kb-row r" style="--i:8"><span>Piso porcelanato</span><span class="q">73.50<small>m²</small></span><span class="to">→ 04.02 Pisos <em>· por aprobar</em></span></div>
+          <div class="kb-row r" style="--i:9"><span>Muro interior</span><span class="q">96.90<small>m²</small></span><span class="to">→ 03.01 Mampostería <em>· por aprobar</em></span></div>
+          <div class="kb-row r" style="--i:10"><span>Puertas y ventanas</span><span class="q">8<small>und</small></span><span class="to">→ 07 Carpintería <em>· por aprobar</em></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · DEMO 3D (lo mueve /assets/demo3d.js, el mismo de la portada) -->
+  <section class="s s-d3" data-t="Demo 3D" aria-label="Demo 3D">
+    <div class="s-in d3" id="demo-3d">
+      <div class="d3-head2">
+        <div>
+          <div class="tag r"><i></i>Demo en vivo · 3D</div>
+          <h2 class="r" style="--i:1">Gira la obra. <b>Manestro la mide</b> y la <span class="serif">presupuesta.</span></h2>
+        </div>
+        <p class="lead r" style="--i:2">Del plano al modelo 3D, de cada muro a su cantidad y de cada cantidad a su precio. Arrastra para girar la casa, toca cualquier elemento y cambia el tamaño: todo se vuelve a medir al instante.</p>
+      </div>
+      <div class="d3-grid r" style="--i:2">
+        <div class="d3-stage">
+          <div class="d3-steps" role="tablist" aria-label="Pasos del demo">
+            <button type="button" role="tab" data-step="0"><span>01</span>Plano</button>
+            <button type="button" role="tab" data-step="1"><span>02</span>Modelo 3D</button>
+            <button type="button" role="tab" data-step="2"><span>03</span>Medición</button>
+            <button type="button" role="tab" data-step="3"><span>04</span>Presupuesto</button>
+          </div>
+          <canvas class="d3-canvas" tabindex="-1" role="img" aria-label="Modelo 3D de una casa de ejemplo. Arrastra para girarla."></canvas>
+          <div class="d3-hint" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Arrastra para girar</div>
+          <div class="d3-tip" hidden></div>
+          <div class="d3-cap" aria-live="polite"></div>
+          <div class="d3-ctrls">
+            <label class="d3-area">Área <b>80 m²</b><input type="range" min="60" max="200" step="5" value="80" aria-label="Área de la casa en metros cuadrados" style="--p: 14.3%"/></label>
+            <div class="d3-seg" role="group" aria-label="Niveles">
+              <button type="button" data-lv="1" aria-pressed="true">1 nivel</button>
+              <button type="button" data-lv="2" aria-pressed="false">2 niveles</button>
+            </div>
+          </div>
+        </div>
+        <aside class="d3-panel" aria-label="Presupuesto en vivo">
+          <div class="d3-ph"><span class="t">Presupuesto en vivo</span><span class="d3-live"><b></b>medido del modelo</span></div>
+          <div class="d3-dims">Casa de <b>10,00 × 8,00 m</b> · 1 nivel</div>
+          <div class="d3-head"><span>Partida</span><span>Cantidad</span><span>Importe</span></div>
+          <div class="d3-rows"></div>
+          <div class="d3-total"><span>Total · 8 partidas</span><b>RD$ —</b></div>
+          <p class="d3-note">Precios de referencia de ejemplo. En Manestro usas tus propios análisis de costo y precios vigentes.</p>
+          <button class="btn orange d3-cta" type="button" hidden>Quiero verlo con mi plano</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · VIDEO MANESTRO -->
+  <section class="s" data-t="Video: la app real" aria-label="Video de Manestro">
+    <div class="s-in vs">
+      <div>
+        <div class="tag r"><i></i>Míralo funcionando</div>
+        <h2 class="r" style="--i:1">La app <span class="serif">real</span>, sin maquetas: <b>del plano al control de obra.</b></h2>
+        <div class="chaps r" style="--i:2" data-chaps="v1">
+          <button class="chap on" type="button" data-at="0"><b>1</b>Abre tu obra</button>
+          <button class="chap" type="button" data-at="5.8"><b>2</b>Kubicar</button>
+          <button class="chap" type="button" data-at="15.8"><b>3</b>Presupuesto</button>
+          <button class="chap" type="button" data-at="27.2"><b>4</b>Recursos</button>
+          <button class="chap" type="button" data-at="35.4"><b>5</b>Control</button>
+          <button class="chap" type="button" data-at="45.8"><b>6</b>Modelo 3D</button>
+        </div>
+      </div>
+      <div class="vf paused r" style="--i:2" id="v1">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>app.controlobra.ai</span></div>
+        <video muted loop playsinline preload="none" data-src="/assets/video/manestro-demo-v3-1920.mp4" poster="/assets/video/manestro-demo-v3-poster.webp" width="1280" height="800"
+               aria-label="Recorrido por Manestro Pro: inicio, Kubicar, presupuesto, recursos, control de obra y modelo 3D"></video>
+        <button class="play" type="button" aria-label="Reproducir video"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7L7 5Z"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · IA -->
+  <section class="s" data-t="La IA de Manestro" aria-label="La IA de Manestro">
+    <div class="s-in split">
+      <div>
+        <div class="tag r"><i></i>Inteligencia artificial</div>
+        <h2 class="r" style="--i:1">Tu <span class="serif">analista</span> de costos, <b>siempre presente.</b></h2>
+        <p class="lead r" style="--i:2">Pregúntale como a una persona. Entiende tu cartera, sabe qué capítulo pesa más y en qué obra el margen se está yendo.</p>
+        <div class="pts">
+          <div class="pt r" style="--i:3"><div class="c"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h4>Ve las desviaciones antes</h4><p>Cruza el histórico de cortes con la cartera y te dice qué obra necesita atención.</p></div></div>
+          <div class="pt r" style="--i:4"><div class="c"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h4>Explica cualquier número</h4><p>«¿Por qué subió la estructura este corte?», con la fuente del dato.</p></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card chat r" style="--i:2">
+          <div class="msg"><div class="av">EL</div><div><div class="who">Eduardo · Director técnico</div><div class="bub">¿Qué obras necesitan mi atención esta semana?</div></div></div>
+          <div class="msg m r" style="--i:5"><div class="av m">M</div><div><div class="who">Asistente · Manestro</div><div class="bub">Tres obras tienen alertas activas:
+            <div class="al">
+              <div><span class="o">MG73</span><span>La estructura supera lo proyectado en <em>+$255 K</em>. Causa: alza del acero 4.6%.</span></div>
+              <div><span class="o">TR45</span><span>18 órdenes de compra esperando aprobación.</span></div>
+              <div><span class="o">MG12</span><span>La cubicación C‑02 vence en 3 días sin firma del cliente.</span></div>
+            </div></div></div></div>
+        </div>
+        <div class="card claude r" style="--i:6">
+          <div class="av m" style="background:#D97757">C</div>
+          <div><div class="ey">Nuevo · Conector para Claude</div><p>Pídele a Claude que mida tu plano en Kubicar y arme las partidas igual que tu equipo. Él propone; la aprobación siempre es de una persona.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · VIDEO PRECIOS OBRA -->
+  <section class="s" data-t="Precios Obra, gratis" aria-label="Video de Precios Obra">
+    <div class="s-in vs">
+      <div>
+        <div class="tag r"><i></i>Precios Obra · gratis</div>
+        <h2 class="r" style="--i:1">Precios reales de construcción en RD, <span class="serif">gratis</span>: <b>del material al presupuesto.</b></h2>
+        <div class="chaps r" style="--i:2" data-chaps="v2">
+          <button class="chap on" type="button" data-at="0"><b>1</b>Precios de materiales</button>
+          <button class="chap" type="button" data-at="9.45"><b>2</b>Análisis de cada partida</button>
+          <button class="chap" type="button" data-at="21.95"><b>3</b>Presupuestos gratis</button>
+          <button class="chap" type="button" data-at="30.15"><b>4</b>Proveedores</button>
+          <button class="chap" type="button" data-at="48.05"><b>5</b>Calcula tu casa</button>
+        </div>
+      </div>
+      <div class="vf paused r" style="--i:2" id="v2">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>app.controlobra.ai/precios-obra</span></div>
+        <video muted loop playsinline preload="none" data-src="/assets/video/precios-obra-v2-1920.mp4" poster="/assets/video/precios-obra-v2-poster.webp" width="1280" height="800"
+               aria-label="Recorrido por Precios Obra: precios de materiales, análisis de cada partida, presupuestos gratis, proveedores y calcula tu casa"></video>
+        <button class="play" type="button" aria-label="Reproducir video"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7L7 5Z"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · CÓMO EMPEZAMOS -->
+  <section class="s" data-t="Cómo empezamos" aria-label="Cómo empezamos">
+    <div class="s-in center">
+      <div class="tag r"><i></i>Cómo empezamos</div>
+      <h2 class="r" style="--i:1">En <b>dos semanas</b> tu obra <span class="serif">corre en Manestro.</span></h2>
+      <div class="steps" style="text-align:left">
+        <div class="card stp r" style="--i:2"><div class="w">Hoy</div><h4>Demo con tu proyecto</h4><p>30 minutos. Cargamos un proyecto tuyo y la IA arma el primer presupuesto en vivo.</p></div>
+        <div class="card stp r" style="--i:3"><div class="w">Semana 1</div><h4>Tu catálogo y tu presupuesto</h4><p>Importamos tus presupuestos de Excel o Presto (BC3) contigo, en una sesión de 60 minutos.</p></div>
+        <div class="card stp r" style="--i:4"><div class="w">Semana 2</div><h4>Tu equipo, entrenado</h4><p>El residente y el equipo de compras aprenden a usar la app en obra.</p></div>
+        <div class="card stp r" style="--i:5"><div class="w">Día 10</div><h4>Primera cubicación lista</h4><p>Tu cubicación más reciente queda lista para enviarla al cliente.</p></div>
+      </div>
+      <div class="trust r" style="--i:6">
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Sin tarjeta y sin compromiso</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Tus datos nunca entrenan modelos externos</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>La app del residente trabaja sin señal</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · CIERRE -->
+  <section class="s" data-t="Hablemos" aria-label="Hablemos">
+    <div class="s-in end">
+      <div>
+        <div class="tag r"><i></i>Siguiente paso</div>
+        <h2 class="r" style="--i:1">La <span class="serif">IA</span> ya está aquí. <b>Que trabaje para tu obra.</b></h2>
+        <p class="lead r" style="--i:2">Escanea el código con la cámara del teléfono y escríbenos por WhatsApp. Te agendamos la demo con un proyecto tuyo cargado.</p>
+        <div class="end-web r" style="--i:3">
+          <div class="mini"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 29 29" shape-rendering="crispEdges"><rect x="-2" y="-2" width="29" height="29" rx="1.5" fill="#fff"/><path fill="#0A0D12" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM13 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM14 1h1v1h-1zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM16 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM9 3h1v1h-1zM13 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM21 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM14 4h1v1h-1zM16 4h1v1h-1zM18 4h1v1h-1zM20 4h1v1h-1zM21 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM12 5h1v1h-1zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM19 6h1v1h-1zM20 6h1v1h-1zM21 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM0 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM9 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM6 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM13 10h1v1h-1zM15 10h1v1h-1zM19 10h1v1h-1zM21 10h1v1h-1zM24 10h1v1h-1zM2 11h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM1 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM12 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM24 12h1v1h-1zM0 13h1v1h-1zM1 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM23 14h1v1h-1zM24 14h1v1h-1zM0 15h1v1h-1zM3 15h1v1h-1zM4 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM11 15h1v1h-1zM15 15h1v1h-1zM19 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM24 15h1v1h-1zM0 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM10 16h1v1h-1zM13 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM18 16h1v1h-1zM19 16h1v1h-1zM20 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM16 17h1v1h-1zM20 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM0 18h1v1h-1zM1 18h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM24 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM12 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM0 21h1v1h-1zM2 21h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM6 21h1v1h-1zM8 21h1v1h-1zM13 21h1v1h-1zM14 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM0 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM9 22h1v1h-1zM10 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM24 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM10 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM24 23h1v1h-1zM0 24h1v1h-1zM1 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM8 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM16 24h1v1h-1zM17 24h1v1h-1zM18 24h1v1h-1zM21 24h1v1h-1zM24 24h1v1h-1z"/></svg></div>
+          <div><b>controlobra.ai</b><span>Todo Manestro, los videos y los precios de obra gratis</span></div>
+        </div>
+        <div class="micro r" style="--i:4">SIN TARJETA · SIN COMPROMISO · CANCELAS CUANDO QUIERAS</div>
+      </div>
+      <div class="card qr r" style="--i:2">
+        <div class="code"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 69 69" shape-rendering="crispEdges"><rect x="-2" y="-2" width="69" height="69" rx="1.5" fill="#fff"/><path fill="#0A0D12" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM15 0h1v1h-1zM16 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM23 0h1v1h-1zM25 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM32 0h1v1h-1zM33 0h1v1h-1zM34 0h1v1h-1zM35 0h1v1h-1zM37 0h1v1h-1zM38 0h1v1h-1zM40 0h1v1h-1zM43 0h1v1h-1zM44 0h1v1h-1zM47 0h1v1h-1zM48 0h1v1h-1zM53 0h1v1h-1zM55 0h1v1h-1zM58 0h1v1h-1zM59 0h1v1h-1zM60 0h1v1h-1zM61 0h1v1h-1zM62 0h1v1h-1zM63 0h1v1h-1zM64 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM12 1h1v1h-1zM14 1h1v1h-1zM17 1h1v1h-1zM18 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM24 1h1v1h-1zM25 1h1v1h-1zM26 1h1v1h-1zM27 1h1v1h-1zM29 1h1v1h-1zM30 1h1v1h-1zM31 1h1v1h-1zM33 1h1v1h-1zM34 1h1v1h-1zM35 1h1v1h-1zM36 1h1v1h-1zM37 1h1v1h-1zM38 1h1v1h-1zM39 1h1v1h-1zM43 1h1v1h-1zM44 1h1v1h-1zM45 1h1v1h-1zM46 1h1v1h-1zM47 1h1v1h-1zM48 1h1v1h-1zM49 1h1v1h-1zM50 1h1v1h-1zM56 1h1v1h-1zM58 1h1v1h-1zM64 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM14 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM23 2h1v1h-1zM24 2h1v1h-1zM27 2h1v1h-1zM32 2h1v1h-1zM33 2h1v1h-1zM34 2h1v1h-1zM35 2h1v1h-1zM37 2h1v1h-1zM38 2h1v1h-1zM41 2h1v1h-1zM42 2h1v1h-1zM43 2h1v1h-1zM52 2h1v1h-1zM54 2h1v1h-1zM56 2h1v1h-1zM58 2h1v1h-1zM60 2h1v1h-1zM61 2h1v1h-1zM62 2h1v1h-1zM64 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM20 3h1v1h-1zM22 3h1v1h-1zM23 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM33 3h1v1h-1zM35 3h1v1h-1zM36 3h1v1h-1zM37 3h1v1h-1zM38 3h1v1h-1zM39 3h1v1h-1zM43 3h1v1h-1zM44 3h1v1h-1zM45 3h1v1h-1zM47 3h1v1h-1zM48 3h1v1h-1zM50 3h1v1h-1zM51 3h1v1h-1zM53 3h1v1h-1zM54 3h1v1h-1zM55 3h1v1h-1zM58 3h1v1h-1zM60 3h1v1h-1zM61 3h1v1h-1zM62 3h1v1h-1zM64 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM17 4h1v1h-1zM21 4h1v1h-1zM22 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM27 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM31 4h1v1h-1zM32 4h1v1h-1zM33 4h1v1h-1zM34 4h1v1h-1zM35 4h1v1h-1zM36 4h1v1h-1zM37 4h1v1h-1zM39 4h1v1h-1zM51 4h1v1h-1zM52 4h1v1h-1zM53 4h1v1h-1zM56 4h1v1h-1zM58 4h1v1h-1zM60 4h1v1h-1zM61 4h1v1h-1zM62 4h1v1h-1zM64 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM13 5h1v1h-1zM16 5h1v1h-1zM20 5h1v1h-1zM21 5h1v1h-1zM26 5h1v1h-1zM29 5h1v1h-1zM30 5h1v1h-1zM34 5h1v1h-1zM39 5h1v1h-1zM41 5h1v1h-1zM42 5h1v1h-1zM43 5h1v1h-1zM45 5h1v1h-1zM46 5h1v1h-1zM47 5h1v1h-1zM49 5h1v1h-1zM50 5h1v1h-1zM51 5h1v1h-1zM53 5h1v1h-1zM54 5h1v1h-1zM58 5h1v1h-1zM64 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM28 6h1v1h-1zM30 6h1v1h-1zM32 6h1v1h-1zM34 6h1v1h-1zM36 6h1v1h-1zM38 6h1v1h-1zM40 6h1v1h-1zM42 6h1v1h-1zM44 6h1v1h-1zM46 6h1v1h-1zM48 6h1v1h-1zM50 6h1v1h-1zM52 6h1v1h-1zM54 6h1v1h-1zM56 6h1v1h-1zM58 6h1v1h-1zM59 6h1v1h-1zM60 6h1v1h-1zM61 6h1v1h-1zM62 6h1v1h-1zM63 6h1v1h-1zM64 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM20 7h1v1h-1zM23 7h1v1h-1zM24 7h1v1h-1zM28 7h1v1h-1zM29 7h1v1h-1zM30 7h1v1h-1zM34 7h1v1h-1zM37 7h1v1h-1zM38 7h1v1h-1zM41 7h1v1h-1zM45 7h1v1h-1zM46 7h1v1h-1zM48 7h1v1h-1zM49 7h1v1h-1zM51 7h1v1h-1zM54 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM32 8h1v1h-1zM33 8h1v1h-1zM34 8h1v1h-1zM35 8h1v1h-1zM36 8h1v1h-1zM38 8h1v1h-1zM39 8h1v1h-1zM43 8h1v1h-1zM44 8h1v1h-1zM47 8h1v1h-1zM48 8h1v1h-1zM53 8h1v1h-1zM54 8h1v1h-1zM56 8h1v1h-1zM57 8h1v1h-1zM58 8h1v1h-1zM59 8h1v1h-1zM62 8h1v1h-1zM63 8h1v1h-1zM64 8h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM17 9h1v1h-1zM18 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM24 9h1v1h-1zM25 9h1v1h-1zM26 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM33 9h1v1h-1zM35 9h1v1h-1zM37 9h1v1h-1zM38 9h1v1h-1zM40 9h1v1h-1zM44 9h1v1h-1zM45 9h1v1h-1zM47 9h1v1h-1zM48 9h1v1h-1zM49 9h1v1h-1zM51 9h1v1h-1zM54 9h1v1h-1zM55 9h1v1h-1zM57 9h1v1h-1zM59 9h1v1h-1zM60 9h1v1h-1zM63 9h1v1h-1zM64 9h1v1h-1zM0 10h1v1h-1zM2 10h1v1h-1zM4 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM12 10h1v1h-1zM15 10h1v1h-1zM17 10h1v1h-1zM18 10h1v1h-1zM19 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM27 10h1v1h-1zM28 10h1v1h-1zM29 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM32 10h1v1h-1zM33 10h1v1h-1zM34 10h1v1h-1zM35 10h1v1h-1zM38 10h1v1h-1zM39 10h1v1h-1zM40 10h1v1h-1zM43 10h1v1h-1zM44 10h1v1h-1zM45 10h1v1h-1zM46 10h1v1h-1zM47 10h1v1h-1zM48 10h1v1h-1zM50 10h1v1h-1zM51 10h1v1h-1zM53 10h1v1h-1zM54 10h1v1h-1zM56 10h1v1h-1zM58 10h1v1h-1zM59 10h1v1h-1zM60 10h1v1h-1zM0 11h1v1h-1zM4 11h1v1h-1zM9 11h1v1h-1zM13 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM16 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM23 11h1v1h-1zM27 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM31 11h1v1h-1zM33 11h1v1h-1zM34 11h1v1h-1zM35 11h1v1h-1zM37 11h1v1h-1zM39 11h1v1h-1zM40 11h1v1h-1zM41 11h1v1h-1zM43 11h1v1h-1zM45 11h1v1h-1zM47 11h1v1h-1zM49 11h1v1h-1zM50 11h1v1h-1zM51 11h1v1h-1zM54 11h1v1h-1zM57 11h1v1h-1zM61 11h1v1h-1zM63 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM11 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM24 12h1v1h-1zM26 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM31 12h1v1h-1zM32 12h1v1h-1zM35 12h1v1h-1zM37 12h1v1h-1zM38 12h1v1h-1zM40 12h1v1h-1zM41 12h1v1h-1zM42 12h1v1h-1zM47 12h1v1h-1zM48 12h1v1h-1zM50 12h1v1h-1zM54 12h1v1h-1zM56 12h1v1h-1zM57 12h1v1h-1zM58 12h1v1h-1zM59 12h1v1h-1zM60 12h1v1h-1zM61 12h1v1h-1zM62 12h1v1h-1zM0 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM9 13h1v1h-1zM12 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM30 13h1v1h-1zM34 13h1v1h-1zM37 13h1v1h-1zM38 13h1v1h-1zM39 13h1v1h-1zM41 13h1v1h-1zM42 13h1v1h-1zM43 13h1v1h-1zM45 13h1v1h-1zM48 13h1v1h-1zM49 13h1v1h-1zM50 13h1v1h-1zM53 13h1v1h-1zM54 13h1v1h-1zM55 13h1v1h-1zM57 13h1v1h-1zM60 13h1v1h-1zM63 13h1v1h-1zM64 13h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM15 14h1v1h-1zM16 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM24 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM30 14h1v1h-1zM33 14h1v1h-1zM34 14h1v1h-1zM39 14h1v1h-1zM40 14h1v1h-1zM42 14h1v1h-1zM45 14h1v1h-1zM46 14h1v1h-1zM48 14h1v1h-1zM53 14h1v1h-1zM55 14h1v1h-1zM58 14h1v1h-1zM60 14h1v1h-1zM61 14h1v1h-1zM62 14h1v1h-1zM63 14h1v1h-1zM4 15h1v1h-1zM8 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM12 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM20 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM26 15h1v1h-1zM28 15h1v1h-1zM30 15h1v1h-1zM31 15h1v1h-1zM32 15h1v1h-1zM35 15h1v1h-1zM36 15h1v1h-1zM38 15h1v1h-1zM39 15h1v1h-1zM40 15h1v1h-1zM41 15h1v1h-1zM44 15h1v1h-1zM45 15h1v1h-1zM48 15h1v1h-1zM49 15h1v1h-1zM50 15h1v1h-1zM51 15h1v1h-1zM52 15h1v1h-1zM55 15h1v1h-1zM57 15h1v1h-1zM59 15h1v1h-1zM61 15h1v1h-1zM1 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM12 16h1v1h-1zM19 16h1v1h-1zM20 16h1v1h-1zM21 16h1v1h-1zM25 16h1v1h-1zM26 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM31 16h1v1h-1zM35 16h1v1h-1zM37 16h1v1h-1zM38 16h1v1h-1zM40 16h1v1h-1zM43 16h1v1h-1zM47 16h1v1h-1zM48 16h1v1h-1zM49 16h1v1h-1zM50 16h1v1h-1zM51 16h1v1h-1zM53 16h1v1h-1zM54 16h1v1h-1zM55 16h1v1h-1zM56 16h1v1h-1zM57 16h1v1h-1zM59 16h1v1h-1zM60 16h1v1h-1zM62 16h1v1h-1zM0 17h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM26 17h1v1h-1zM28 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM33 17h1v1h-1zM36 17h1v1h-1zM37 17h1v1h-1zM38 17h1v1h-1zM39 17h1v1h-1zM42 17h1v1h-1zM45 17h1v1h-1zM54 17h1v1h-1zM55 17h1v1h-1zM61 17h1v1h-1zM63 17h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM15 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM23 18h1v1h-1zM26 18h1v1h-1zM28 18h1v1h-1zM29 18h1v1h-1zM30 18h1v1h-1zM36 18h1v1h-1zM37 18h1v1h-1zM38 18h1v1h-1zM39 18h1v1h-1zM48 18h1v1h-1zM50 18h1v1h-1zM51 18h1v1h-1zM53 18h1v1h-1zM57 18h1v1h-1zM58 18h1v1h-1zM59 18h1v1h-1zM61 18h1v1h-1zM63 18h1v1h-1zM64 18h1v1h-1zM3 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM24 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM30 19h1v1h-1zM32 19h1v1h-1zM34 19h1v1h-1zM35 19h1v1h-1zM36 19h1v1h-1zM40 19h1v1h-1zM41 19h1v1h-1zM44 19h1v1h-1zM45 19h1v1h-1zM47 19h1v1h-1zM49 19h1v1h-1zM51 19h1v1h-1zM52 19h1v1h-1zM57 19h1v1h-1zM63 19h1v1h-1zM0 20h1v1h-1zM1 20h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM22 20h1v1h-1zM24 20h1v1h-1zM26 20h1v1h-1zM27 20h1v1h-1zM30 20h1v1h-1zM33 20h1v1h-1zM34 20h1v1h-1zM35 20h1v1h-1zM38 20h1v1h-1zM41 20h1v1h-1zM48 20h1v1h-1zM49 20h1v1h-1zM50 20h1v1h-1zM54 20h1v1h-1zM56 20h1v1h-1zM58 20h1v1h-1zM60 20h1v1h-1zM61 20h1v1h-1zM62 20h1v1h-1zM63 20h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM7 21h1v1h-1zM8 21h1v1h-1zM9 21h1v1h-1zM10 21h1v1h-1zM16 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM21 21h1v1h-1zM25 21h1v1h-1zM29 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM33 21h1v1h-1zM34 21h1v1h-1zM35 21h1v1h-1zM41 21h1v1h-1zM42 21h1v1h-1zM43 21h1v1h-1zM44 21h1v1h-1zM45 21h1v1h-1zM47 21h1v1h-1zM51 21h1v1h-1zM53 21h1v1h-1zM54 21h1v1h-1zM59 21h1v1h-1zM60 21h1v1h-1zM63 21h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM11 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM17 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM24 22h1v1h-1zM26 22h1v1h-1zM27 22h1v1h-1zM28 22h1v1h-1zM40 22h1v1h-1zM42 22h1v1h-1zM43 22h1v1h-1zM44 22h1v1h-1zM45 22h1v1h-1zM46 22h1v1h-1zM48 22h1v1h-1zM49 22h1v1h-1zM50 22h1v1h-1zM52 22h1v1h-1zM55 22h1v1h-1zM58 22h1v1h-1zM62 22h1v1h-1zM64 22h1v1h-1zM0 23h1v1h-1zM1 23h1v1h-1zM4 23h1v1h-1zM5 23h1v1h-1zM8 23h1v1h-1zM9 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM22 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM30 23h1v1h-1zM31 23h1v1h-1zM33 23h1v1h-1zM35 23h1v1h-1zM37 23h1v1h-1zM38 23h1v1h-1zM42 23h1v1h-1zM43 23h1v1h-1zM52 23h1v1h-1zM54 23h1v1h-1zM55 23h1v1h-1zM57 23h1v1h-1zM59 23h1v1h-1zM61 23h1v1h-1zM63 23h1v1h-1zM64 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM20 24h1v1h-1zM22 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM31 24h1v1h-1zM34 24h1v1h-1zM36 24h1v1h-1zM37 24h1v1h-1zM39 24h1v1h-1zM46 24h1v1h-1zM47 24h1v1h-1zM48 24h1v1h-1zM49 24h1v1h-1zM51 24h1v1h-1zM54 24h1v1h-1zM56 24h1v1h-1zM59 24h1v1h-1zM60 24h1v1h-1zM62 24h1v1h-1zM64 24h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM7 25h1v1h-1zM10 25h1v1h-1zM11 25h1v1h-1zM14 25h1v1h-1zM15 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM27 25h1v1h-1zM31 25h1v1h-1zM33 25h1v1h-1zM35 25h1v1h-1zM36 25h1v1h-1zM38 25h1v1h-1zM40 25h1v1h-1zM42 25h1v1h-1zM43 25h1v1h-1zM45 25h1v1h-1zM47 25h1v1h-1zM52 25h1v1h-1zM53 25h1v1h-1zM54 25h1v1h-1zM55 25h1v1h-1zM57 25h1v1h-1zM60 25h1v1h-1zM61 25h1v1h-1zM62 25h1v1h-1zM63 25h1v1h-1zM64 25h1v1h-1zM1 26h1v1h-1zM3 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM7 26h1v1h-1zM8 26h1v1h-1zM9 26h1v1h-1zM11 26h1v1h-1zM13 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM22 26h1v1h-1zM24 26h1v1h-1zM25 26h1v1h-1zM26 26h1v1h-1zM27 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM31 26h1v1h-1zM32 26h1v1h-1zM33 26h1v1h-1zM35 26h1v1h-1zM36 26h1v1h-1zM37 26h1v1h-1zM38 26h1v1h-1zM39 26h1v1h-1zM46 26h1v1h-1zM47 26h1v1h-1zM48 26h1v1h-1zM50 26h1v1h-1zM51 26h1v1h-1zM55 26h1v1h-1zM61 26h1v1h-1zM62 26h1v1h-1zM2 27h1v1h-1zM3 27h1v1h-1zM4 27h1v1h-1zM5 27h1v1h-1zM8 27h1v1h-1zM11 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM18 27h1v1h-1zM19 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM24 27h1v1h-1zM26 27h1v1h-1zM29 27h1v1h-1zM31 27h1v1h-1zM33 27h1v1h-1zM37 27h1v1h-1zM39 27h1v1h-1zM40 27h1v1h-1zM45 27h1v1h-1zM48 27h1v1h-1zM49 27h1v1h-1zM51 27h1v1h-1zM52 27h1v1h-1zM54 27h1v1h-1zM59 27h1v1h-1zM64 27h1v1h-1zM0 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM7 28h1v1h-1zM9 28h1v1h-1zM12 28h1v1h-1zM14 28h1v1h-1zM24 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM31 28h1v1h-1zM32 28h1v1h-1zM36 28h1v1h-1zM37 28h1v1h-1zM38 28h1v1h-1zM40 28h1v1h-1zM43 28h1v1h-1zM44 28h1v1h-1zM46 28h1v1h-1zM47 28h1v1h-1zM49 28h1v1h-1zM51 28h1v1h-1zM53 28h1v1h-1zM55 28h1v1h-1zM56 28h1v1h-1zM57 28h1v1h-1zM60 28h1v1h-1zM62 28h1v1h-1zM63 28h1v1h-1zM0 29h1v1h-1zM1 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM7 29h1v1h-1zM9 29h1v1h-1zM11 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM14 29h1v1h-1zM20 29h1v1h-1zM21 29h1v1h-1zM23 29h1v1h-1zM25 29h1v1h-1zM26 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM32 29h1v1h-1zM34 29h1v1h-1zM35 29h1v1h-1zM40 29h1v1h-1zM41 29h1v1h-1zM42 29h1v1h-1zM44 29h1v1h-1zM45 29h1v1h-1zM51 29h1v1h-1zM52 29h1v1h-1zM53 29h1v1h-1zM54 29h1v1h-1zM59 29h1v1h-1zM60 29h1v1h-1zM64 29h1v1h-1zM1 30h1v1h-1zM2 30h1v1h-1zM4 30h1v1h-1zM5 30h1v1h-1zM6 30h1v1h-1zM7 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM15 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM22 30h1v1h-1zM25 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM29 30h1v1h-1zM30 30h1v1h-1zM31 30h1v1h-1zM32 30h1v1h-1zM33 30h1v1h-1zM34 30h1v1h-1zM37 30h1v1h-1zM39 30h1v1h-1zM40 30h1v1h-1zM42 30h1v1h-1zM43 30h1v1h-1zM44 30h1v1h-1zM45 30h1v1h-1zM46 30h1v1h-1zM47 30h1v1h-1zM49 30h1v1h-1zM50 30h1v1h-1zM51 30h1v1h-1zM52 30h1v1h-1zM56 30h1v1h-1zM57 30h1v1h-1zM58 30h1v1h-1zM59 30h1v1h-1zM60 30h1v1h-1zM62 30h1v1h-1zM63 30h1v1h-1zM0 31h1v1h-1zM1 31h1v1h-1zM3 31h1v1h-1zM4 31h1v1h-1zM8 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h1v1h-1zM15 31h1v1h-1zM18 31h1v1h-1zM23 31h1v1h-1zM24 31h1v1h-1zM25 31h1v1h-1zM27 31h1v1h-1zM29 31h1v1h-1zM30 31h1v1h-1zM34 31h1v1h-1zM39 31h1v1h-1zM41 31h1v1h-1zM43 31h1v1h-1zM44 31h1v1h-1zM45 31h1v1h-1zM53 31h1v1h-1zM54 31h1v1h-1zM55 31h1v1h-1zM56 31h1v1h-1zM60 31h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM11 32h1v1h-1zM12 32h1v1h-1zM14 32h1v1h-1zM15 32h1v1h-1zM16 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM23 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM30 32h1v1h-1zM32 32h1v1h-1zM34 32h1v1h-1zM35 32h1v1h-1zM38 32h1v1h-1zM39 32h1v1h-1zM40 32h1v1h-1zM45 32h1v1h-1zM47 32h1v1h-1zM48 32h1v1h-1zM49 32h1v1h-1zM50 32h1v1h-1zM51 32h1v1h-1zM53 32h1v1h-1zM54 32h1v1h-1zM56 32h1v1h-1zM58 32h1v1h-1zM60 32h1v1h-1zM61 32h1v1h-1zM62 32h1v1h-1zM0 33h1v1h-1zM2 33h1v1h-1zM3 33h1v1h-1zM4 33h1v1h-1zM8 33h1v1h-1zM10 33h1v1h-1zM12 33h1v1h-1zM13 33h1v1h-1zM14 33h1v1h-1zM15 33h1v1h-1zM19 33h1v1h-1zM20 33h1v1h-1zM21 33h1v1h-1zM22 33h1v1h-1zM23 33h1v1h-1zM24 33h1v1h-1zM26 33h1v1h-1zM27 33h1v1h-1zM28 33h1v1h-1zM30 33h1v1h-1zM34 33h1v1h-1zM39 33h1v1h-1zM44 33h1v1h-1zM54 33h1v1h-1zM56 33h1v1h-1zM60 33h1v1h-1zM61 33h1v1h-1zM62 33h1v1h-1zM63 33h1v1h-1zM64 33h1v1h-1zM0 34h1v1h-1zM1 34h1v1h-1zM2 34h1v1h-1zM4 34h1v1h-1zM5 34h1v1h-1zM6 34h1v1h-1zM7 34h1v1h-1zM8 34h1v1h-1zM9 34h1v1h-1zM10 34h1v1h-1zM11 34h1v1h-1zM13 34h1v1h-1zM14 34h1v1h-1zM20 34h1v1h-1zM22 34h1v1h-1zM23 34h1v1h-1zM24 34h1v1h-1zM27 34h1v1h-1zM29 34h1v1h-1zM30 34h1v1h-1zM31 34h1v1h-1zM32 34h1v1h-1zM33 34h1v1h-1zM34 34h1v1h-1zM35 34h1v1h-1zM36 34h1v1h-1zM38 34h1v1h-1zM39 34h1v1h-1zM40 34h1v1h-1zM41 34h1v1h-1zM46 34h1v1h-1zM48 34h1v1h-1zM49 34h1v1h-1zM50 34h1v1h-1zM51 34h1v1h-1zM53 34h1v1h-1zM56 34h1v1h-1zM57 34h1v1h-1zM58 34h1v1h-1zM59 34h1v1h-1zM60 34h1v1h-1zM61 34h1v1h-1zM62 34h1v1h-1zM1 35h1v1h-1zM2 35h1v1h-1zM4 35h1v1h-1zM5 35h1v1h-1zM7 35h1v1h-1zM8 35h1v1h-1zM13 35h1v1h-1zM16 35h1v1h-1zM17 35h1v1h-1zM20 35h1v1h-1zM22 35h1v1h-1zM23 35h1v1h-1zM28 35h1v1h-1zM30 35h1v1h-1zM32 35h1v1h-1zM33 35h1v1h-1zM34 35h1v1h-1zM35 35h1v1h-1zM36 35h1v1h-1zM37 35h1v1h-1zM39 35h1v1h-1zM42 35h1v1h-1zM44 35h1v1h-1zM45 35h1v1h-1zM49 35h1v1h-1zM50 35h1v1h-1zM52 35h1v1h-1zM56 35h1v1h-1zM58 35h1v1h-1zM60 35h1v1h-1zM61 35h1v1h-1zM63 35h1v1h-1zM64 35h1v1h-1zM2 36h1v1h-1zM3 36h1v1h-1zM6 36h1v1h-1zM7 36h1v1h-1zM11 36h1v1h-1zM12 36h1v1h-1zM14 36h1v1h-1zM15 36h1v1h-1zM18 36h1v1h-1zM20 36h1v1h-1zM21 36h1v1h-1zM22 36h1v1h-1zM24 36h1v1h-1zM27 36h1v1h-1zM29 36h1v1h-1zM34 36h1v1h-1zM36 36h1v1h-1zM39 36h1v1h-1zM40 36h1v1h-1zM43 36h1v1h-1zM45 36h1v1h-1zM46 36h1v1h-1zM47 36h1v1h-1zM48 36h1v1h-1zM49 36h1v1h-1zM53 36h1v1h-1zM54 36h1v1h-1zM56 36h1v1h-1zM57 36h1v1h-1zM58 36h1v1h-1zM59 36h1v1h-1zM62 36h1v1h-1zM63 36h1v1h-1zM0 37h1v1h-1zM1 37h1v1h-1zM2 37h1v1h-1zM5 37h1v1h-1zM7 37h1v1h-1zM10 37h1v1h-1zM12 37h1v1h-1zM14 37h1v1h-1zM15 37h1v1h-1zM16 37h1v1h-1zM18 37h1v1h-1zM19 37h1v1h-1zM20 37h1v1h-1zM24 37h1v1h-1zM26 37h1v1h-1zM30 37h1v1h-1zM36 37h1v1h-1zM37 37h1v1h-1zM39 37h1v1h-1zM41 37h1v1h-1zM42 37h1v1h-1zM43 37h1v1h-1zM45 37h1v1h-1zM47 37h1v1h-1zM48 37h1v1h-1zM49 37h1v1h-1zM52 37h1v1h-1zM54 37h1v1h-1zM56 37h1v1h-1zM57 37h1v1h-1zM59 37h1v1h-1zM60 37h1v1h-1zM64 37h1v1h-1zM0 38h1v1h-1zM4 38h1v1h-1zM6 38h1v1h-1zM7 38h1v1h-1zM9 38h1v1h-1zM11 38h1v1h-1zM17 38h1v1h-1zM19 38h1v1h-1zM23 38h1v1h-1zM26 38h1v1h-1zM27 38h1v1h-1zM28 38h1v1h-1zM30 38h1v1h-1zM32 38h1v1h-1zM33 38h1v1h-1zM35 38h1v1h-1zM37 38h1v1h-1zM38 38h1v1h-1zM41 38h1v1h-1zM43 38h1v1h-1zM44 38h1v1h-1zM46 38h1v1h-1zM47 38h1v1h-1zM50 38h1v1h-1zM51 38h1v1h-1zM55 38h1v1h-1zM56 38h1v1h-1zM57 38h1v1h-1zM60 38h1v1h-1zM61 38h1v1h-1zM0 39h1v1h-1zM1 39h1v1h-1zM2 39h1v1h-1zM4 39h1v1h-1zM5 39h1v1h-1zM8 39h1v1h-1zM12 39h1v1h-1zM13 39h1v1h-1zM14 39h1v1h-1zM19 39h1v1h-1zM21 39h1v1h-1zM24 39h1v1h-1zM26 39h1v1h-1zM28 39h1v1h-1zM29 39h1v1h-1zM32 39h1v1h-1zM36 39h1v1h-1zM38 39h1v1h-1zM39 39h1v1h-1zM40 39h1v1h-1zM41 39h1v1h-1zM43 39h1v1h-1zM44 39h1v1h-1zM52 39h1v1h-1zM53 39h1v1h-1zM55 39h1v1h-1zM58 39h1v1h-1zM63 39h1v1h-1zM0 40h1v1h-1zM1 40h1v1h-1zM2 40h1v1h-1zM3 40h1v1h-1zM4 40h1v1h-1zM6 40h1v1h-1zM9 40h1v1h-1zM11 40h1v1h-1zM12 40h1v1h-1zM15 40h1v1h-1zM16 40h1v1h-1zM17 40h1v1h-1zM18 40h1v1h-1zM25 40h1v1h-1zM27 40h1v1h-1zM28 40h1v1h-1zM31 40h1v1h-1zM37 40h1v1h-1zM38 40h1v1h-1zM40 40h1v1h-1zM43 40h1v1h-1zM47 40h1v1h-1zM48 40h1v1h-1zM51 40h1v1h-1zM60 40h1v1h-1zM61 40h1v1h-1zM3 41h1v1h-1zM4 41h1v1h-1zM5 41h1v1h-1zM7 41h1v1h-1zM9 41h1v1h-1zM10 41h1v1h-1zM12 41h1v1h-1zM13 41h1v1h-1zM15 41h1v1h-1zM18 41h1v1h-1zM19 41h1v1h-1zM21 41h1v1h-1zM22 41h1v1h-1zM23 41h1v1h-1zM25 41h1v1h-1zM29 41h1v1h-1zM31 41h1v1h-1zM32 41h1v1h-1zM34 41h1v1h-1zM36 41h1v1h-1zM37 41h1v1h-1zM39 41h1v1h-1zM42 41h1v1h-1zM43 41h1v1h-1zM48 41h1v1h-1zM49 41h1v1h-1zM53 41h1v1h-1zM54 41h1v1h-1zM57 41h1v1h-1zM59 41h1v1h-1zM62 41h1v1h-1zM63 41h1v1h-1zM64 41h1v1h-1zM1 42h1v1h-1zM2 42h1v1h-1zM4 42h1v1h-1zM5 42h1v1h-1zM6 42h1v1h-1zM7 42h1v1h-1zM11 42h1v1h-1zM12 42h1v1h-1zM15 42h1v1h-1zM20 42h1v1h-1zM24 42h1v1h-1zM25 42h1v1h-1zM27 42h1v1h-1zM31 42h1v1h-1zM32 42h1v1h-1zM33 42h1v1h-1zM34 42h1v1h-1zM35 42h1v1h-1zM36 42h1v1h-1zM38 42h1v1h-1zM40 42h1v1h-1zM42 42h1v1h-1zM43 42h1v1h-1zM46 42h1v1h-1zM48 42h1v1h-1zM49 42h1v1h-1zM50 42h1v1h-1zM56 42h1v1h-1zM57 42h1v1h-1zM62 42h1v1h-1zM63 42h1v1h-1zM0 43h1v1h-1zM2 43h1v1h-1zM3 43h1v1h-1zM7 43h1v1h-1zM10 43h1v1h-1zM13 43h1v1h-1zM15 43h1v1h-1zM19 43h1v1h-1zM26 43h1v1h-1zM27 43h1v1h-1zM29 43h1v1h-1zM30 43h1v1h-1zM31 43h1v1h-1zM32 43h1v1h-1zM34 43h1v1h-1zM35 43h1v1h-1zM37 43h1v1h-1zM39 43h1v1h-1zM41 43h1v1h-1zM42 43h1v1h-1zM43 43h1v1h-1zM44 43h1v1h-1zM45 43h1v1h-1zM46 43h1v1h-1zM47 43h1v1h-1zM51 43h1v1h-1zM52 43h1v1h-1zM54 43h1v1h-1zM55 43h1v1h-1zM56 43h1v1h-1zM58 43h1v1h-1zM59 43h1v1h-1zM61 43h1v1h-1zM63 43h1v1h-1zM64 43h1v1h-1zM0 44h1v1h-1zM2 44h1v1h-1zM3 44h1v1h-1zM4 44h1v1h-1zM6 44h1v1h-1zM11 44h1v1h-1zM13 44h1v1h-1zM17 44h1v1h-1zM18 44h1v1h-1zM22 44h1v1h-1zM24 44h1v1h-1zM25 44h1v1h-1zM26 44h1v1h-1zM29 44h1v1h-1zM33 44h1v1h-1zM34 44h1v1h-1zM35 44h1v1h-1zM37 44h1v1h-1zM38 44h1v1h-1zM39 44h1v1h-1zM40 44h1v1h-1zM42 44h1v1h-1zM43 44h1v1h-1zM47 44h1v1h-1zM48 44h1v1h-1zM50 44h1v1h-1zM51 44h1v1h-1zM53 44h1v1h-1zM54 44h1v1h-1zM59 44h1v1h-1zM62 44h1v1h-1zM64 44h1v1h-1zM5 45h1v1h-1zM9 45h1v1h-1zM10 45h1v1h-1zM11 45h1v1h-1zM12 45h1v1h-1zM13 45h1v1h-1zM20 45h1v1h-1zM21 45h1v1h-1zM22 45h1v1h-1zM26 45h1v1h-1zM27 45h1v1h-1zM28 45h1v1h-1zM32 45h1v1h-1zM34 45h1v1h-1zM35 45h1v1h-1zM37 45h1v1h-1zM39 45h1v1h-1zM40 45h1v1h-1zM43 45h1v1h-1zM44 45h1v1h-1zM47 45h1v1h-1zM48 45h1v1h-1zM54 45h1v1h-1zM56 45h1v1h-1zM59 45h1v1h-1zM60 45h1v1h-1zM61 45h1v1h-1zM62 45h1v1h-1zM64 45h1v1h-1zM0 46h1v1h-1zM2 46h1v1h-1zM6 46h1v1h-1zM7 46h1v1h-1zM9 46h1v1h-1zM10 46h1v1h-1zM11 46h1v1h-1zM12 46h1v1h-1zM13 46h1v1h-1zM15 46h1v1h-1zM17 46h1v1h-1zM18 46h1v1h-1zM19 46h1v1h-1zM20 46h1v1h-1zM21 46h1v1h-1zM22 46h1v1h-1zM27 46h1v1h-1zM28 46h1v1h-1zM30 46h1v1h-1zM31 46h1v1h-1zM33 46h1v1h-1zM34 46h1v1h-1zM37 46h1v1h-1zM42 46h1v1h-1zM45 46h1v1h-1zM46 46h1v1h-1zM48 46h1v1h-1zM49 46h1v1h-1zM50 46h1v1h-1zM51 46h1v1h-1zM57 46h1v1h-1zM61 46h1v1h-1zM62 46h1v1h-1zM0 47h1v1h-1zM1 47h1v1h-1zM2 47h1v1h-1zM4 47h1v1h-1zM5 47h1v1h-1zM10 47h1v1h-1zM11 47h1v1h-1zM13 47h1v1h-1zM15 47h1v1h-1zM16 47h1v1h-1zM18 47h1v1h-1zM19 47h1v1h-1zM21 47h1v1h-1zM25 47h1v1h-1zM27 47h1v1h-1zM29 47h1v1h-1zM30 47h1v1h-1zM32 47h1v1h-1zM33 47h1v1h-1zM35 47h1v1h-1zM39 47h1v1h-1zM41 47h1v1h-1zM44 47h1v1h-1zM52 47h1v1h-1zM53 47h1v1h-1zM54 47h1v1h-1zM56 47h1v1h-1zM58 47h1v1h-1zM59 47h1v1h-1zM0 48h1v1h-1zM1 48h1v1h-1zM2 48h1v1h-1zM3 48h1v1h-1zM5 48h1v1h-1zM6 48h1v1h-1zM7 48h1v1h-1zM12 48h1v1h-1zM17 48h1v1h-1zM18 48h1v1h-1zM19 48h1v1h-1zM20 48h1v1h-1zM21 48h1v1h-1zM22 48h1v1h-1zM23 48h1v1h-1zM25 48h1v1h-1zM26 48h1v1h-1zM27 48h1v1h-1zM28 48h1v1h-1zM29 48h1v1h-1zM31 48h1v1h-1zM34 48h1v1h-1zM37 48h1v1h-1zM38 48h1v1h-1zM41 48h1v1h-1zM43 48h1v1h-1zM47 48h1v1h-1zM48 48h1v1h-1zM51 48h1v1h-1zM53 48h1v1h-1zM54 48h1v1h-1zM55 48h1v1h-1zM59 48h1v1h-1zM61 48h1v1h-1zM62 48h1v1h-1zM1 49h1v1h-1zM2 49h1v1h-1zM3 49h1v1h-1zM4 49h1v1h-1zM10 49h1v1h-1zM11 49h1v1h-1zM13 49h1v1h-1zM14 49h1v1h-1zM16 49h1v1h-1zM18 49h1v1h-1zM21 49h1v1h-1zM33 49h1v1h-1zM40 49h1v1h-1zM41 49h1v1h-1zM43 49h1v1h-1zM44 49h1v1h-1zM47 49h1v1h-1zM48 49h1v1h-1zM49 49h1v1h-1zM53 49h1v1h-1zM54 49h1v1h-1zM55 49h1v1h-1zM56 49h1v1h-1zM57 49h1v1h-1zM59 49h1v1h-1zM60 49h1v1h-1zM61 49h1v1h-1zM64 49h1v1h-1zM0 50h1v1h-1zM1 50h1v1h-1zM2 50h1v1h-1zM3 50h1v1h-1zM4 50h1v1h-1zM5 50h1v1h-1zM6 50h1v1h-1zM9 50h1v1h-1zM19 50h1v1h-1zM20 50h1v1h-1zM25 50h1v1h-1zM26 50h1v1h-1zM27 50h1v1h-1zM29 50h1v1h-1zM32 50h1v1h-1zM35 50h1v1h-1zM36 50h1v1h-1zM39 50h1v1h-1zM40 50h1v1h-1zM42 50h1v1h-1zM45 50h1v1h-1zM46 50h1v1h-1zM48 50h1v1h-1zM50 50h1v1h-1zM55 50h1v1h-1zM56 50h1v1h-1zM60 50h1v1h-1zM61 50h1v1h-1zM63 50h1v1h-1zM0 51h1v1h-1zM1 51h1v1h-1zM2 51h1v1h-1zM5 51h1v1h-1zM7 51h1v1h-1zM11 51h1v1h-1zM12 51h1v1h-1zM13 51h1v1h-1zM14 51h1v1h-1zM16 51h1v1h-1zM17 51h1v1h-1zM21 51h1v1h-1zM23 51h1v1h-1zM25 51h1v1h-1zM27 51h1v1h-1zM28 51h1v1h-1zM29 51h1v1h-1zM30 51h1v1h-1zM31 51h1v1h-1zM32 51h1v1h-1zM33 51h1v1h-1zM34 51h1v1h-1zM41 51h1v1h-1zM44 51h1v1h-1zM49 51h1v1h-1zM50 51h1v1h-1zM52 51h1v1h-1zM53 51h1v1h-1zM55 51h1v1h-1zM56 51h1v1h-1zM57 51h1v1h-1zM58 51h1v1h-1zM60 51h1v1h-1zM61 51h1v1h-1zM63 51h1v1h-1zM64 51h1v1h-1zM0 52h1v1h-1zM1 52h1v1h-1zM2 52h1v1h-1zM4 52h1v1h-1zM6 52h1v1h-1zM7 52h1v1h-1zM9 52h1v1h-1zM11 52h1v1h-1zM12 52h1v1h-1zM15 52h1v1h-1zM16 52h1v1h-1zM17 52h1v1h-1zM18 52h1v1h-1zM19 52h1v1h-1zM20 52h1v1h-1zM27 52h1v1h-1zM28 52h1v1h-1zM29 52h1v1h-1zM30 52h1v1h-1zM31 52h1v1h-1zM32 52h1v1h-1zM35 52h1v1h-1zM36 52h1v1h-1zM37 52h1v1h-1zM38 52h1v1h-1zM40 52h1v1h-1zM42 52h1v1h-1zM43 52h1v1h-1zM48 52h1v1h-1zM49 52h1v1h-1zM50 52h1v1h-1zM51 52h1v1h-1zM59 52h1v1h-1zM61 52h1v1h-1zM62 52h1v1h-1zM63 52h1v1h-1zM0 53h1v1h-1zM2 53h1v1h-1zM4 53h1v1h-1zM5 53h1v1h-1zM8 53h1v1h-1zM11 53h1v1h-1zM12 53h1v1h-1zM14 53h1v1h-1zM16 53h1v1h-1zM17 53h1v1h-1zM18 53h1v1h-1zM19 53h1v1h-1zM22 53h1v1h-1zM27 53h1v1h-1zM29 53h1v1h-1zM32 53h1v1h-1zM33 53h1v1h-1zM36 53h1v1h-1zM37 53h1v1h-1zM38 53h1v1h-1zM41 53h1v1h-1zM42 53h1v1h-1zM44 53h1v1h-1zM45 53h1v1h-1zM47 53h1v1h-1zM49 53h1v1h-1zM51 53h1v1h-1zM52 53h1v1h-1zM53 53h1v1h-1zM56 53h1v1h-1zM57 53h1v1h-1zM60 53h1v1h-1zM61 53h1v1h-1zM64 53h1v1h-1zM2 54h1v1h-1zM3 54h1v1h-1zM5 54h1v1h-1zM6 54h1v1h-1zM7 54h1v1h-1zM8 54h1v1h-1zM9 54h1v1h-1zM10 54h1v1h-1zM12 54h1v1h-1zM14 54h1v1h-1zM16 54h1v1h-1zM19 54h1v1h-1zM20 54h1v1h-1zM21 54h1v1h-1zM23 54h1v1h-1zM24 54h1v1h-1zM28 54h1v1h-1zM30 54h1v1h-1zM31 54h1v1h-1zM34 54h1v1h-1zM37 54h1v1h-1zM38 54h1v1h-1zM39 54h1v1h-1zM41 54h1v1h-1zM46 54h1v1h-1zM48 54h1v1h-1zM49 54h1v1h-1zM50 54h1v1h-1zM51 54h1v1h-1zM54 54h1v1h-1zM56 54h1v1h-1zM59 54h1v1h-1zM60 54h1v1h-1zM62 54h1v1h-1zM0 55h1v1h-1zM3 55h1v1h-1zM7 55h1v1h-1zM8 55h1v1h-1zM9 55h1v1h-1zM10 55h1v1h-1zM11 55h1v1h-1zM12 55h1v1h-1zM15 55h1v1h-1zM16 55h1v1h-1zM18 55h1v1h-1zM20 55h1v1h-1zM22 55h1v1h-1zM23 55h1v1h-1zM24 55h1v1h-1zM26 55h1v1h-1zM27 55h1v1h-1zM29 55h1v1h-1zM31 55h1v1h-1zM33 55h1v1h-1zM34 55h1v1h-1zM35 55h1v1h-1zM38 55h1v1h-1zM40 55h1v1h-1zM43 55h1v1h-1zM44 55h1v1h-1zM46 55h1v1h-1zM47 55h1v1h-1zM51 55h1v1h-1zM52 55h1v1h-1zM54 55h1v1h-1zM55 55h1v1h-1zM56 55h1v1h-1zM57 55h1v1h-1zM58 55h1v1h-1zM59 55h1v1h-1zM60 55h1v1h-1zM61 55h1v1h-1zM64 55h1v1h-1zM1 56h1v1h-1zM2 56h1v1h-1zM4 56h1v1h-1zM6 56h1v1h-1zM9 56h1v1h-1zM11 56h1v1h-1zM12 56h1v1h-1zM13 56h1v1h-1zM14 56h1v1h-1zM16 56h1v1h-1zM18 56h1v1h-1zM29 56h1v1h-1zM30 56h1v1h-1zM31 56h1v1h-1zM32 56h1v1h-1zM33 56h1v1h-1zM34 56h1v1h-1zM35 56h1v1h-1zM36 56h1v1h-1zM37 56h1v1h-1zM39 56h1v1h-1zM40 56h1v1h-1zM41 56h1v1h-1zM45 56h1v1h-1zM46 56h1v1h-1zM48 56h1v1h-1zM49 56h1v1h-1zM51 56h1v1h-1zM53 56h1v1h-1zM56 56h1v1h-1zM57 56h1v1h-1zM58 56h1v1h-1zM59 56h1v1h-1zM60 56h1v1h-1zM62 56h1v1h-1zM64 56h1v1h-1zM8 57h1v1h-1zM9 57h1v1h-1zM10 57h1v1h-1zM11 57h1v1h-1zM12 57h1v1h-1zM13 57h1v1h-1zM16 57h1v1h-1zM21 57h1v1h-1zM22 57h1v1h-1zM25 57h1v1h-1zM26 57h1v1h-1zM27 57h1v1h-1zM29 57h1v1h-1zM30 57h1v1h-1zM34 57h1v1h-1zM35 57h1v1h-1zM36 57h1v1h-1zM40 57h1v1h-1zM41 57h1v1h-1zM43 57h1v1h-1zM45 57h1v1h-1zM54 57h1v1h-1zM55 57h1v1h-1zM56 57h1v1h-1zM60 57h1v1h-1zM61 57h1v1h-1zM63 57h1v1h-1zM64 57h1v1h-1zM0 58h1v1h-1zM1 58h1v1h-1zM2 58h1v1h-1zM3 58h1v1h-1zM4 58h1v1h-1zM5 58h1v1h-1zM6 58h1v1h-1zM9 58h1v1h-1zM11 58h1v1h-1zM12 58h1v1h-1zM15 58h1v1h-1zM16 58h1v1h-1zM18 58h1v1h-1zM19 58h1v1h-1zM21 58h1v1h-1zM22 58h1v1h-1zM25 58h1v1h-1zM26 58h1v1h-1zM27 58h1v1h-1zM29 58h1v1h-1zM30 58h1v1h-1zM32 58h1v1h-1zM34 58h1v1h-1zM36 58h1v1h-1zM37 58h1v1h-1zM38 58h1v1h-1zM41 58h1v1h-1zM43 58h1v1h-1zM45 58h1v1h-1zM48 58h1v1h-1zM49 58h1v1h-1zM51 58h1v1h-1zM52 58h1v1h-1zM53 58h1v1h-1zM56 58h1v1h-1zM58 58h1v1h-1zM60 58h1v1h-1zM61 58h1v1h-1zM0 59h1v1h-1zM6 59h1v1h-1zM11 59h1v1h-1zM13 59h1v1h-1zM15 59h1v1h-1zM18 59h1v1h-1zM19 59h1v1h-1zM20 59h1v1h-1zM21 59h1v1h-1zM23 59h1v1h-1zM24 59h1v1h-1zM25 59h1v1h-1zM27 59h1v1h-1zM29 59h1v1h-1zM30 59h1v1h-1zM34 59h1v1h-1zM35 59h1v1h-1zM36 59h1v1h-1zM37 59h1v1h-1zM38 59h1v1h-1zM39 59h1v1h-1zM41 59h1v1h-1zM43 59h1v1h-1zM44 59h1v1h-1zM46 59h1v1h-1zM47 59h1v1h-1zM49 59h1v1h-1zM50 59h1v1h-1zM51 59h1v1h-1zM52 59h1v1h-1zM53 59h1v1h-1zM54 59h1v1h-1zM56 59h1v1h-1zM60 59h1v1h-1zM61 59h1v1h-1zM0 60h1v1h-1zM2 60h1v1h-1zM3 60h1v1h-1zM4 60h1v1h-1zM6 60h1v1h-1zM8 60h1v1h-1zM9 60h1v1h-1zM10 60h1v1h-1zM11 60h1v1h-1zM12 60h1v1h-1zM13 60h1v1h-1zM14 60h1v1h-1zM16 60h1v1h-1zM17 60h1v1h-1zM18 60h1v1h-1zM19 60h1v1h-1zM20 60h1v1h-1zM24 60h1v1h-1zM26 60h1v1h-1zM27 60h1v1h-1zM28 60h1v1h-1zM30 60h1v1h-1zM31 60h1v1h-1zM32 60h1v1h-1zM33 60h1v1h-1zM34 60h1v1h-1zM36 60h1v1h-1zM42 60h1v1h-1zM45 60h1v1h-1zM46 60h1v1h-1zM48 60h1v1h-1zM49 60h1v1h-1zM50 60h1v1h-1zM56 60h1v1h-1zM57 60h1v1h-1zM58 60h1v1h-1zM59 60h1v1h-1zM60 60h1v1h-1zM62 60h1v1h-1zM64 60h1v1h-1zM0 61h1v1h-1zM2 61h1v1h-1zM3 61h1v1h-1zM4 61h1v1h-1zM6 61h1v1h-1zM8 61h1v1h-1zM9 61h1v1h-1zM10 61h1v1h-1zM11 61h1v1h-1zM15 61h1v1h-1zM16 61h1v1h-1zM17 61h1v1h-1zM19 61h1v1h-1zM21 61h1v1h-1zM24 61h1v1h-1zM28 61h1v1h-1zM30 61h1v1h-1zM31 61h1v1h-1zM34 61h1v1h-1zM36 61h1v1h-1zM38 61h1v1h-1zM39 61h1v1h-1zM41 61h1v1h-1zM42 61h1v1h-1zM43 61h1v1h-1zM44 61h1v1h-1zM46 61h1v1h-1zM47 61h1v1h-1zM48 61h1v1h-1zM49 61h1v1h-1zM51 61h1v1h-1zM54 61h1v1h-1zM55 61h1v1h-1zM56 61h1v1h-1zM57 61h1v1h-1zM63 61h1v1h-1zM0 62h1v1h-1zM2 62h1v1h-1zM3 62h1v1h-1zM4 62h1v1h-1zM6 62h1v1h-1zM8 62h1v1h-1zM11 62h1v1h-1zM12 62h1v1h-1zM14 62h1v1h-1zM16 62h1v1h-1zM17 62h1v1h-1zM18 62h1v1h-1zM19 62h1v1h-1zM20 62h1v1h-1zM21 62h1v1h-1zM22 62h1v1h-1zM26 62h1v1h-1zM27 62h1v1h-1zM30 62h1v1h-1zM31 62h1v1h-1zM33 62h1v1h-1zM35 62h1v1h-1zM36 62h1v1h-1zM38 62h1v1h-1zM39 62h1v1h-1zM40 62h1v1h-1zM43 62h1v1h-1zM45 62h1v1h-1zM47 62h1v1h-1zM48 62h1v1h-1zM49 62h1v1h-1zM50 62h1v1h-1zM52 62h1v1h-1zM53 62h1v1h-1zM55 62h1v1h-1zM57 62h1v1h-1zM58 62h1v1h-1zM60 62h1v1h-1zM62 62h1v1h-1zM63 62h1v1h-1zM0 63h1v1h-1zM6 63h1v1h-1zM10 63h1v1h-1zM11 63h1v1h-1zM13 63h1v1h-1zM17 63h1v1h-1zM19 63h1v1h-1zM21 63h1v1h-1zM23 63h1v1h-1zM30 63h1v1h-1zM31 63h1v1h-1zM32 63h1v1h-1zM34 63h1v1h-1zM35 63h1v1h-1zM36 63h1v1h-1zM38 63h1v1h-1zM40 63h1v1h-1zM44 63h1v1h-1zM46 63h1v1h-1zM47 63h1v1h-1zM49 63h1v1h-1zM51 63h1v1h-1zM52 63h1v1h-1zM53 63h1v1h-1zM57 63h1v1h-1zM59 63h1v1h-1zM63 63h1v1h-1zM0 64h1v1h-1zM1 64h1v1h-1zM2 64h1v1h-1zM3 64h1v1h-1zM4 64h1v1h-1zM5 64h1v1h-1zM6 64h1v1h-1zM9 64h1v1h-1zM15 64h1v1h-1zM17 64h1v1h-1zM18 64h1v1h-1zM22 64h1v1h-1zM24 64h1v1h-1zM25 64h1v1h-1zM26 64h1v1h-1zM27 64h1v1h-1zM28 64h1v1h-1zM29 64h1v1h-1zM30 64h1v1h-1zM31 64h1v1h-1zM33 64h1v1h-1zM34 64h1v1h-1zM36 64h1v1h-1zM37 64h1v1h-1zM38 64h1v1h-1zM40 64h1v1h-1zM41 64h1v1h-1zM42 64h1v1h-1zM43 64h1v1h-1zM45 64h1v1h-1zM46 64h1v1h-1zM48 64h1v1h-1zM50 64h1v1h-1zM53 64h1v1h-1zM58 64h1v1h-1zM59 64h1v1h-1zM61 64h1v1h-1zM62 64h1v1h-1z"/></svg><img src="/assets/logo-manestro-512.png" alt=""/></div>
+        <div class="t"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Escríbenos por WhatsApp</div>
+        <div class="p">+1 809 637 6377</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="prog" aria-hidden="true"><i id="prog"></i></div>
+<div class="brand" id="brand" aria-hidden="true"><img src="/assets/logo-manestro-512.png" alt=""/>MANESTRO</div>
+<div class="count" id="count" aria-hidden="true"></div>
+
+<nav class="ctl" id="ctl" aria-label="Controles de la presentación">
+  <button type="button" data-act="prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button type="button" data-act="next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <span class="sep"></span>
+  <button type="button" data-act="idx" aria-label="Índice"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span class="lbl">Índice</span></button>
+  <button type="button" data-act="fs" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl">Pantalla completa</span></button>
+  <span class="sep"></span>
+  <span class="off" id="off" title="Cuando está en verde, la presentación ya quedó guardada en este equipo y abre sin internet."><i></i><span>Preparando para usar sin internet…</span></span>
+</nav>
+
+<div class="idx" id="idx" role="dialog" aria-modal="true" aria-label="Índice de diapositivas">
+  <div class="idx-in" id="idxIn">
+    <div class="idx-help">
+      <kbd>→</kbd><kbd>←</kbd> o el control: avanzar y volver ·
+      <kbd>F</kbd> pantalla completa · <kbd>G</kbd> índice · <kbd>B</kbd> pantalla en negro · <kbd>Inicio</kbd><kbd>Fin</kbd> primera y última
+    </div>
+  </div>
+</div>
+<div class="black" id="black" aria-hidden="true"></div>
+
+<script>
+(function () {
+  'use strict';
+  var slides = [].slice.call(document.querySelectorAll('.s'));
+  var N = slides.length, cur = -1;
+  var prog = document.getElementById('prog'), count = document.getElementById('count'), brand = document.getElementById('brand');
+  var idx = document.getElementById('idx'), idxIn = document.getElementById('idxIn'), black = document.getElementById('black');
+  var RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+  /* ── Índice ── */
+  slides.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '<span>' + pad(i + 1) + '</span>' + s.getAttribute('data-t');
+    b.addEventListener('click', function () { closeIdx(); go(i); });
+    idxIn.insertBefore(b, idxIn.lastElementChild);
+  });
+  var idxBtns = [].slice.call(idxIn.querySelectorAll('button'));
+  function openIdx() { idx.classList.add('on'); idxBtns.forEach(function (b, i) { b.classList.toggle('on', i === cur); }); }
+  function closeIdx() { idx.classList.remove('on'); }
+  idx.addEventListener('click', function (e) { if (e.target === idx) closeIdx(); });
+
+  /* ── Videos: se cargan al llegar a su diapositiva y empiezan desde el inicio ── */
+  function vidOf(s) { var f = s.querySelector('.vf'); return f && { f: f, v: f.querySelector('video') }; }
+  function playVid(o) {
+    if (!o.v.src) o.v.src = o.v.getAttribute('data-src');
+    var p = o.v.play(); if (p && p.catch) p.catch(function () { o.f.classList.add('paused'); });
+  }
+  [].slice.call(document.querySelectorAll('.vf')).forEach(function (f) {
+    var v = f.querySelector('video');
+    var chaps = [].slice.call(document.querySelectorAll('[data-chaps="' + f.id + '"] .chap'));
+    v.addEventListener('play', function () { f.classList.remove('paused'); });
+    v.addEventListener('pause', function () { f.classList.add('paused'); });
+    f.querySelector('.play').addEventListener('click', function () { playVid({ f: f, v: v }); });
+    v.addEventListener('click', function () { if (v.paused) playVid({ f: f, v: v }); else v.pause(); });
+    chaps.forEach(function (c) {
+      c.addEventListener('click', function () {
+        if (!v.src) v.src = v.getAttribute('data-src');
+        var t = +c.getAttribute('data-at');
+        var ir = function () { v.currentTime = t; playVid({ f: f, v: v }); };
+        if (v.readyState >= 1) ir(); else v.addEventListener('loadedmetadata', ir, { once: true });
+      });
+    });
+    v.addEventListener('timeupdate', function () {
+      var k = 0; chaps.forEach(function (c, i) { if (v.currentTime >= +c.getAttribute('data-at') - .05) k = i; });
+      chaps.forEach(function (c, i) { c.classList.toggle('on', i === k); });
+    });
+  });
+
+  /* ── Números que cuentan (diapositiva 3) ── */
+  function countUp(s) {
+    [].slice.call(s.querySelectorAll('[data-count]')).forEach(function (el, j) {
+      var to = +el.getAttribute('data-count'), pre = el.getAttribute('data-pre') || '', suf = el.getAttribute('data-suf') || '';
+      if (RM) { el.innerHTML = pre + to + suf; return; }
+      var t0 = performance.now() + 350 + j * 90, D = 1300;
+      el.innerHTML = pre + '0' + suf;
+      (function tick(now) {
+        var k = Math.min(1, Math.max(0, (now - t0) / D)); k = 1 - Math.pow(1 - k, 3);
+        el.innerHTML = pre + Math.round(to * k) + suf;
+        if (k < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    });
+  }
+
+  /* ── Cambio de diapositiva ── */
+  function go(n, quiet) {
+    n = Math.max(0, Math.min(N - 1, n));
+    if (n === cur) return;
+    var old = slides[cur];
+    if (old) { var ov = vidOf(old); if (ov) ov.v.pause(); }
+    slides.forEach(function (s, i) {
+      s.classList.toggle('on', i === n);
+      s.classList.toggle('prev', i < n);
+      s.setAttribute('aria-hidden', i === n ? 'false' : 'true');
+      if (i === n) s.scrollTop = 0;
+    });
+    cur = n;
+    var s = slides[n];
+    var nv = vidOf(s);
+    if (nv) { if (nv.v.src && nv.v.readyState >= 1) nv.v.currentTime = 0; playVid(nv); }
+    if (s.querySelector('[data-count]')) countUp(s);
+    prog.style.width = (N > 1 ? n / (N - 1) * 100 : 100) + '%';
+    count.innerHTML = '<b>' + pad(n + 1) + '</b> / ' + pad(N);
+    brand.style.opacity = n === 0 ? '0' : '';
+    if (!quiet) try { history.replaceState(null, '', '#' + (n + 1)); } catch (_) {}
+    if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+  }
+  var next = function () { go(cur + 1); }, prev = function () { go(cur - 1); };
+
+  /* ── Pantalla completa y pantalla encendida ── */
+  var lock = null;
+  function wake() {
+    if (!('wakeLock' in navigator) || document.hidden) return;
+    navigator.wakeLock.request('screen').then(function (l) { lock = l; }).catch(function () {});
+  }
+  function fsOn() { return document.fullscreenElement || document.webkitFullscreenElement; }
+  function fs(force) {
+    var d = document.documentElement;
+    if (fsOn() && !force) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+    if (fsOn()) return;
+    var r = d.requestFullscreen || d.webkitRequestFullscreen;
+    if (r) { var p = r.call(d); if (p && p.catch) p.catch(function () {}); }
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && lock) wake(); });
+  document.querySelector('[data-start]').addEventListener('click', function () { fs(true); wake(); next(); });
+
+  /* ── Teclado y control de presentaciones (mandan flechas o Re Pág / Av Pág) ── */
+  window.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var k = e.key, used = true;
+    if (black.classList.contains('on') && k !== 'f' && k !== 'F') { black.classList.remove('on'); e.preventDefault(); return; }
+    if (idx.classList.contains('on')) {
+      if (k === 'Escape' || k === 'g' || k === 'G') closeIdx(); else used = false;
+    }
+    else if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter' || k === 'n' || k === 'N') next();
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace' || k === 'p' || k === 'P') prev();
+    else if (k === 'Home') go(0);
+    else if (k === 'End') go(N - 1);
+    else if (k === 'f' || k === 'F' || k === 'F5') { fs(); wake(); }
+    else if (k === 'b' || k === 'B' || k === '.') black.classList.add('on');
+    else if (k === 'g' || k === 'G' || k === 'Escape') { if (k === 'Escape' && fsOn()) used = false; else openIdx(); }
+    else if (/^[1-9]$/.test(k)) go(+k - 1);
+    else used = false;
+    if (used) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+  black.addEventListener('click', function () { black.classList.remove('on'); });
+
+  /* ── Botones de la barra ── */
+  document.getElementById('ctl').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var a = b.getAttribute('data-act');
+    if (a === 'next') next(); else if (a === 'prev') prev(); else if (a === 'idx') openIdx(); else if (a === 'fs') { fs(); wake(); }
+  });
+
+  /* ── Toque: deslizar para pasar; tocar a la derecha avanza, a la izquierda vuelve.
+       No se mete con el demo 3D, los videos ni los botones. ── */
+  var t0 = null;
+  var NOTAP = 'button, a, input, label, video, .d3-stage, .d3-panel, .vf, .chaps, .ctl, .idx, .qr';
+  document.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse') return;
+    t0 = { x: e.clientX, y: e.clientY, t: Date.now(), skip: !!e.target.closest('.d3-stage, input'), tap: !e.target.closest(NOTAP) };
+  }, { passive: true });
+  document.addEventListener('pointerup', function (e) {
+    if (!t0 || e.pointerType === 'mouse') return;
+    var dx = e.clientX - t0.x, dy = e.clientY - t0.y, st = t0; t0 = null;
+    if (st.skip) return;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) { dx < 0 ? next() : prev(); return; }
+    if (st.tap && Math.abs(dx) < 10 && Math.abs(dy) < 10 && Date.now() - st.t < 500) {
+      e.clientX > window.innerWidth * .33 ? next() : prev();
+    }
+  }, { passive: true });
+
+  /* ── Barra y cursor se esconden solos ── */
+  var idleT;
+  function awake() {
+    document.body.classList.remove('idle', 'nocursor');
+    clearTimeout(idleT);
+    idleT = setTimeout(function () { if (!document.querySelector('.ctl:hover')) document.body.classList.add('idle', 'nocursor'); }, 2600);
+  }
+  ['pointermove', 'pointerdown', 'keydown'].forEach(function (ev) { window.addEventListener(ev, awake, { passive: true }); });
+  awake();
+
+  var start = parseInt((location.hash || '').slice(1), 10);
+  go(start >= 1 && start <= N ? start - 1 : 0, true);
+  window.addEventListener('hashchange', function () { var h = parseInt(location.hash.slice(1), 10); if (h >= 1) go(h - 1, true); });
+
+  /* ── Sin internet: un service worker guarda la página, los videos y las fuentes.
+       El punto verde de la barra dice cuándo ya quedó todo guardado. ── */
+  var off = document.getElementById('off');
+  function offState(ok, txt) { off.classList.toggle('ok', ok); off.lastElementChild.textContent = txt; }
+  var seguro = location.protocol === 'https:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if ('serviceWorker' in navigator && 'caches' in window && seguro) {
+    navigator.serviceWorker.register('/presentacion/sw.js', { scope: '/presentacion/' }).catch(function () { offState(false, 'No se pudo preparar sin internet'); });
+    navigator.serviceWorker.addEventListener('message', function (e) {
+      if (e.data && e.data.tipo === 'listo') offState(true, 'Lista sin internet');
+      if (e.data && e.data.tipo === 'progreso') offState(false, 'Guardando para usar sin internet… ' + e.data.pct + '%');
+    });
+    navigator.serviceWorker.ready.then(function (reg) { if (reg.active) reg.active.postMessage({ tipo: 'estado' }); });
+  } else offState(false, 'Este navegador no la guarda sin internet');
+})();
+</script>
+<script src="/assets/fx-net.js" defer></script>
+<script src="/assets/demo3d.js" defer></script>
+</body>
+</html>
