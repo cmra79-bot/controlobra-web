@@ -436,7 +436,9 @@
   /* 7d. Marquesina cinética gigante: corre sola y acelera con la velocidad del scroll. */
   var metrics = document.querySelector('.metrics');
   if (metrics) {
-    var words = ['Presupuesto', 'Control de costos', 'Cubicaciones', 'Obra', 'Flujo de caja', 'Inteligencia artificial'];
+    var words = (document.documentElement.lang || '').slice(0, 2) === 'en'
+      ? ['Estimating', 'Cost control', 'Progress billing', 'Job site', 'Cash flow', 'Artificial intelligence']
+      : ['Presupuesto', 'Control de costos', 'Cubicaciones', 'Obra', 'Flujo de caja', 'Inteligencia artificial'];
     var row = function (rev) {
       var inner = words.map(function (w, i) { return '<span class="' + (i % 2 ? 'o' : 'f') + '">' + w + '</span><em>✦</em>'; }).join('');
       return '<div class="fx-mq-row' + (rev ? ' rev' : '') + '"><div class="fx-mq-track">' + inner + inner + '</div></div>';

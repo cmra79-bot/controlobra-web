@@ -53,19 +53,22 @@
 
   var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
   var ease = function (t) { t = clamp(t, 0, 1); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
-  var fmt = function (v, d) { return v.toLocaleString('es-DO', { minimumFractionDigits: d, maximumFractionDigits: d }); };
+  /* Idioma: la portada en inglés (/en/) usa el mismo demo con textos y números en inglés. */
+  var EN = (document.documentElement.lang || '').slice(0, 2) === 'en';
+  var tx = function (es, en) { return EN ? en : es; };
+  var fmt = function (v, d) { return v.toLocaleString(EN ? 'en-US' : 'es-DO', { minimumFractionDigits: d, maximumFractionDigits: d }); };
   var pad = function (n) { return (n < 10 ? '0' : '') + n; };
 
   /* ════════════════════ Partidas (precios de ejemplo, RD$) ════════════════════ */
   var CATS = {
-    losa:    { n: 'Losa de piso de 10 cm',       u: 'm³', p: 11900, d: 2, c: [143, 163, 191] },
-    col:     { n: 'Columnas 25 × 25 cm',         u: 'm³', p: 28500, d: 2, c: [242, 107, 31] },
-    muro:    { n: 'Muros de bloque de 6"',       u: 'm²', p: 1580,  d: 2, c: [222, 200, 166] },
-    techo:   { n: 'Losas de techo de 12 cm',     u: 'm³', p: 24800, d: 2, c: [125, 160, 216] },
-    panete:  { n: 'Pañete (2 caras)',            u: 'm²', p: 390,   d: 2, c: [183, 148, 244] },
-    piso:    { n: 'Piso de cerámica',            u: 'm²', p: 1450,  d: 2, c: [46, 196, 182] },
-    puerta:  { n: 'Puertas de madera',           u: 'ud', p: 13500, d: 0, c: [255, 200, 87] },
-    ventana: { n: 'Ventanas de aluminio', u: 'ud', p: 8900, d: 0, c: [91, 192, 235] }
+    losa:    { n: tx('Losa de piso de 10 cm', 'Slab on grade, 10 cm'),       u: 'm³', p: 11900, d: 2, c: [143, 163, 191] },
+    col:     { n: tx('Columnas 25 × 25 cm', 'Columns 25 × 25 cm'),         u: 'm³', p: 28500, d: 2, c: [242, 107, 31] },
+    muro:    { n: tx('Muros de bloque de 6"', '6" block walls'),       u: 'm²', p: 1580,  d: 2, c: [222, 200, 166] },
+    techo:   { n: tx('Losas de techo de 12 cm', 'Roof slabs, 12 cm'),     u: 'm³', p: 24800, d: 2, c: [125, 160, 216] },
+    panete:  { n: tx('Pañete (2 caras)', 'Plaster (both faces)'),            u: 'm²', p: 390,   d: 2, c: [183, 148, 244] },
+    piso:    { n: tx('Piso de cerámica', 'Ceramic tile floor'),            u: 'm²', p: 1450,  d: 2, c: [46, 196, 182] },
+    puerta:  { n: tx('Puertas de madera', 'Wood doors'),           u: tx('ud', 'ea'), p: 13500, d: 0, c: [255, 200, 87] },
+    ventana: { n: tx('Ventanas de aluminio', 'Aluminum windows'), u: tx('ud', 'ea'), p: 8900, d: 0, c: [91, 192, 235] }
   };
   var ORDER = ['losa', 'col', 'muro', 'techo', 'panete', 'piso', 'puerta', 'ventana'];
 
@@ -127,8 +130,8 @@
     var XA = X0 + .58 * (X1 - X0), ZB = (Z0 + Z1) / 2;
     var nM = 0, nC = 0, nV = 0, nP = 0;
 
-    var slab = { cat: 'losa', name: 'Losa de piso', q: W * L * TS, lvl: 0,
-      tip: 'Losa de piso · ' + fmt(W, 2) + ' × ' + fmt(L, 2) + ' × 0,10 m = ' + fmt(W * L * TS, 2) + ' m³' };
+    var slab = { cat: 'losa', name: tx('Losa de piso', 'Slab on grade'), q: W * L * TS, lvl: 0,
+      tip: tx('Losa de piso', 'Slab on grade') + ' · ' + fmt(W, 2) + ' × ' + fmt(L, 2) + ' × ' + fmt(.1, 2) + ' m = ' + fmt(W * L * TS, 2) + ' m³' };
     els.push(slab);
     boxFaces(faces, [-W / 2, W / 2, -TS, 0, -L / 2, L / 2], slab, 'base0');
 
@@ -144,7 +147,7 @@
 
       // Columnas
       cols.forEach(function (p) {
-        var el = { cat: 'col', name: 'Columna C-' + pad(++nC), q: C * C * H, lvl: lv };
+        var el = { cat: 'col', name: tx('Columna C-', 'Column C-') + pad(++nC), q: C * C * H, lvl: lv };
         el.tip = el.name + ' · 0,25 × 0,25 × ' + fmt(H, 2) + ' m = ' + fmt(el.q, 3) + ' m³';
         els.push(el);
         boxFaces(faces, [p[0] - C / 2, p[0] + C / 2, base, base + h, p[1] - C / 2, p[1] + C / 2], el, solid);
@@ -166,7 +169,7 @@
       ];
       defs.forEach(function (d) {
         var axis = d[0], fx = d[1], s0 = d[2] + C / 2, s1 = d[3] - C / 2, len = s1 - s0;
-        var el = { cat: 'muro', cats: ['muro', 'panete'], name: 'Muro M-' + pad(++nM), lvl: lv };
+        var el = { cat: 'muro', cats: ['muro', 'panete'], name: tx('Muro M-', 'Wall W-') + pad(++nM), lvl: lv };
         var gross = len * H, holes = 0, cur = s0;
         els.push(el);
         var piece = function (a, b, ya, yb) {
@@ -185,7 +188,7 @@
           // Hueco: ventana (vidrio) o puerta (hoja)
           var isP = o.k === 'p';
           var oel = { cat: isP ? 'puerta' : 'ventana', q: 1, lvl: lv,
-            name: isP ? 'Puerta P-' + pad(++nP) : 'Ventana V-' + pad(++nV) };
+            name: isP ? tx('Puerta P-', 'Door D-') + pad(++nP) : tx('Ventana V-', 'Window W-') + pad(++nV) };
           oel.tip = oel.name + ' · ' + fmt(o.w, 2) + ' × ' + fmt(yy[1] - yy[0], 2) + ' m';
           els.push(oel);
           if (h > yy[0] + .02) {
@@ -199,19 +202,19 @@
         piece(cur, s1, 0, H);
         el.q = gross - holes;
         el.tip = el.name + ' · ' + fmt(len, 2) + ' × ' + fmt(H, 2) + ' m' +
-          (holes > 0 ? ' − huecos' : '') + ' = ' + fmt(el.q, 2) + ' m²';
+          (holes > 0 ? tx(' − huecos', ' − openings') : '') + ' = ' + fmt(el.q, 2) + ' m²';
       });
 
       // Pisos de cerámica por ambiente (caras interiores de los muros)
       var R = [
-        ['Habitación 1', X0 + T / 2, XA - T / 2, Z0 + T / 2, ZB - T / 2],
-        ['Habitación 2', X0 + T / 2, XA - T / 2, ZB + T / 2, Z1 - T / 2],
-        [lv > 0 ? 'Estar' : 'Sala-comedor', XA + T / 2, X1 - T / 2, Z0 + T / 2, Z1 - T / 2]
+        [tx('Habitación 1', 'Bedroom 1'), X0 + T / 2, XA - T / 2, Z0 + T / 2, ZB - T / 2],
+        [tx('Habitación 2', 'Bedroom 2'), X0 + T / 2, XA - T / 2, ZB + T / 2, Z1 - T / 2],
+        [lv > 0 ? tx('Estar', 'Family room') : tx('Sala-comedor', 'Living-dining'), XA + T / 2, X1 - T / 2, Z0 + T / 2, Z1 - T / 2]
       ];
       R.forEach(function (r) {
         var a = (r[2] - r[1]) * (r[4] - r[3]);
         var el = { cat: 'piso', name: r[0], q: a, lvl: lv,
-          tip: 'Piso ' + r[0].toLowerCase() + ' · ' + fmt(r[2] - r[1], 2) + ' × ' + fmt(r[4] - r[3], 2) + ' m = ' + fmt(a, 2) + ' m²' };
+          tip: tx('Piso ' + r[0].toLowerCase(), r[0] + ' floor') + ' · ' + fmt(r[2] - r[1], 2) + ' × ' + fmt(r[4] - r[3], 2) + ' m = ' + fmt(a, 2) + ' m²' };
         els.push(el);
         rooms.push({ el: el, x: (r[1] + r[2]) / 2, y: base + .01, z: (r[3] + r[4]) / 2, lvl: lv });
         faces.push({ n: [0, 1, 0], el: el, layer: 'base' + lv, ed: [true, true, true, true],
@@ -221,8 +224,8 @@
       // Losa de techo (o entrepiso): fantasma para ver adentro
       var top = lv === levels - 1;
       var tq = (W + 2 * OV) * (L + 2 * OV) * TR;
-      var tel = { cat: 'techo', name: top ? 'Losa de techo' : 'Losa de entrepiso', q: tq, lvl: lv, ghost: true };
-      tel.tip = tel.name + ' · ' + fmt(W + 2 * OV, 2) + ' × ' + fmt(L + 2 * OV, 2) + ' × 0,12 m = ' + fmt(tq, 2) + ' m³';
+      var tel = { cat: 'techo', name: top ? tx('Losa de techo', 'Roof slab') : tx('Losa de entrepiso', 'Floor slab'), q: tq, lvl: lv, ghost: true };
+      tel.tip = tel.name + ' · ' + fmt(W + 2 * OV, 2) + ' × ' + fmt(L + 2 * OV, 2) + ' × ' + fmt(.12, 2) + ' m = ' + fmt(tq, 2) + ' m³';
       els.push(tel);
       if (g >= .999) boxFaces(faces, [-W / 2 - OV, W / 2 + OV, base + H, base + H + TR, -L / 2 - OV, L / 2 + OV], tel, 'roof' + lv);
     }
@@ -257,8 +260,8 @@
     dims();
     full = build(S.W, S.L, S.levels, [1, 1]);
     Qfull = quantities(full.els);
-    if (dimsEl) dimsEl.innerHTML = 'Casa de <b>' + fmt(S.W, 2) + ' × ' + fmt(S.L, 2) + ' m</b> · ' +
-      S.levels + (S.levels > 1 ? ' niveles' : ' nivel');
+    if (dimsEl) dimsEl.innerHTML = tx('Casa de', 'House') + ' <b>' + fmt(S.W, 2) + ' × ' + fmt(S.L, 2) + ' m</b> · ' +
+      S.levels + (S.levels > 1 ? tx(' niveles', ' stories') : tx(' nivel', ' story'));
     if (areaOut) areaOut.textContent = S.area + ' m²';
     fitCamera();
   }
@@ -305,10 +308,10 @@
 
   /* ════════════════════ Pasos ════════════════════ */
   var CAPS = [
-    'Kubicar lee la planta y sus cotas.',
-    'La planta se convierte en un modelo 3D.',
-    'Cada elemento se mide solo: m³, m² y unidades.',
-    'Cada cantidad por su precio. Presupuesto listo.'
+    tx('Kubicar lee la planta y sus cotas.', 'Kubicar reads the floor plan and its dimensions.'),
+    tx('La planta se convierte en un modelo 3D.', 'The floor plan becomes a 3D model.'),
+    tx('Cada elemento se mide solo: m³, m² y unidades.', 'Every element measures itself: m³, m² and units.'),
+    tx('Cada cantidad por su precio. Presupuesto listo.', 'Every quantity times its price. Estimate ready.')
   ];
   var timer = null;
   function setStep(n, user) {

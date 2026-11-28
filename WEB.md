@@ -615,3 +615,11 @@ lsof -ti:4321 | xargs kill -9
 | `DEPLOY.md` | este repo | Guía paso a paso de DNS, Cloudflare y DigitalOcean |
 | `CLAUDE.md` | `APP-CMP` | El ERP: stack, módulos, convenciones |
 | `PRECIOS_OBRA.md` | `APP-CMP` | El visor público: producto, datos, APUs, app móvil |
+
+---
+
+## Versión en inglés (/en/) — 28-nov-2026
+
+- `controlobra.ai/en/` es la portada de Manestro en inglés, para clientes de fuera. **No se edita a mano**: la genera `scripts/generar-en.mjs` (lo llama `astro.config.mjs` en cada `dev` y `build`) desde `src/pages/index.html` + el diccionario `src/i18n/en.mjs`. Cualquier cambio de diseño en la portada en español llega solo a /en/; si cambiás un **texto**, agregá su traducción en `en.mjs` (la consola avisa qué quedó sin traducir).
+- Selector ES/EN en el menú (en el celular, en el pie de página), `hreflang` es/en/x-default, vista previa al compartir en inglés (`og-manestro-en.jpg`). El demo 3D y la marquesina (`demo3d.js`, `fx.js`) eligen idioma por `<html lang>`.
+- En /en/ se oculta la calculadora de ROI (sus montos son en pesos y en inglés "$" se lee como dólares). Precios Obra, guías y análisis siguen solo en español (son del mercado dominicano).
